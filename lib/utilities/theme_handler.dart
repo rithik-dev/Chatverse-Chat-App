@@ -4,12 +4,20 @@ import 'package:flutter/material.dart';
 class ThemeHandler {
   ThemeHandler._();
 
-  static final Brightness defaultBrightness = Brightness.light;
+//  scaffoldBackgroundColor: Color(0xFF385C6A),
 
-  static final ThemeData lightTheme = ThemeData(
+  static final Brightness defaultBrightness = Brightness.light;
+  static Brightness currentBrightness;
+
+  static final baseTheme = ThemeData(
+    textTheme: TextTheme().copyWith(),
+  );
+
+  static final ThemeData lightTheme = baseTheme.copyWith(
     brightness: Brightness.light,
   );
-  static final ThemeData darkTheme = ThemeData(
+
+  static final ThemeData darkTheme = baseTheme.copyWith(
     brightness: Brightness.dark,
   );
 
@@ -22,6 +30,7 @@ class ThemeHandler {
   }
 
   static ThemeData getThemeData(Brightness brightness) {
+    currentBrightness = brightness;
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
 }

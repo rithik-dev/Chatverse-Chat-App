@@ -1,4 +1,5 @@
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/utilities/route_generator.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
@@ -11,18 +12,16 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final User user = User(
-    name: null,
-    userId: null,
-    email: null,
-    profilePicURL: null,
-  );
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<User>.value(value: this.user),
+        ChangeNotifierProvider<User>(
+          create: (_) => User.fromNullValues(),
+        ),
+        ChangeNotifierProvider<LoadingScreenProvider>(
+          create: (_) => LoadingScreenProvider(),
+        ),
       ],
       child: DynamicTheme(
         defaultBrightness: ThemeHandler.defaultBrightness,
