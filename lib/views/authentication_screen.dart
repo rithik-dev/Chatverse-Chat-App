@@ -29,7 +29,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   final _signInFormKey = GlobalKey<FormState>();
   final _signUpFormKey = GlobalKey<FormState>();
 
-  LoadingScreenProvider loadingProvider;
+  static LoadingScreenProvider loadingProvider;
 
   String _signInEmail;
   String _signInPassword;
@@ -38,12 +38,14 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   String _signUpEmail;
   String _signUpPassword;
 
-  TextEditingController _signInEmailController = TextEditingController();
-  TextEditingController _signInPasswordController = TextEditingController();
+  final TextEditingController _signInEmailController = TextEditingController();
+  final TextEditingController _signInPasswordController =
+      TextEditingController();
 
-  TextEditingController _signUpNameController = TextEditingController();
-  TextEditingController _signUpEmailController = TextEditingController();
-  TextEditingController _signUpPasswordController = TextEditingController();
+  final TextEditingController _signUpNameController = TextEditingController();
+  final TextEditingController _signUpEmailController = TextEditingController();
+  final TextEditingController _signUpPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -146,7 +148,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                         top: 10.0, left: 15, right: 15, bottom: 20),
                     child: Form(
                       key: this._signInFormKey,
@@ -163,9 +165,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                               if (value == null ||
                                   value.isEmpty ||
                                   value.trim() == "")
-                                return 'Please enter your email';
+                                return 'Please enter your email address';
                               else if (!(value.contains("@") &&
-                                  value.contains("."))) return "Invalid email";
+                                  value.contains(".")))
+                                return "Please enter a valid email address";
                             },
                           ),
                           Divider(color: Colors.grey, height: 8),
@@ -203,7 +206,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                         if (this._signInFormKey.currentState.validate()) {
                           loadingProvider.startLoading();
                           try {
-                            final User user = await UserController.loginUser(
+                            final User user = await UserController.signInUser(
                                 this._signInEmail, this._signInPassword);
                             Provider.of<User>(context, listen: false)
                                 .updateUserInProvider(user);
@@ -232,16 +235,18 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               onTap: () async {
-                if (this._signInEmail != null && this._signInEmail.trim() == "")
-                  Functions.showSnackBar(context, "Please enter email");
+                if (this._signInEmail == null || this._signInEmail.trim() == "")
+                  Functions.showSnackBar(
+                      context, "Please enter an email address");
                 else if (!this._signInEmail.contains("@") ||
                     !this._signInEmail.contains((".")))
-                  Functions.showSnackBar(context, "Invalid email entered");
+                  Functions.showSnackBar(
+                      context, "Please enter a valid email address");
                 else {
                   loadingProvider.startLoading();
                   try {
                     final bool success =
-                        await FirebaseAuthService.sendPasswordResetEmail(
+                    await FirebaseAuthService.sendPasswordResetEmail(
                       this._signInEmail,
                     );
                     if (success)
@@ -356,9 +361,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                               if (value == null ||
                                   value.isEmpty ||
                                   value.trim() == "")
-                                return 'Please enter your email';
+                                return 'Please enter your email address';
                               else if (!(value.contains("@") &&
-                                  value.contains("."))) return "Invalid email";
+                                  value.contains(".")))
+                                return "Please enter a valid email address";
                             },
                           ),
                           Divider(color: Colors.grey, height: 8),
@@ -398,7 +404,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                             try {
                               loadingProvider.startLoading();
                               final bool success =
-                                  await UserController.registerUser(
+                              await UserController.signUpUser(
                                 name: this._signUpName,
                                 email: this._signUpEmail,
                                 password: this._signUpPassword,

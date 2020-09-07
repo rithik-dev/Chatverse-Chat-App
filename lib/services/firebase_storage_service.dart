@@ -1,15 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseStorageService {
-  static String _loggedInUserId;
+  FirebaseStorageService._();
 
-  static final Firestore _firestore = Firestore.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  static Stream<QuerySnapshot> getFriendsStream(String userId) {
+    return _firestore
+        .collection("users")
+        .doc(userId)
+        .collection("contacts")
+        .snapshots();
+  }
 
   static Future<DocumentSnapshot> getUserDocumentSnapshot(String userId) async {
-    _loggedInUserId = userId;
     try {
       final DocumentSnapshot snapshot =
-          await _firestore.collection("users").document(_loggedInUserId).get();
+          await _firestore.collection("users").doc(userId).get();
       return snapshot;
     } catch (e) {
       print("ERROR WHILE GETTING DOCUMENT SNAPSHOT : $e");
@@ -17,12 +24,8 @@ class FirebaseStorageService {
     return null;
   }
 
-  static Future<void> setInitialUserData(
-      String userId, Map<String, String> data) async {
-    _loggedInUserId = userId;
-    await _firestore
-        .collection("users")
-        .document(_loggedInUserId)
-        .setData(data);
+  static Future<void> setUserData(
+      String userId, Map<String, dynamic> data) async {
+    await _firestore.collection("users").doc(userId).set(data);
   }
 }

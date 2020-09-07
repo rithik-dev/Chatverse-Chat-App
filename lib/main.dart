@@ -1,5 +1,6 @@
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
+import 'package:chatverse_chat_app/services/firebase_core_service.dart';
 import 'package:chatverse_chat_app/utilities/route_generator.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
@@ -7,7 +8,9 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseCoreService.initApp();
   runApp(MyApp());
 }
 

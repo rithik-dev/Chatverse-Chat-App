@@ -5,33 +5,31 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthService {
   FirebaseAuthService._();
 
-  static String _loggedInUserId;
-
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static User get currentUser => _auth.currentUser;
 
 //  static Future<String> getCurrentUser() async {
 //    try {
-//      final FirebaseUser currentFirebaseUser = await _auth.currentUser();
-//      if (currentFirebaseUser != null && currentFirebaseUser.isEmailVerified)
-//        _userId = currentFirebaseUser.uid;
+//      final currentFirebaseUser = _auth.currentUser;
+//      if (currentFirebaseUser != null && currentFirebaseUser.emailVerified)
+//        return currentFirebaseUser.uid;
 //      else
-//        _userId = null;
+//        return null;
 //    } catch (e) {
 //      print("ERROR WHILE GETTING CURRENT USER : $e");
-//      _userId = null;
+//      return null;
 //    }
-//    return _userId;
 //  }
 
-  static Future<String> loginUser(String email, String password) async {
+  static Future<String> signInUser(String email, String password) async {
     email = email.trim().toLowerCase();
     try {
-      final user = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      if (user != null) {
-        if (user.user.isEmailVerified) {
-          _loggedInUserId = user.user.uid;
-          return _loggedInUserId;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      if (_auth.currentUser != null) {
+        if (_auth.currentUser.emailVerified) {
+          return _auth.currentUser.uid;
         } else
           throw SignInException("EMAIL_NOT_VERIFIED");
       } else
@@ -42,20 +40,22 @@ class FirebaseAuthService {
     }
   }
 
-  static Future<bool> registerUser(
+  static Future<bool> signUpUser(
       {String email, String password, String name}) async {
     email = email.trim().toLowerCase();
     try {
-      final AuthResult user = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      await user.user.sendEmailVerification();
+      await _auth.currentUser.sendEmailVerification();
 
-      if (user != null) {
-        await FirebaseStorageService.setInitialUserData(user.user.uid, {
+      if (_auth.currentUser != null) {
+        await FirebaseStorageService.setUserData(_auth.currentUser.uid, {
           "name": name,
           "email": email,
-          "profilePicURL": "default URL here",
+          "photoUrl": "default photo URL here",
+          "friends": [],
+          "groups": [],
         });
         return true;
       } else
@@ -68,7 +68,6 @@ class FirebaseAuthService {
 
   static Future<bool> logoutUser() async {
     try {
-      _loggedInUserId = null;
       await _auth.signOut();
       return true;
     } catch (e) {

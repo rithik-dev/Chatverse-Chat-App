@@ -7,6 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserController {
   static User _loggedInUser;
 
+  static Stream<QuerySnapshot> get userFriendsStream {
+    return FirebaseStorageService.getFriendsStream(_loggedInUser.userId);
+  }
+
   static Future<User> getUser(String userId) async {
     final DocumentSnapshot snapshot =
         await FirebaseStorageService.getUserDocumentSnapshot(userId);
@@ -14,9 +18,9 @@ class UserController {
     return _loggedInUser;
   }
 
-  static Future<bool> registerUser(
+  static Future<bool> signUpUser(
       {String email, String password, String name}) async {
-    final bool success = await FirebaseAuthService.registerUser(
+    final bool success = await FirebaseAuthService.signUpUser(
       email: email,
       password: password,
       name: name,
@@ -24,8 +28,8 @@ class UserController {
     return success;
   }
 
-  static Future<User> loginUser(String email, String password) async {
-    String userId = await FirebaseAuthService.loginUser(email, password);
+  static Future<User> signInUser(String email, String password) async {
+    String userId = await FirebaseAuthService.signInUser(email, password);
     await SharedPrefs.setLoggedInUserID(userId);
     _loggedInUser = await getUser(userId);
     return _loggedInUser;

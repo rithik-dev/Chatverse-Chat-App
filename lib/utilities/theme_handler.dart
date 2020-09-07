@@ -21,12 +21,12 @@ class ThemeHandler {
     brightness: Brightness.dark,
   );
 
-  static void setDarkTheme(BuildContext context) {
-    DynamicTheme.of(context).setBrightness(Brightness.dark);
+  static Future<void> setDarkTheme(BuildContext context) async {
+    await DynamicTheme.of(context).setBrightness(Brightness.dark);
   }
 
-  static void setLightTheme(BuildContext context) {
-    DynamicTheme.of(context).setBrightness(Brightness.light);
+  static Future<void> setLightTheme(BuildContext context) async {
+    await DynamicTheme.of(context).setBrightness(Brightness.light);
   }
 
   static ThemeData getThemeData(Brightness brightness) {

@@ -23,9 +23,4 @@ class SharedPrefs {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenIntro', seenIntro);
   }
-
-  static Future<void> deleteUserID() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userId');
-  }
 }
