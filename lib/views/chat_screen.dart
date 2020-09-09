@@ -86,22 +86,23 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             showSuffixIcon: true,
             suffixIconOnPressed: () async {
-              _messageController.clear();
+              if (messageText != null && messageText != "") {
+                _messageController.clear();
 
-              await MessageController.sendMessage(
-                text: messageText,
-                chatRoomId: widget.friend.chatRoomId,
-                senderId: user.id,
-              );
+                MessageController.sendMessage(
+                  text: messageText,
+                  chatRoomId: widget.friend.chatRoomId,
+                  senderId: user.id,
+                );
 
-              _scrollController.animateTo(
-                0.0,
-                curve: Curves.easeOut,
-                duration: const Duration(milliseconds: 300),
-              );
+                messageText = "";
 
-              print(await FirebaseStorageService.getUnreadMessageCount(
-                  chatRoomId: this.widget.friend.chatRoomId));
+                _scrollController.animateTo(
+                  0.0,
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                );
+              }
             },
           )
         ],

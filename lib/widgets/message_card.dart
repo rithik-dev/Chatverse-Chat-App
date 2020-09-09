@@ -50,11 +50,18 @@ class MessageCard extends StatelessWidget {
           Text(
             message.text,
             style: TextStyle(
-              color: Colors.blueGrey,
+              color: Colors.black,
               fontSize: 16.0,
               fontWeight: FontWeight.w600,
             ),
           ),
+          senderIsMe ? SizedBox(height: 8.0) : SizedBox.shrink(),
+          senderIsMe
+              ? Text(
+                  message.isRead ? "seen" : "not seen",
+                  style: TextStyle(color: Colors.yellow),
+                )
+              : SizedBox.shrink(),
         ],
       ),
     );

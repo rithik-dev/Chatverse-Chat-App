@@ -36,7 +36,7 @@ class FirebaseAuthService {
         return null;
     } catch (e) {
       print("EXCEPTION WHILE LOGGING IN USER : $e");
-      throw SignInException(e.messageText);
+      throw SignInException(e.message);
     }
   }
 
@@ -49,7 +49,9 @@ class FirebaseAuthService {
 
       await _auth.currentUser.sendEmailVerification();
 
+      print("sent email");
       if (_auth.currentUser != null) {
+        print("auth not null ${_auth.currentUser.uid}");
         await FirebaseStorageService.setUserData(_auth.currentUser.uid, {
           "name": name,
           "email": email,
@@ -64,7 +66,7 @@ class FirebaseAuthService {
         return false;
     } catch (e) {
       print("EXCEPTION WHILE REGISTERING NEW USER : $e");
-      throw SignUpException(e.messageText);
+      throw SignUpException(e.message);
     }
   }
 
@@ -102,7 +104,7 @@ class FirebaseAuthService {
       return true;
     } catch (e) {
       print("ERROR WHILE SENDING PASSWORD RESET EMAIL : $e");
-      throw ForgotPasswordException(e.messageText);
+      throw ForgotPasswordException(e.message);
     }
   }
 }

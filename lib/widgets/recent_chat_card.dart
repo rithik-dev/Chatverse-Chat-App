@@ -1,8 +1,12 @@
 import 'package:chatverse_chat_app/controllers/chat_room_controller.dart';
+import 'package:chatverse_chat_app/controllers/message_controller.dart';
 import 'package:chatverse_chat_app/models/friend.dart';
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
+import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,13 +20,12 @@ class RecentChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
+    chatRoomId =
+        ChatRoomController.getChatRoomId(user.chatRoomIds, friend.chatRoomIds);
     return GestureDetector(
       onTap: () {
-        if (friend.chatRoomId == null) {
-          chatRoomId = ChatRoomController.getChatRoomId(
-              user.chatRoomIds, friend.chatRoomIds);
-          friend.chatRoomId = chatRoomId;
-        }
+        friend.chatRoomId = chatRoomId;
+
         print(chatRoomId);
         Navigator.pushNamed(context, ChatScreen.id, arguments: friend);
       },
@@ -53,58 +56,94 @@ class RecentChatCard extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseStorageService.getMessagesStream(chatRoomId),
+                  builder: (context, messagesAsyncSnapshot) {
+                    if (messagesAsyncSnapshot.hasData) {
+                      List<QueryDocumentSnapshot> messagesSnapshots =
+                          messagesAsyncSnapshot.data.docs;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            friend.name,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                              letterSpacing: 0.5,
-                            ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    friend.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  Text(
+                                    messagesSnapshots.length == 0
+                                        ? "Tap to start chatting..."
+                                        : messagesSnapshots[0].data()['text'],
+                                    style: TextStyle(
+                                      color: Colors.grey[900],
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ]),
                           ),
-                          Text(
-                            friend.lastMessage,
-                            style: TextStyle(
-                              color: Colors.grey[900],
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ]),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(friend.lastMessageDisplayTime,
-                          style: TextStyle(fontWeight: FontWeight.w500)),
-                      CircleAvatar(
-                        backgroundColor: Colors.yellow,
-                        child: Text(
-                          friend.unreadMessages.toString(),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        radius: 15,
-                      ),
-                    ],
-                  )
-                ],
-              )),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                  messagesSnapshots.length == 0
+                                      ? ""
+                                      : MessageController.getDisplayTime(
+                                          (messagesSnapshots[0]
+                                                      .data()['timestamp']
+                                                  as Timestamp)
+                                              .toDate()),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w500)),
+                              Builder(
+                                builder: (_) {
+                                  final unreadMessageCount =
+                                      _getUnreadMessageCount(messagesSnapshots);
+                                  if (unreadMessageCount == 0) {
+                                    return SizedBox.shrink();
+                                  } else {
+                                    String unreadMessageString;
+                                    if (unreadMessageCount >= 100)
+                                      unreadMessageString = "99+";
+                                    else
+                                      unreadMessageString =
+                                          unreadMessageCount.toString();
+                                    return CircleAvatar(
+                                      backgroundColor: Colors.yellow,
+                                      child: Text(
+                                        unreadMessageString,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      radius: 15,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      );
+                    } else
+                      return CustomLoader();
+                  })),
           Positioned(
             top: 7,
             left: 10,
@@ -116,6 +155,16 @@ class RecentChatCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  int _getUnreadMessageCount(List<QueryDocumentSnapshot> messagesSnapshot) {
+    int unreadMessageCount = 0;
+    for (DocumentSnapshot messageSnapshot in messagesSnapshot) {
+      final Map<String, dynamic> message = messageSnapshot.data();
+      if (message['senderId'] != user.id) if (message['isRead'] == false)
+        unreadMessageCount++;
+    }
+    return unreadMessageCount;
   }
 }
 
