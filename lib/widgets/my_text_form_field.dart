@@ -8,7 +8,11 @@ class MyTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) validator;
   final bool isPasswordField;
-  final IconData icon;
+  final IconData prefixIcon;
+  final IconData suffixIcon;
+  final bool showPrefixIcon;
+  final bool showSuffixIcon;
+  final VoidCallback suffixIconOnPressed;
 
   @override
   _MyTextFormFieldState createState() => _MyTextFormFieldState();
@@ -16,12 +20,16 @@ class MyTextFormField extends StatefulWidget {
   const MyTextFormField({
     @required this.labelText,
     this.onChanged,
-    @required this.icon,
+    this.prefixIcon,
+    this.suffixIcon,
     this.defaultValue,
     this.autofocus = false,
     this.controller,
     this.validator,
+    this.suffixIconOnPressed,
     this.isPasswordField = false,
+    this.showPrefixIcon = true,
+    this.showSuffixIcon = false,
   });
 }
 
@@ -52,23 +60,27 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
       keyboardType: keyboardTypes[this.widget.labelText] ?? TextInputType.text,
       obscureText: this.widget.isPasswordField ? !_showPassword : false,
       decoration: InputDecoration(
-        suffixIcon: this.widget.isPasswordField
-            ? Padding(
-                padding: const EdgeInsets.only(right: 5.0),
-                child: IconButton(
-                  splashRadius: 1.0,
-                  icon: _showPassword
-                      ? Icon(Icons.visibility)
-                      : Icon(Icons.visibility_off),
-                  iconSize: 30.0,
-                  onPressed: this.toggleShowPassword,
-                ),
+        suffixIcon: this.widget.showSuffixIcon
+            ? this.widget.isPasswordField
+                ? IconButton(
+                    splashRadius: 1.0,
+                    icon: _showPassword
+                        ? Icon(Icons.visibility)
+                        : Icon(Icons.visibility_off),
+                    iconSize: 30.0,
+                    onPressed: this.toggleShowPassword,
+                  )
+                : IconButton(
+                    icon: Icon(this.widget.suffixIcon),
+                    onPressed: this.widget.suffixIconOnPressed,
+                  )
+            : null,
+        prefixIcon: this.widget.showPrefixIcon
+            ? Icon(
+                this.widget.prefixIcon,
+                color: Colors.grey,
               )
             : null,
-        prefixIcon: Icon(
-          this.widget.icon,
-          color: Colors.grey,
-        ),
         labelText: this.widget.labelText,
         labelStyle: TextStyle(color: Colors.black87),
         enabledBorder: UnderlineInputBorder(

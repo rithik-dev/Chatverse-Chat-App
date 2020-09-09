@@ -1,4 +1,5 @@
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
+import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
 import 'package:chatverse_chat_app/views/intro_screen.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
@@ -10,6 +11,9 @@ class RouteGenerator {
     final args = settings.arguments;
     print("PUSHING SCREEN : ${settings.name}");
     switch (settings.name) {
+      case ChatScreen.id:
+        return PageTransition(
+            type: PageTransitionType.fade, child: ChatScreen(friend: args));
       case HomeScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: HomeScreen());

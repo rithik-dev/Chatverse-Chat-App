@@ -36,7 +36,7 @@ class FirebaseAuthService {
         return null;
     } catch (e) {
       print("EXCEPTION WHILE LOGGING IN USER : $e");
-      throw SignInException(e.message);
+      throw SignInException(e.messageText);
     }
   }
 
@@ -55,14 +55,16 @@ class FirebaseAuthService {
           "email": email,
           "photoUrl": "default photo URL here",
           "friends": [],
-          "groups": [],
+          "chatrooms": [],
+          "friendRequestsPending": [],
+          "friendRequestsSent": [],
         });
         return true;
       } else
         return false;
     } catch (e) {
       print("EXCEPTION WHILE REGISTERING NEW USER : $e");
-      throw SignUpException(e.message);
+      throw SignUpException(e.messageText);
     }
   }
 
@@ -100,7 +102,7 @@ class FirebaseAuthService {
       return true;
     } catch (e) {
       print("ERROR WHILE SENDING PASSWORD RESET EMAIL : $e");
-      throw ForgotPasswordException(e.message);
+      throw ForgotPasswordException(e.messageText);
     }
   }
 }

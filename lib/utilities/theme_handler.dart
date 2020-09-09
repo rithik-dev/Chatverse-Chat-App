@@ -9,9 +9,7 @@ class ThemeHandler {
   static final Brightness defaultBrightness = Brightness.light;
   static Brightness currentBrightness;
 
-  static final baseTheme = ThemeData(
-    textTheme: TextTheme().copyWith(),
-  );
+  static final baseTheme = ThemeData();
 
   static final ThemeData lightTheme = baseTheme.copyWith(
     brightness: Brightness.light,
@@ -31,6 +29,7 @@ class ThemeHandler {
 
   static ThemeData getThemeData(Brightness brightness) {
     currentBrightness = brightness;
+    print("currentBrightness : $currentBrightness");
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
 }

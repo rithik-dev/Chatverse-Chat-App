@@ -157,7 +157,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           MyTextFormField(
                             labelText: "Email",
                             controller: this._signInEmailController,
-                            icon: Icons.email,
+                            prefixIcon: Icons.email,
                             onChanged: (String email) {
                               this._signInEmail = email;
                             },
@@ -174,9 +174,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           Divider(color: Colors.grey, height: 8),
                           MyTextFormField(
                             labelText: "Password",
+                            showSuffixIcon: true,
                             isPasswordField: true,
                             controller: this._signInPasswordController,
-                            icon: Icons.lock,
+                            prefixIcon: Icons.lock,
                             onChanged: (String password) {
                               this._signInPassword = password;
                             },
@@ -338,7 +339,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           MyTextFormField(
                             labelText: "Name",
                             controller: this._signUpNameController,
-                            icon: Icons.text_fields,
+                            prefixIcon: Icons.text_fields,
                             onChanged: (String name) {
                               this._signUpName = name;
                             },
@@ -353,7 +354,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           MyTextFormField(
                             labelText: "Email",
                             controller: this._signUpEmailController,
-                            icon: Icons.email,
+                            prefixIcon: Icons.email,
                             onChanged: (String email) {
                               this._signUpEmail = email;
                             },
@@ -370,9 +371,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           Divider(color: Colors.grey, height: 8),
                           MyTextFormField(
                             labelText: "Password",
+                            showSuffixIcon: true,
                             isPasswordField: true,
                             controller: this._signUpPasswordController,
-                            icon: Icons.lock,
+                            prefixIcon: Icons.lock,
                             onChanged: (String password) {
                               this._signUpPassword = password;
                             },
