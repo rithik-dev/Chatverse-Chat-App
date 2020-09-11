@@ -23,6 +23,7 @@ class User extends ChangeNotifier {
       friendRequestSentIds: null,
       friendRequestPendingIds: null,
       chatRoomIds: null,
+      friends: null,
     );
   }
 
@@ -36,11 +37,11 @@ class User extends ChangeNotifier {
 
     List<String> _friendIds = (user['friends'] as List<dynamic>).cast<String>();
     List<String> _chatRoomIds =
-    (user['chatrooms'] as List<dynamic>).cast<String>();
+        (user['chatrooms'] as List<dynamic>).cast<String>();
     List<String> _friendRequestSentIds =
-    (user['friendRequestsSent'] as List<dynamic>).cast<String>();
+        (user['friendRequestsSent'] as List<dynamic>).cast<String>();
     List<String> _friendRequestPendingIds =
-    (user['friendRequestsPending'] as List<dynamic>).cast<String>();
+        (user['friendRequestsPending'] as List<dynamic>).cast<String>();
 
     return User(
       name: user['name'] as String,
@@ -51,6 +52,7 @@ class User extends ChangeNotifier {
       friendRequestPendingIds: _friendRequestPendingIds,
       friendRequestSentIds: _friendRequestSentIds,
       id: snapshot.id,
+      friends: [],
     );
   }
 

@@ -34,9 +34,11 @@ class Friend {
     List<String> _chatRoomIds =
         (friend['chatrooms'] as List<dynamic>).cast<String>();
 
+    //TODO: change photo url to friend['photoUrl'] as String
     return Friend(
       name: friend['name'] as String,
-      photoUrl: friend['photoUrl'] as String,
+      photoUrl:
+          "https://firebasestorage.googleapis.com/v0/b/password-manager-2083b.appspot.com/o/Profile%20Pictures%2FWo8TXzCwWOXzqkpxpX578Mv5mt23.png?alt=media&token=a8028fb0-c177-4b60-a4cb-d133c08713ca",
       email: friend['email'] as String,
       chatRoomIds: _chatRoomIds,
       lastMessage: "this is last msg",

@@ -5,7 +5,7 @@ import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
-import 'package:chatverse_chat_app/widgets/my_text_form_field.dart';
+import 'package:chatverse_chat_app/widgets/send_button_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       body: Column(
         children: [
           StreamBuilder<QuerySnapshot>(
@@ -75,17 +76,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 return CustomLoader();
             },
           ),
-          MyTextFormField(
+          SendButtonTextField(
             controller: _messageController,
-            labelText: "Send",
-            suffixIcon: Icons.send,
-            showPrefixIcon: false,
-            autofocus: true,
             onChanged: (String msg) {
               messageText = msg;
             },
-            showSuffixIcon: true,
-            suffixIconOnPressed: () async {
+            onSend: () async {
               if (messageText != null && messageText != "") {
                 _messageController.clear();
 

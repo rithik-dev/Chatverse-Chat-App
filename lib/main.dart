@@ -8,6 +8,16 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// TODO: make favorite friends list view
+// TODO: add like message feature
+// TODO: add feature to drag and drop a person to the fav contacts list
+// TODO: show green dot is user is online
+// TODO: add option to send images/videos
+// TODO: adder inner drawer
+// TODO: use NTP time instead of device time? (Timestamp)
+// TODO: add favorite contacts button functionality
+// TODO: remove logout button from app bar ... move to drawer
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseCoreService.initApp();

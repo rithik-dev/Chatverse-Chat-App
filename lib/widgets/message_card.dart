@@ -39,15 +39,6 @@ class MessageCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            message.displayTime,
-            style: TextStyle(
-              color: Colors.blueGrey,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 8.0),
-          Text(
             message.text,
             style: TextStyle(
               color: Colors.black,
@@ -55,13 +46,31 @@ class MessageCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          senderIsMe ? SizedBox(height: 8.0) : SizedBox.shrink(),
-          senderIsMe
-              ? Text(
-                  message.isRead ? "seen" : "not seen",
-                  style: TextStyle(color: Colors.yellow),
-                )
-              : SizedBox.shrink(),
+          SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                message.displayTime,
+                style: TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              senderIsMe ? SizedBox(width: 10.0) : SizedBox.shrink(),
+              senderIsMe
+                  ? Icon(
+                      message.isRead
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 22,
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
         ],
       ),
     );

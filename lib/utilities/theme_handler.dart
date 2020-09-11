@@ -13,6 +13,8 @@ class ThemeHandler {
 
   static final ThemeData lightTheme = baseTheme.copyWith(
     brightness: Brightness.light,
+    primaryColor: Colors.red,
+    accentColor: Color(0xFFFEF9EB),
   );
 
   static final ThemeData darkTheme = baseTheme.copyWith(
