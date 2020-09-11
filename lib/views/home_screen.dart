@@ -22,19 +22,34 @@ class HomeScreen extends StatelessWidget {
           leading: Icon(Icons.menu),
           elevation: 0,
           actions: [
+            //TODO: remove login button.. move to app drawer
             IconButton(
               icon: Icon(Icons.cancel),
               onPressed: () async {
                 await UserController.logoutUser();
                 Navigator.pushReplacementNamed(context, AuthenticationPage.id);
               },
-            )
+            ),
+            IconButton(
+              icon: Icon(Icons.add_circle_outline, color: Colors.white),
+              iconSize: 30,
+              onPressed: () async {
+                // TODO: open new page and show all users
+                // TODO: update in provider
+                // TODO: add refresh indicator
+//                final Contact contact =
+//                    await UserController.addContact(contactId);
+//                user.contacts.add(contact);
+//                user.chatRoomIds.add(contact.chatRoomId);
+//                user.updateUserInProvider(user);
+              },
+            ),
           ],
         ),
         body: Column(
           children: [
             CategorySelector(
-              categories: ['Messages', 'Online', 'Groups', 'Friend Requests'],
+              categories: ['Messages', 'Online', 'Groups', 'Requests'],
               onChanged: (int index) {
                 print(index);
               },
@@ -50,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: <Widget>[
-                    FavoriteContacts(favoriteFriends: user.friends),
+                    FavoriteContacts(favoriteContacts: user.contacts),
                     RecentChats(),
                   ],
                 ),

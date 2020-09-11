@@ -1,5 +1,5 @@
 import 'package:chatverse_chat_app/controllers/message_controller.dart';
-import 'package:chatverse_chat_app/models/friend.dart';
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   static const id = 'chat_screen';
-  final Friend friend;
+  final Contact contact;
 
-  ChatScreen({@required this.friend});
+  ChatScreen({@required this.contact});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseStorageService.getMessagesStream(
-                widget.friend.chatRoomId),
+                widget.contact.chatRoomId),
             builder: (context, messageSnapshots) {
               if (messageSnapshots.hasData) {
                 messages = [];
@@ -86,7 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 MessageController.sendMessage(
                   text: messageText,
-                  chatRoomId: widget.friend.chatRoomId,
+                  chatRoomId: widget.contact.chatRoomId,
                   senderId: user.id,
                 );
 

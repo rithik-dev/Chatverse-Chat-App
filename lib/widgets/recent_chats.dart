@@ -19,9 +19,9 @@ class RecentChats extends StatelessWidget {
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return RecentChatCard(friend: user.friends[index]);
+              return RecentChatCard(contact: user.contacts[index]);
             },
-            itemCount: user.friends.length,
+            itemCount: user.contacts.length,
           ),
         ),
       ),

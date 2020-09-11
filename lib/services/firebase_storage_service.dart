@@ -1,3 +1,4 @@
+import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseStorageService {
@@ -18,7 +19,7 @@ class FirebaseStorageService {
   static Future<DocumentSnapshot> getUserDocumentSnapshot(String userId) async {
     try {
       final DocumentSnapshot snapshot =
-          await _firestore.collection("users").doc(userId).get();
+      await _firestore.collection("users").doc(userId).get();
       return snapshot;
     } catch (e) {
       print("ERROR WHILE GETTING DOCUMENT SNAPSHOT : $e");
@@ -26,13 +27,11 @@ class FirebaseStorageService {
     return null;
   }
 
-  static Future<void> setUserData(
-      String userId, Map<String, dynamic> data) async {
+  static Future<void> setUserData(String userId, Map<String, dynamic> data) async {
     await _firestore.collection("users").doc(userId).set(data);
   }
 
-  static Future<void> sendMessage(
-      {String chatRoomId, Map<String, dynamic> message}) async {
+  static Future<void> sendMessage({String chatRoomId, Map<String, dynamic> message}) async {
     await _firestore
         .collection("chatrooms")
         .doc(chatRoomId)
@@ -49,16 +48,28 @@ class FirebaseStorageService {
     }
   }
 
-  static Future<int> getUnreadMessageCount({String chatRoomId}) async {
-    int unreadMessageCount = 0;
-    final QuerySnapshot chatsSnapshot = await _firestore
-        .collection('chatrooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .where('isRead', isEqualTo: false)
-        .get();
-
-    unreadMessageCount = chatsSnapshot.docs.length;
-    return unreadMessageCount;
+  static Future<String> addContact(String userId, String contactId) async {
+    try {
+      final DocumentReference ref = _firestore.collection("chatrooms").doc();
+      final DocumentReference userRef =
+          _firestore.collection("users").doc(userId);
+      final DocumentReference contactRef =
+          _firestore.collection("users").doc(contactId);
+      final String chatRoomId = ref.id;
+      WriteBatch batch = _firestore.batch();
+      batch.update(userRef, {
+        'contacts': FieldValue.arrayUnion([contactId]),
+        'chatrooms': FieldValue.arrayUnion([chatRoomId])
+      });
+      batch.update(contactRef, {
+        'contacts': FieldValue.arrayUnion([userId]),
+        'chatrooms': FieldValue.arrayUnion([chatRoomId])
+      });
+      await batch.commit();
+      return chatRoomId;
+    } catch (e) {
+      print("ERROR ADDING CONTACT $e");
+      throw CannotAddContactException("Error adding contact");
+    }
   }
 }

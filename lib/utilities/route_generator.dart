@@ -13,7 +13,7 @@ class RouteGenerator {
     switch (settings.name) {
       case ChatScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: ChatScreen(friend: args));
+            type: PageTransitionType.fade, child: ChatScreen(contact: args));
       case HomeScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: HomeScreen());

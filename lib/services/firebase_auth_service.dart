@@ -1,4 +1,5 @@
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -55,8 +56,8 @@ class FirebaseAuthService {
         await FirebaseStorageService.setUserData(_auth.currentUser.uid, {
           "name": name,
           "email": email,
-          "photoUrl": "default photo URL here",
-          "friends": [],
+          "photoUrl": kDefaultPhotoUrl,
+          "contacts": [],
           "chatrooms": [],
           "friendRequestsPending": [],
           "friendRequestsSent": [],

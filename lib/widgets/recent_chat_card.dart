@@ -1,5 +1,4 @@
-import 'package:chatverse_chat_app/controllers/chat_room_controller.dart';
-import 'package:chatverse_chat_app/models/friend.dart';
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
@@ -12,33 +11,27 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class RecentChatCard extends StatelessWidget {
-  final Friend friend;
+  final Contact contact;
   User user;
-  String chatRoomId;
   bool hasUnreadMessages;
   int unreadMessagesCount;
 
   List<Message> messages = [];
 
-  RecentChatCard({this.friend});
+  RecentChatCard({this.contact});
 
   @override
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
-    chatRoomId =
-        ChatRoomController.getChatRoomId(user.chatRoomIds, friend.chatRoomIds);
     return GestureDetector(
       onTap: () {
-        friend.chatRoomId = chatRoomId;
-
-        print(chatRoomId);
-        Navigator.pushNamed(context, ChatScreen.id, arguments: friend);
+        Navigator.pushNamed(context, ChatScreen.id, arguments: contact);
       },
       onLongPress: () {
-        print("long press friend name ${friend.name} id ${friend.id}");
+        print("long press contact name ${contact.name} id ${contact.id}");
       },
       child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseStorageService.getMessagesStream(chatRoomId),
+        stream: FirebaseStorageService.getMessagesStream(contact.chatRoomId),
         builder: (context, messagesAsyncSnapshot) {
           if (messagesAsyncSnapshot.hasData) {
             List<QueryDocumentSnapshot> messagesSnapshots =
@@ -67,17 +60,13 @@ class RecentChatCard extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      ProfilePicture(
-                        "https://firebasestorage.googleapis.com/v0/b/password-manager-2083b.appspot.com/o/Profile%20Pictures%2FWo8TXzCwWOXzqkpxpX578Mv5mt23.png?alt=media&token=a8028fb0-c177-4b60-a4cb-d133c08713ca",
-                        radius: 35,
-                      ),
-//                      ProfilePicture(friend.photoUrl, radius: 35),
+                      ProfilePicture(contact.photoUrl, radius: 35),
                       SizedBox(width: 10.0),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            friend.name,
+                            contact.name,
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 15.0,

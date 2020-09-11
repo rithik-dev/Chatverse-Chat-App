@@ -8,7 +8,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// TODO: make favorite friends list view
+// TODO: make favorite contacts list view
 // TODO: add like message feature
 // TODO: add feature to drag and drop a person to the fav contacts list
 // TODO: show green dot is user is online
@@ -19,6 +19,8 @@ import 'package:provider/provider.dart';
 // TODO: remove logout button from app bar ... move to drawer
 // TODO: add read more button for extremely long messages
 // TODO: long tap on message to delete message?
+// TODO: notifications when new message??
+// TODO: handle cannot add contacts exception
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

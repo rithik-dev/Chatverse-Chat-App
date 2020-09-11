@@ -1,5 +1,4 @@
-import 'package:chatverse_chat_app/controllers/chat_room_controller.dart';
-import 'package:chatverse_chat_app/models/friend.dart';
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
@@ -8,12 +7,11 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class FavoriteContacts extends StatelessWidget {
-  final List<Friend> favoriteFriends;
+  final List<Contact> favoriteContacts;
 
-  FavoriteContacts({@required this.favoriteFriends});
+  FavoriteContacts({@required this.favoriteContacts});
 
   User user;
-  String chatRoomId;
 
   @override
   Widget build(BuildContext context) {
@@ -52,27 +50,24 @@ class FavoriteContacts extends StatelessWidget {
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: favoriteFriends.length,
+            itemCount: favoriteContacts.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  chatRoomId = ChatRoomController.getChatRoomId(
-                      user.chatRoomIds, favoriteFriends[index].chatRoomIds);
-                  favoriteFriends[index].chatRoomId = chatRoomId;
-
-                  print(chatRoomId);
                   Navigator.pushNamed(context, ChatScreen.id,
-                      arguments: favoriteFriends[index]);
+                      arguments: favoriteContacts[index]);
                 },
                 child: Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Column(
                     children: <Widget>[
-                      ProfilePicture(favoriteFriends[index].photoUrl,
+                      ProfilePicture(favoriteContacts[index].photoUrl,
                           radius: 35),
                       SizedBox(height: 6.0),
                       Text(
-                        favoriteFriends[index].name,
+                        favoriteContacts[index].name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.blueGrey,
                           fontSize: 16.0,

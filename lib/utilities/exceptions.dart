@@ -15,3 +15,9 @@ class ForgotPasswordException implements Exception {
 
   ForgotPasswordException(this.message);
 }
+
+class CannotAddContactException implements Exception {
+  final String message;
+
+  CannotAddContactException(this.message);
+}
