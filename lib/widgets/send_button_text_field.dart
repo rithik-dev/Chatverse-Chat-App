@@ -14,7 +14,7 @@ class SendButtonTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
       height: 60.0,
       color: Colors.white,
       alignment: Alignment.center,
@@ -24,18 +24,20 @@ class SendButtonTextField extends StatelessWidget {
         onChanged: this.onChanged,
         autofocus: true,
         decoration: InputDecoration(
-          hintText: 'Send a message ...',
+          hintText: "Send a message ...",
           border: InputBorder.none,
           prefixIcon: IconButton(
             icon: Icon(Icons.photo),
             iconSize: 25.0,
             color: Theme.of(context).primaryColor,
+            splashRadius: 1,
             onPressed: () {},
           ),
           suffixIcon: IconButton(
             icon: Icon(Icons.send),
             iconSize: 25.0,
             color: Theme.of(context).primaryColor,
+            splashRadius: 1,
             onPressed: this.onSend,
           ),
         ),

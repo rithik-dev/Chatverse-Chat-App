@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           leading: Icon(Icons.menu),
+          elevation: 0,
           actions: [
             IconButton(
               icon: Icon(Icons.cancel),
@@ -33,7 +34,7 @@ class HomeScreen extends StatelessWidget {
         body: Column(
           children: [
             CategorySelector(
-              categories: ['Messages', 'Online', 'Groups', 'Requests'],
+              categories: ['Messages', 'Online', 'Groups', 'Friend Requests'],
               onChanged: (int index) {
                 print(index);
               },

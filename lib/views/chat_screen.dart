@@ -64,7 +64,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 return Expanded(
                   child: ListView.builder(
                     reverse: true,
-                    shrinkWrap: true,
                     controller: _scrollController,
                     physics: BouncingScrollPhysics(),
                     itemBuilder: (context, index) =>

@@ -34,6 +34,9 @@ class RecentChatCard extends StatelessWidget {
         print(chatRoomId);
         Navigator.pushNamed(context, ChatScreen.id, arguments: friend);
       },
+      onLongPress: () {
+        print("long press friend name ${friend.name} id ${friend.id}");
+      },
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseStorageService.getMessagesStream(chatRoomId),
         builder: (context, messagesAsyncSnapshot) {

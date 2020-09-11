@@ -17,6 +17,8 @@ import 'package:provider/provider.dart';
 // TODO: use NTP time instead of device time? (Timestamp)
 // TODO: add favorite contacts button functionality
 // TODO: remove logout button from app bar ... move to drawer
+// TODO: add read more button for extremely long messages
+// TODO: long tap on message to delete message?
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
