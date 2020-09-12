@@ -1,3 +1,5 @@
+import 'package:chatverse_chat_app/controllers/message_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Message {
@@ -5,7 +7,6 @@ class Message {
   String text;
   int index;
   String displayTime;
-
   String displayDate;
   String senderId;
 
@@ -24,12 +25,17 @@ class Message {
   }
 
   factory Message.fromMap(Map<String, dynamic> message) {
+    final DateTime dateTime = (message['timestamp'] as Timestamp).toDate();
+
+    final String _displayTime = MessageController.getDisplayTime(dateTime);
+    final String _displayDate = MessageController.getDisplayDate(dateTime);
+
     return Message(
       text: message['text'] as String,
       isRead: message['isRead'] as bool,
       senderId: message['senderId'] as String,
-      displayTime: message['displayTime'] as String,
-      displayDate: message['displayDate'] as String,
+      displayTime: _displayTime,
+      displayDate: _displayDate,
       index: message['index'],
     );
   }

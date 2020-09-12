@@ -46,8 +46,8 @@ class RecentChatCard extends StatelessWidget {
               messages.add(Message.fromMap(messagesList[i]));
             }
 
-            unreadMessagesCount = snapshotData['${user.id}-unreadMessageCount'];
-//            unreadMessagesCount = _getUnreadMessageCount(messages);
+            unreadMessagesCount =
+                snapshotData['unreadMessageCount(${user.id})'];
             hasUnreadMessages = unreadMessagesCount != 0;
 
             return Container(
@@ -144,14 +144,5 @@ class RecentChatCard extends StatelessWidget {
         },
       ),
     );
-  }
-
-  int _getUnreadMessageCount(List<Message> messages) {
-    int unreadMessageCount = 0;
-    for (Message message in messages) {
-      if (message.senderId != user.id && message.isRead == false)
-        unreadMessageCount++;
-    }
-    return unreadMessageCount;
   }
 }

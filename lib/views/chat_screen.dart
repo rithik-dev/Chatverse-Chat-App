@@ -68,8 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   messagesList = snapshotData['messages'];
 
                   unreadMessageCount = snapshotData[
-                      '${this.widget.contact.id}-unreadMessageCount'];
-                  print("unread $unreadMessageCount");
+                      'unreadMessageCount(${this.widget.contact.id})'];
                   messages = [];
 
                   messagesLength = messagesList.length;
@@ -121,7 +120,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   final String msg = messageText;
                   messageText = "";
-                  await MessageController.sendMessage(
+                  print("send msg $msg");
+                  MessageController.sendMessage(
                     contactId: this.widget.contact.id,
                     text: msg,
                     chatRoomId: this.widget.contact.chatRoomId,
