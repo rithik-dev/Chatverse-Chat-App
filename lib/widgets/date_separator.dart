@@ -13,6 +13,13 @@ class DateSeparator extends StatelessWidget {
       height: 30,
       alignment: Alignment.center,
       decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.lightBlueAccent,
+            blurRadius: 5,
+            offset: Offset(1, 1),
+          )
+        ],
         borderRadius: BorderRadius.circular(10),
         color: Colors.lightBlue,
       ),

@@ -35,7 +35,7 @@ class FirebaseStorageService {
   }) async {
     await _firestore.collection("chatrooms").doc(chatRoomId).set({
       'messages': FieldValue.arrayUnion([message]),
-      contactId: {'unreadMessageCount': FieldValue.increment(1)}
+      "$contactId-unreadMessageCount": FieldValue.increment(1),
     }, SetOptions(merge: true));
   }
 
@@ -46,11 +46,7 @@ class FirebaseStorageService {
     print("setting unread for $userId");
     if (reference != null) {
       await _firestore.runTransaction((Transaction myTransaction) {
-        myTransaction.update(reference, {
-          userId: {
-            'unreadMessageCount': 0,
-          }
-        });
+        myTransaction.update(reference, {"$userId-unreadMessageCount": 0});
         return;
       });
     }
