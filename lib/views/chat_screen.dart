@@ -4,6 +4,7 @@ import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
+import 'package:chatverse_chat_app/widgets/date_separator.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
 import 'package:chatverse_chat_app/widgets/send_button_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,10 +85,20 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
 
                 return Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     reverse: true,
                     controller: _scrollController,
                     physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) {
+                      if (messages[index].displayDate !=
+                          messages[index + 1].displayDate)
+                        return DateSeparator(messages[index].displayDate);
+                      else
+                        return SizedBox.shrink();
+                    },
                     itemBuilder: (context, index) =>
                         MessageCard(message: messages[index]),
                     itemCount: messages.length,

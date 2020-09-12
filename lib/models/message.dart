@@ -6,7 +6,7 @@ class Message {
   int index;
   String displayTime;
 
-//  String displayDate;
+  String displayDate;
   String senderId;
 
   Message({
@@ -15,7 +15,7 @@ class Message {
     @required this.senderId,
     this.isRead,
     this.displayTime,
-//    this.displayDate,
+    this.displayDate,
   });
 
   @override
@@ -29,7 +29,7 @@ class Message {
       isRead: message['isRead'] as bool,
       senderId: message['senderId'] as String,
       displayTime: message['displayTime'] as String,
-//      displayDate: message['displayDate'] as String,
+      displayDate: message['displayDate'] as String,
       index: message['index'],
     );
   }

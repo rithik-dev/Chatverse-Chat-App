@@ -1,6 +1,6 @@
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 
 class MessageController {
   MessageController._();
@@ -11,11 +11,13 @@ class MessageController {
     String senderId,
     String chatRoomId,
   }) async {
+    final DateTime dateTime = await NTP.now();
+
     final Map<String, dynamic> message = {
       "text": text,
       "senderId": senderId,
-      "displayTime": getDisplayTime(),
-//      "displayDate": getDisplayDate()
+      "displayTime": getDisplayTime(dateTime),
+      "displayDate": getDisplayDate(dateTime),
     };
 
     await FirebaseStorageService.sendMessage(
@@ -25,17 +27,15 @@ class MessageController {
     );
   }
 
-  static String getDisplayTime() {
-    final DateTime dateTime = Timestamp.now().toDate();
+  static String getDisplayTime(DateTime dateTime) {
     final DateFormat formatter = DateFormat('KK:mm a');
     final String displayTime = formatter.format(dateTime);
     return displayTime;
   }
 
-//  static String getDisplayDate() {
-//    final DateTime dateTime = Timestamp.now().toDate();
-//    final DateFormat formatter = DateFormat('d MMMM yyyy');
-//    final String displayDate = formatter.format(dateTime);
-//    return displayDate;
-//  }
+  static String getDisplayDate(DateTime dateTime) {
+    final DateFormat formatter = DateFormat('d MMMM yyyy');
+    final String displayDate = formatter.format(dateTime);
+    return displayDate;
+  }
 }
