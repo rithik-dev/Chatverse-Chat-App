@@ -29,7 +29,7 @@ class MessageController {
   }
 
   static String getDisplayTime(DateTime dateTime) {
-    final DateFormat formatter = DateFormat('KK:mm a');
+    final DateFormat formatter = DateFormat('h:mm a');
     final String displayTime = formatter.format(dateTime);
     return displayTime;
   }

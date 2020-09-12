@@ -1,4 +1,5 @@
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_core_service.dart';
 import 'package:chatverse_chat_app/utilities/route_generator.dart';
@@ -13,10 +14,7 @@ import 'package:provider/provider.dart';
 // TODO: add feature to drag and drop a person to the fav contacts list
 // TODO: show green dot is user is online
 // TODO: add option to send images/videos
-// TODO: adder inner drawer
-// TODO: use NTP time instead of device time? (Timestamp)
 // TODO: add favorite contacts button functionality
-// TODO: remove logout button from app bar ... move to drawer
 // TODO: add read more button for extremely long messages
 // TODO: long tap on message to delete message?
 // TODO: notifications when new message??
@@ -38,6 +36,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<LoadingScreenProvider>(
           create: (_) => LoadingScreenProvider(),
+        ),
+        Provider<DrawerProvider>(
+          create: (_) => DrawerProvider(),
         ),
       ],
       child: DynamicTheme(

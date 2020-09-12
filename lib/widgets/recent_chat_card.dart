@@ -46,6 +46,7 @@ class RecentChatCard extends StatelessWidget {
               messages.add(Message.fromMap(messagesList[i]));
             }
 
+            //FIXME: called on null when fresh login
             unreadMessagesCount =
                 snapshotData['unreadMessageCount(${user.id})'];
             hasUnreadMessages = unreadMessagesCount != 0;

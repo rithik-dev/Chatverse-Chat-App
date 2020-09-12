@@ -48,6 +48,16 @@ class _ChatScreenState extends State<ChatScreen> {
     user = Provider.of<User>(context);
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(this.widget.contact.name),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () {},
+            ),
+          ],
+        ),
         backgroundColor: Colors.grey[300],
         body: Column(
           children: [
@@ -64,11 +74,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   }
                   final Map<String, dynamic> snapshotData =
-                      messageSnapshot.data.data();
+                  messageSnapshot.data.data();
                   messagesList = snapshotData['messages'];
 
                   unreadMessageCount = snapshotData[
-                      'unreadMessageCount(${this.widget.contact.id})'];
+                  'unreadMessageCount(${this.widget.contact.id})'];
                   messages = [];
 
                   messagesLength = messagesList.length;
@@ -88,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   return Expanded(
                     child: ListView.separated(
                       keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                       reverse: true,
                       controller: _scrollController,
                       physics: BouncingScrollPhysics(),
