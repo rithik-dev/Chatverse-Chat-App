@@ -28,8 +28,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<Message> messages;
   Message message;
+  List messagesList;
 
   String messageText;
+  int messagesLength;
+
+  int unreadMessageCount;
 
   @override
   void dispose() {
@@ -45,20 +49,38 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.grey[300],
       body: Column(
         children: [
-          StreamBuilder<QuerySnapshot>(
+          StreamBuilder<DocumentSnapshot>(
             stream: FirebaseStorageService.getMessagesStream(
                 widget.contact.chatRoomId),
-            builder: (context, messageSnapshots) {
-              if (messageSnapshots.hasData) {
-                messages = [];
-                for (DocumentSnapshot snapshot in messageSnapshots.data.docs) {
-                  message = Message.fromDocumentSnapshot(snapshot);
-                  if (message.senderId != user.id)
-                    FirebaseStorageService.setMessagesReadToTrue(
-                      snapshot.reference,
-                    );
+            builder: (context, messageSnapshot) {
+              if (messageSnapshot.hasData) {
+                if (messageSnapshot.data.id == this.widget.contact.chatRoomId) {
+                  FirebaseStorageService.resetUnreadMessages(
+                    userId: this.user.id,
+                    reference: messageSnapshot.data.reference,
+                  );
+                }
+                final Map<String, dynamic> snapshotData =
+                    messageSnapshot.data.data();
+                messagesList = snapshotData['messages'];
 
-                  messages.add(message);
+                unreadMessageCount =
+                    snapshotData[this.widget.contact.id]['unreadMessageCount'];
+                print("unread $unreadMessageCount");
+                messages = [];
+
+                messagesLength = messagesList.length;
+                for (int i = messagesLength - 1; i >= 0; i--) {
+                  messagesList[i].addAll({"index": i});
+                  // setting the last [unreadMessageCount] messages isRead as false
+                  if (messagesList[i]['senderId'] == user.id) {
+                    if (messagesLength - i <= unreadMessageCount)
+                      messagesList[i]['isRead'] = false;
+                    else
+                      messagesList[i]['isRead'] = true;
+                  }
+
+                  messages.add(Message.fromMap(messagesList[i]));
                 }
 
                 return Expanded(
@@ -84,13 +106,14 @@ class _ChatScreenState extends State<ChatScreen> {
               if (messageText != null && messageText != "") {
                 _messageController.clear();
 
-                MessageController.sendMessage(
-                  text: messageText,
-                  chatRoomId: widget.contact.chatRoomId,
+                final String msg = messageText;
+                messageText = "";
+                await MessageController.sendMessage(
+                  contactId: this.widget.contact.id,
+                  text: msg,
+                  chatRoomId: this.widget.contact.chatRoomId,
                   senderId: user.id,
                 );
-
-                messageText = "";
 
                 _scrollController.animateTo(
                   0.0,

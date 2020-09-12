@@ -17,6 +17,7 @@ class RecentChatCard extends StatelessWidget {
   int unreadMessagesCount;
 
   List<Message> messages = [];
+  List messagesList = [];
 
   RecentChatCard({this.contact});
 
@@ -30,19 +31,23 @@ class RecentChatCard extends StatelessWidget {
       onLongPress: () {
         print("long press contact name ${contact.name} id ${contact.id}");
       },
-      child: StreamBuilder<QuerySnapshot>(
+      child: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseStorageService.getMessagesStream(contact.chatRoomId),
         builder: (context, messagesAsyncSnapshot) {
           if (messagesAsyncSnapshot.hasData) {
-            List<QueryDocumentSnapshot> messagesSnapshots =
-                messagesAsyncSnapshot.data.docs;
+            final Map<String, dynamic> snapshotData =
+                messagesAsyncSnapshot.data.data();
+            messagesList = snapshotData['messages'];
 
             messages = [];
-            for (DocumentSnapshot documentSnapshot in messagesSnapshots) {
-              messages.add(Message.fromDocumentSnapshot(documentSnapshot));
+
+            for (int i = messagesList.length - 1; i >= 0; i--) {
+              messagesList[i].addAll({"index": i});
+              messages.add(Message.fromMap(messagesList[i]));
             }
 
-            unreadMessagesCount = _getUnreadMessageCount(messages);
+            unreadMessagesCount = snapshotData[user.id]['unreadMessageCount'];
+//            unreadMessagesCount = _getUnreadMessageCount(messages);
             hasUnreadMessages = unreadMessagesCount != 0;
 
             return Container(
@@ -79,7 +84,7 @@ class RecentChatCard extends StatelessWidget {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.45,
                             child: Text(
-                              messagesSnapshots.length == 0
+                              messages.length == 0
                                   ? "Tap to start chatting..."
                                   : messages[0].text,
                               style: TextStyle(
@@ -100,7 +105,7 @@ class RecentChatCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                        messages[0].displayTime,
+                        messages.length == 0 ? "" : messages[0].displayTime,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 15.0,

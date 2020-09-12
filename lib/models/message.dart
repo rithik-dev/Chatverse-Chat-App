@@ -1,46 +1,36 @@
-import 'package:chatverse_chat_app/controllers/message_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Message {
   bool isRead;
   String text;
-  Timestamp timestamp;
-  String id;
+  int index;
   String displayTime;
-  String displayDate;
+
+//  String displayDate;
   String senderId;
 
   Message({
-    @required this.isRead,
     @required this.text,
-    @required this.timestamp,
-    @required this.id,
+    @required this.index,
     @required this.senderId,
+    this.isRead,
     this.displayTime,
-    this.displayDate,
+//    this.displayDate,
   });
 
   @override
   String toString() {
-    return 'Message{isRead: $isRead, text: $text, timestamp: $timestamp, id: $id, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
+    return 'Message{isRead: $isRead, text: $text, index: $index, displayTime: $displayTime, senderId: $senderId}';
   }
 
-  factory Message.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    final Map<String, dynamic> message = snapshot.data();
-
-    final DateTime dateTime = (message['timestamp'] as Timestamp).toDate();
-    String displayTime = MessageController.getDisplayTime(dateTime);
-    String displayDate = MessageController.getDisplayDate(dateTime);
-
+  factory Message.fromMap(Map<String, dynamic> message) {
     return Message(
-      isRead: message['isRead'] as bool,
       text: message['text'] as String,
+      isRead: message['isRead'] as bool,
       senderId: message['senderId'] as String,
-      timestamp: message['timestamp'] as Timestamp,
-      displayTime: displayTime,
-      displayDate: displayDate,
-      id: snapshot.id,
+      displayTime: message['displayTime'] as String,
+//      displayDate: message['displayDate'] as String,
+      index: message['index'],
     );
   }
 }

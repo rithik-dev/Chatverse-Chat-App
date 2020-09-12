@@ -1,25 +1,21 @@
 import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class FirebaseStorageService {
   FirebaseStorageService._();
 
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Stream<QuerySnapshot> getMessagesStream(String chatRoomId) {
+  static Stream<DocumentSnapshot> getMessagesStream(String chatRoomId) {
     print("getting chat room stream : $chatRoomId");
-    return _firestore
-        .collection("chatrooms")
-        .doc(chatRoomId)
-        .collection("messages")
-        .orderBy('timestamp', descending: true)
-        .snapshots();
+    return _firestore.collection("chatrooms").doc(chatRoomId).snapshots();
   }
 
   static Future<DocumentSnapshot> getUserDocumentSnapshot(String userId) async {
     try {
       final DocumentSnapshot snapshot =
-      await _firestore.collection("users").doc(userId).get();
+          await _firestore.collection("users").doc(userId).get();
       return snapshot;
     } catch (e) {
       print("ERROR WHILE GETTING DOCUMENT SNAPSHOT : $e");
@@ -27,22 +23,34 @@ class FirebaseStorageService {
     return null;
   }
 
-  static Future<void> setUserData(String userId, Map<String, dynamic> data) async {
+  static Future<void> setUserData(
+      String userId, Map<String, dynamic> data) async {
     await _firestore.collection("users").doc(userId).set(data);
   }
 
-  static Future<void> sendMessage({String chatRoomId, Map<String, dynamic> message}) async {
-    await _firestore
-        .collection("chatrooms")
-        .doc(chatRoomId)
-        .collection("messages")
-        .add(message);
+  static Future<void> sendMessage({
+    String contactId,
+    String chatRoomId,
+    Map<String, dynamic> message,
+  }) async {
+    await _firestore.collection("chatrooms").doc(chatRoomId).set({
+      'messages': FieldValue.arrayUnion([message]),
+      contactId: {'unreadMessageCount': FieldValue.increment(1)}
+    }, SetOptions(merge: true));
   }
 
-  static void setMessagesReadToTrue(DocumentReference reference) {
+  static Future<void> resetUnreadMessages({
+    @required String userId,
+    @required DocumentReference reference,
+  }) async {
+    print("setting unread for $userId");
     if (reference != null) {
-      _firestore.runTransaction((Transaction myTransaction) {
-        myTransaction.update(reference, {'isRead': true});
+      await _firestore.runTransaction((Transaction myTransaction) {
+        myTransaction.update(reference, {
+          userId: {
+            'unreadMessageCount': 0,
+          }
+        });
         return;
       });
     }
