@@ -7,8 +7,6 @@ class User extends ChangeNotifier {
   String email;
   String photoUrl;
   String id;
-  List<String> contactIds;
-  List<String> chatRoomIds;
   List<String> friendRequestSentIds;
   List<String> friendRequestPendingIds;
   List<Contact> contacts;
@@ -19,26 +17,16 @@ class User extends ChangeNotifier {
       email: null,
       photoUrl: null,
       id: null,
-      contactIds: null,
       friendRequestSentIds: null,
       friendRequestPendingIds: null,
-      chatRoomIds: null,
       contacts: null,
     );
   }
 
-  @override
-  String toString() {
-    return 'User{name: $name, email: $email, photoUrl: $photoUrl, id: $id, contactIds: $contactIds, chatRoomIds: $chatRoomIds, friendRequestSentIds: $friendRequestSentIds, friendRequestPendingIds: $friendRequestPendingIds, friends: $contacts}';
-  }
 
   factory User.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     final Map<String, dynamic> user = snapshot.data();
 
-    List<String> _contactIds =
-        (user['contacts'] as List<dynamic>).cast<String>();
-    List<String> _chatRoomIds =
-        (user['chatrooms'] as List<dynamic>).cast<String>();
     List<String> _friendRequestSentIds =
         (user['friendRequestsSent'] as List<dynamic>).cast<String>();
     List<String> _friendRequestPendingIds =
@@ -48,13 +36,16 @@ class User extends ChangeNotifier {
       name: user['name'] as String,
       email: user['email'] as String,
       photoUrl: user['photoUrl'] as String,
-      contactIds: _contactIds,
-      chatRoomIds: _chatRoomIds,
       friendRequestPendingIds: _friendRequestPendingIds,
       friendRequestSentIds: _friendRequestSentIds,
       id: snapshot.id,
       contacts: [],
     );
+  }
+
+  @override
+  String toString() {
+    return 'User{name: $name, email: $email, photoUrl: $photoUrl, id: $id, friendRequestSentIds: $friendRequestSentIds, friendRequestPendingIds: $friendRequestPendingIds, contacts: $contacts}';
   }
 
   void updateUserInProvider(User user) {
@@ -63,7 +54,6 @@ class User extends ChangeNotifier {
     this.photoUrl = user.photoUrl;
     this.id = user.id;
     this.contacts = user.contacts;
-    this.chatRoomIds = user.chatRoomIds;
     this.friendRequestPendingIds = user.friendRequestPendingIds;
     this.friendRequestSentIds = user.friendRequestSentIds;
 
@@ -76,8 +66,6 @@ class User extends ChangeNotifier {
     @required this.photoUrl,
     @required this.id,
     @required this.contacts,
-    @required this.contactIds,
-    @required this.chatRoomIds,
     @required this.friendRequestPendingIds,
     @required this.friendRequestSentIds,
   });

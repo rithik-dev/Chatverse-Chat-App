@@ -6,9 +6,15 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class MessageCard extends StatelessWidget {
   final Message message;
+  final String chatRoomId;
+  final VoidCallback onLongPress;
   User user;
 
-  MessageCard({@required this.message});
+  MessageCard({
+    @required this.message,
+    @required this.chatRoomId,
+    @required this.onLongPress,
+  });
 
   bool senderIsMe;
 
@@ -28,14 +34,10 @@ class MessageCard extends StatelessWidget {
     user = Provider.of<User>(context);
     senderIsMe = user.id == message.senderId;
     return GestureDetector(
-      onLongPress: () {
-        // TODO: add options like copy message text, delete, forward
-        if (user.id == message.senderId)
-          print("long pressed msg : ${message.text}");
-      },
+      onLongPress: this.onLongPress,
       child: Column(
         crossAxisAlignment:
-            senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Container(
             width: this._getCardWidth(context),
@@ -93,7 +95,7 @@ class MessageCard extends StatelessWidget {
                           .colorScheme
                           .secondaryVariant,
                       size: 22,
-                          )
+                    )
                         : SizedBox.shrink(),
                   ],
                 ),

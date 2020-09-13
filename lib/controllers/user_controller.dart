@@ -16,17 +16,21 @@ class UserController {
 
     List<Contact> contacts = [];
 
-    for (String contact in data['contacts']) {
-      DocumentSnapshot snapshot =
-          await FirebaseStorageService.getUserDocumentSnapshot(contact);
-      contacts.add(Contact.fromDocumentSnapshot(snapshot));
+    QuerySnapshot allUsersSnapshot = await FirebaseStorageService.getUsers();
+
+    for (QueryDocumentSnapshot snapshot in allUsersSnapshot.docs) {
+      if (data['contacts'].keys.contains(snapshot.id)) {
+        contacts.add(Contact.fromDocumentSnapshot(snapshot));
+      }
     }
 
     _loggedInUser = User.fromDocumentSnapshot(snapshot);
     _loggedInUser.contacts = contacts;
+    String contactId;
 
     for (int index = 0; index < contacts.length; index++) {
-      contacts[index].chatRoomId = _loggedInUser.chatRoomIds[index];
+      contactId = contacts[index].id;
+      contacts[index].chatRoomId = data['contacts'][contactId];
     }
 
     _loggedInUser.updateUserInProvider(_loggedInUser);

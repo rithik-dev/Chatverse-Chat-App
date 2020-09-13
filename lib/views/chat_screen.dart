@@ -113,8 +113,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         else
                           return SizedBox.shrink();
                       },
-                      itemBuilder: (context, index) =>
-                          MessageCard(message: messages[index]),
+                      itemBuilder: (context, index) => MessageCard(
+                        message: messages[index],
+                        chatRoomId: this.widget.contact.chatRoomId,
+                        onLongPress: () {},
+                      ),
                       itemCount: messages.length,
                     ),
                   );

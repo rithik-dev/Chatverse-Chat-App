@@ -8,6 +8,11 @@ class Contact {
   String email;
   String chatRoomId;
 
+  @override
+  String toString() {
+    return 'Contact{id: $id, name: $name, photoUrl: $photoUrl, email: $email, chatRoomId: $chatRoomId}';
+  }
+
   Contact({
     @required this.id,
     @required this.name,

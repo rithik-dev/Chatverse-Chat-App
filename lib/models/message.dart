@@ -22,17 +22,12 @@ class Message {
 
   @override
   String toString() {
-    return 'Message{isRead: $isRead, text: $text,displayTime: $displayTime, senderId: $senderId}';
+    return 'Message{isRead: $isRead, text: $text, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
   }
 
   factory Message.fromJSONString(String encodedMessage) {
-//    final DateTime dateTime = (message['timestamp'] as Timestamp).toDate();
-//
-//    final String _displayTime = MessageController.getDisplayTime(dateTime);
-//    final String _displayDate = MessageController.getDisplayDate(dateTime);
-
     final Map<String, dynamic> message =
-        jsonDecode(encodedMessage) as Map<String, dynamic>;
+    jsonDecode(encodedMessage) as Map<String, dynamic>;
 
     return Message(
       text: message['text'],
@@ -41,5 +36,17 @@ class Message {
       displayDate: message['displayDate'],
 //      index: message['index'],
     );
+  }
+
+  String toJSONString() {
+    final Map<String, dynamic> message = {
+      'isRead': this.isRead,
+      'text': this.text,
+      'displayTime': this.displayTime,
+      'displayDate': this.displayDate,
+      'senderId': this.senderId,
+    };
+
+    return jsonEncode(message);
   }
 }
