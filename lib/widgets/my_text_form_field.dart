@@ -55,7 +55,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
       initialValue: this.widget.defaultValue,
       validator: this.widget.validator,
       onChanged: this.widget.onChanged,
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.start,
       autofocus: this.widget.autofocus,
       keyboardType: keyboardTypes[this.widget.labelText] ?? TextInputType.text,
       obscureText: this.widget.isPasswordField ? !_showPassword : false,
@@ -63,7 +63,6 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         suffixIcon: this.widget.showSuffixIcon
             ? this.widget.isPasswordField
                 ? IconButton(
-                    splashRadius: 1.0,
                     icon: _showPassword
                         ? Icon(Icons.visibility)
                         : Icon(Icons.visibility_off),
@@ -71,24 +70,32 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
                     onPressed: this.toggleShowPassword,
                   )
                 : IconButton(
-                    icon: Icon(this.widget.suffixIcon),
-                    onPressed: this.widget.suffixIconOnPressed,
-                  )
+          icon: Icon(this.widget.suffixIcon),
+          onPressed: this.widget.suffixIconOnPressed,
+        )
             : null,
         prefixIcon: this.widget.showPrefixIcon
             ? Icon(
-                this.widget.prefixIcon,
-                color: Colors.grey,
-              )
+          this.widget.prefixIcon,
+        )
             : null,
         labelText: this.widget.labelText,
-        labelStyle: TextStyle(color: Colors.black87),
+        labelStyle: TextStyle(color: Theme
+            .of(context)
+            .colorScheme
+            .secondary),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
         ),
+      ),
+      style: TextStyle(
+        color: Theme
+            .of(context)
+            .colorScheme
+            .secondary,
       ),
     );
   }

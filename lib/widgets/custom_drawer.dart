@@ -38,14 +38,14 @@ class CustomDrawer extends StatelessWidget {
       borderRadius: 30,
       leftAnimationType: InnerDrawerAnimation.static,
       rightAnimationType: InnerDrawerAnimation.quadratic,
-      leftChild: _leftChild(),
+      leftChild: _LeftChild(),
       scaffold: this.scaffold,
     );
   }
 }
 
-// ignore: camel_case_types, must_be_immutable
-class _leftChild extends StatelessWidget {
+// ignore: must_be_immutable
+class _LeftChild extends StatelessWidget {
   User user;
 
   @override
@@ -53,60 +53,58 @@ class _leftChild extends StatelessWidget {
     user = Provider.of<User>(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200,
-            margin: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                ProfilePicture(user.photoUrl, radius: 65),
-                SizedBox(height: 20),
-                Expanded(
-                  child: Text(
-                    user.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 30,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Container(
+              height: 225,
+              margin: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  ProfilePicture(user.photoUrl, radius: 65),
+                  SizedBox(height: 15),
+                  Expanded(
+                    child: Text(
+                      user.name,
+                      style: Theme.of(context).textTheme.headline1,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Column(
+              children: [
+                DrawerItem(
+                  icon: Icons.person,
+                  title: "My Profile",
+                  onPressed: () async {
+                    Navigator.pushNamed(context, EditProfileScreen.id);
+                  },
+                ),
+                DrawerItem(
+                  icon: Icons.settings,
+                  title: "Settings",
+                  onPressed: () async {
+                    Navigator.pushNamed(context, SettingsScreen.id);
+                  },
+                ),
+                DrawerItem(
+                  icon: Icons.exit_to_app,
+                  title: "Sign Out",
+                  onPressed: () async {
+                    await UserController.logoutUser();
+                    Navigator.pushReplacementNamed(
+                        context, AuthenticationPage.id);
+                  },
                 ),
               ],
             ),
-          ),
-          SizedBox(height: 20),
-          Column(
-            children: [
-              DrawerItem(
-                icon: Icons.person,
-                title: "My Profile",
-                onPressed: () async {
-                  Navigator.pushNamed(context, EditProfileScreen.id);
-                },
-              ),
-              DrawerItem(
-                icon: Icons.settings,
-                title: "Settings",
-                onPressed: () async {
-                  Navigator.pushNamed(context, SettingsScreen.id);
-                },
-              ),
-              DrawerItem(
-                icon: Icons.exit_to_app,
-                title: "Sign Out",
-                onPressed: () async {
-                  await UserController.logoutUser();
-                  Navigator.pushReplacementNamed(
-                      context, AuthenticationPage.id);
-                },
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -147,11 +145,10 @@ class DrawerItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           this.title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
+          style: Theme
+              .of(context)
+              .textTheme
+              .headline2,
         ),
         leading: Icon(this.icon, size: 35, color: Colors.black),
         onTap: this.onPressed,

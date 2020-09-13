@@ -19,11 +19,10 @@ class EditProfileScreen extends StatelessWidget {
         builder: (context, user, loadingProvider, child) {
       return CustomLoadingScreen(
         child: Scaffold(
-          backgroundColor: Colors.grey[300],
           body: Column(
             children: [
               SizedBox(height: 20),
-              _profilePicture(user.photoUrl),
+              _profilePicture(context, user.photoUrl),
               SizedBox(height: 20),
               EditProfileTextField(
                 prefixIcon: Icons.person,
@@ -60,7 +59,7 @@ class EditProfileScreen extends StatelessWidget {
     });
   }
 
-  Widget _profilePicture(String photoUrl) {
+  Widget _profilePicture(BuildContext context, String photoUrl) {
     return Stack(
       children: [
         ProfilePicture(photoUrl, borderWidth: 2),
@@ -75,7 +74,7 @@ class EditProfileScreen extends StatelessWidget {
               icon: Icon(
                 Icons.edit,
                 size: 20,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.primary,
               ),
               onPressed: () {
                 print("edit prof pic");

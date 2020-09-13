@@ -32,7 +32,7 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.circular(30),
       ),
       child: TextFormField(
@@ -44,21 +44,25 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(20),
           border: InputBorder.none,
-          prefixIcon: Icon(this.widget.prefixIcon, color: Colors.red),
+          prefixIcon: Icon(this.widget.prefixIcon),
           suffixIcon: this.readOnly
               ? IconButton(
-                  icon: Icon(Icons.edit, color: Colors.red),
-                  splashRadius: 1,
-                  onPressed: this.toggleReadOnly,
-                )
+            icon: Icon(Icons.edit),
+            onPressed: this.toggleReadOnly,
+          )
               : IconButton(
-                  icon: Icon(Icons.check),
-                  splashRadius: 1,
-                  onPressed: () {
-                    this.toggleReadOnly();
-                    return this.widget.onEditPressed();
-                  },
-                ),
+            icon: Icon(Icons.check),
+            onPressed: () {
+              this.toggleReadOnly();
+              return this.widget.onEditPressed();
+            },
+          ),
+        ),
+        style: TextStyle(
+          color: Theme
+              .of(context)
+              .colorScheme
+              .secondary,
         ),
       ),
     );

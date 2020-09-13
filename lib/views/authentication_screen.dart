@@ -145,7 +145,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -233,7 +233,15 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             child: GestureDetector(
               child: Text(
                 "Forgot Password?",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline4
+                    .copyWith(
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
+                ),
               ),
               onTap: () async {
                 if (this._signInEmail == null || this._signInEmail.trim() == "")
@@ -274,22 +282,31 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 Container(
                   width: 55,
                   height: 1,
-                  color: Colors.white,
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
                     "OR",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline4
+                        .copyWith(
+                      color: Theme
+                          .of(context)
+                          .scaffoldBackgroundColor,
+                    ),
                   ),
                 ),
                 Container(
                   width: 55,
                   height: 1,
-                  color: Colors.white,
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
                 ),
               ],
             ),
@@ -451,23 +468,31 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 Container(
                   width: 55,
                   height: 1,
-                  color: Colors.white,
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
                     "OR",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline4
+                        .copyWith(
+                      color: Theme
+                          .of(context)
+                          .scaffoldBackgroundColor,
                     ),
                   ),
                 ),
                 Container(
                   width: 55,
                   height: 1,
-                  color: Colors.white,
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
                 ),
               ],
             ),
@@ -496,7 +521,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   Widget _externalAuthCircularButton(String imgUrl, {VoidCallback onTap}) {
     return GestureDetector(
       child: Container(
-        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        decoration: BoxDecoration(
+            color: Theme
+                .of(context)
+                .scaffoldBackgroundColor,
+            shape: BoxShape.circle),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Image.asset(imgUrl),
@@ -520,14 +549,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12.0),
           child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
+            child: Text(text, style: Theme
+                .of(context)
+                .textTheme
+                .headline2),
           ),
         ),
       ),
@@ -540,7 +565,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.12),
+          color: Theme
+              .of(context)
+              .colorScheme
+              .secondary
+              .withOpacity(0.12),
           borderRadius: BorderRadius.circular(25),
         ),
         child: Row(
@@ -559,18 +588,31 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       child: GestureDetector(
         child: Container(
           decoration: BoxDecoration(
-              color: _index == index ? Colors.white : Colors.transparent,
+              color: _index == index
+                  ? Theme
+                  .of(context)
+                  .colorScheme
+                  .primary
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(25)),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
                 text,
-                style: TextStyle(
-                  color: _index == index ? Colors.black : Colors.white,
-                  fontSize: 18,
-                  fontWeight:
-                      _index == index ? FontWeight.bold : FontWeight.normal,
+                style: _index == index
+                    ? Theme
+                    .of(context)
+                    .textTheme
+                    .headline2
+                    : Theme
+                    .of(context)
+                    .textTheme
+                    .headline4
+                    .copyWith(
+                  color: Theme
+                      .of(context)
+                      .scaffoldBackgroundColor,
                 ),
               ),
             ),

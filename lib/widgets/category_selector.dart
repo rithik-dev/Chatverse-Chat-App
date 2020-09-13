@@ -41,8 +41,9 @@ class _CategorySelectorState extends State<CategorySelector> {
               child: Text(
                 this.widget.categories[index],
                 style: TextStyle(
-                  color:
-                      index == _selectedIndex ? Colors.white : Colors.white60,
+                  color: index == _selectedIndex
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.primary.withOpacity(0.7),
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,

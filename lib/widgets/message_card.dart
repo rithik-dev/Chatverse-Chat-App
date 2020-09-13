@@ -43,8 +43,8 @@ class MessageCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             decoration: BoxDecoration(
               color: senderIsMe
-                  ? Theme.of(context).accentColor
-                  : Color(0xFFFFEFEE),
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSecondary,
               borderRadius: senderIsMe
                   ? BorderRadius.only(
                       topLeft: Radius.circular(15.0),
@@ -62,11 +62,10 @@ class MessageCard extends StatelessWidget {
               children: <Widget>[
                 SelectableText(
                   message.text,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline4,
                 ),
                 SizedBox(height: 8.0),
                 Row(
@@ -77,20 +76,23 @@ class MessageCard extends StatelessWidget {
                   children: [
                     Text(
                       message.displayTime,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .headline5,
                     ),
                     senderIsMe ? SizedBox(width: 10.0) : SizedBox.shrink(),
                     senderIsMe
                         ? Icon(
-                            message.isRead
-                                ? Icons.check_circle
-                                : Icons.check_circle_outline,
-                            color: Colors.green,
-                            size: 22,
+                      message.isRead
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      color:
+                      Theme
+                          .of(context)
+                          .colorScheme
+                          .secondaryVariant,
+                      size: 22,
                           )
                         : SizedBox.shrink(),
                   ],

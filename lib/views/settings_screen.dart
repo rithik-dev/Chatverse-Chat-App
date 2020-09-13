@@ -7,7 +7,12 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(child: Text('settings')),
+        body: Center(
+          child: Text(
+            'settings',
+            style: Theme.of(context).textTheme.headline4,
+          ),
+        ),
       ),
     );
   }

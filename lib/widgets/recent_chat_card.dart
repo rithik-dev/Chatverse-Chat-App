@@ -55,7 +55,9 @@ class RecentChatCard extends StatelessWidget {
               margin: EdgeInsets.only(top: 7.5, right: 20.0),
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
               decoration: BoxDecoration(
-                color: hasUnreadMessages ? Color(0xFFFFEFEE) : Colors.grey[200],
+                color: hasUnreadMessages
+                    ? Theme.of(context).colorScheme.onSecondary
+                    : Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   bottomRight: Radius.circular(20.0),
@@ -73,11 +75,10 @@ class RecentChatCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             contact.name,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .headline4,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),
@@ -88,11 +89,10 @@ class RecentChatCard extends StatelessWidget {
                               messages.length == 0
                                   ? "Tap to start chatting..."
                                   : messages[0].text,
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline5,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
@@ -107,11 +107,10 @@ class RecentChatCard extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         messages.length == 0 ? "" : messages[0].displayTime,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .headline5,
                       ),
                       SizedBox(height: 10.0),
                       unreadMessagesCount > 0

@@ -27,19 +27,18 @@ class FavoriteContacts extends StatelessWidget {
             children: <Widget>[
               Text(
                 'Favorite Contacts',
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
+                style: Theme.of(context).textTheme.headline3,
               ),
               IconButton(
                 icon: Icon(
                   Icons.more_horiz,
                 ),
                 iconSize: 30.0,
-                color: Colors.blueGrey,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .secondary
+                    .withOpacity(0.7),
                 onPressed: () {},
               ),
             ],
@@ -47,6 +46,10 @@ class FavoriteContacts extends StatelessWidget {
         ),
         Container(
           height: 110.0,
+          color: Theme
+              .of(context)
+              .colorScheme
+              .onPrimary,
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
@@ -68,11 +71,10 @@ class FavoriteContacts extends StatelessWidget {
                         favoriteContacts[index].name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .headline4,
                       ),
                     ],
                   ),

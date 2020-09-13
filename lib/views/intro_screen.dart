@@ -10,7 +10,10 @@ class IntroScreen extends StatelessWidget {
       child: Scaffold(
         body: Center(
           child: FlatButton(
-            child: Text("GO"),
+            child: Text(
+              "GO",
+              style: Theme.of(context).textTheme.headline4,
+            ),
             onPressed: () {
               Navigator.pushReplacementNamed(context, AuthenticationPage.id);
             },

@@ -8,7 +8,7 @@ class DateSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+      margin: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
       padding: EdgeInsets.all(5),
       height: 30,
       alignment: Alignment.center,
@@ -25,7 +25,7 @@ class DateSeparator extends StatelessWidget {
       ),
       child: Text(
         this.date,
-        style: TextStyle(fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.headline4,
       ),
     );
   }

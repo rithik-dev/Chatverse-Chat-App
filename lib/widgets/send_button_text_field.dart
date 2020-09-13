@@ -30,17 +30,16 @@ class SendButtonTextField extends StatelessWidget {
           prefixIcon: IconButton(
             icon: Icon(Icons.photo),
             iconSize: 25.0,
-            color: Theme.of(context).primaryColor,
-            splashRadius: 1,
             onPressed: () {},
           ),
           suffixIcon: IconButton(
             icon: Icon(Icons.send),
             iconSize: 25.0,
-            color: Theme.of(context).primaryColor,
-            splashRadius: 1,
             onPressed: this.onSend,
           ),
+        ),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
     );

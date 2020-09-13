@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Theme.of(context).backgroundColor,
         body: Column(
           children: [
             StreamBuilder<DocumentSnapshot>(
@@ -83,7 +83,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   messagesLength = messagesList.length;
                   for (int i = messagesLength - 1; i >= 0; i--) {
-                    messagesList[i].addAll({"index": i});
+//                    messagesList[i].addAll({"index": i});
+
                     // setting the last [unreadMessageCount] messages isRead as false
                     if (messagesList[i]['senderId'] == user.id) {
                       if (messagesLength - i <= unreadMessageCount)
@@ -130,7 +131,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   final String msg = messageText;
                   messageText = "";
-                  print("send msg $msg");
                   MessageController.sendMessage(
                     contactId: this.widget.contact.id,
                     text: msg,
