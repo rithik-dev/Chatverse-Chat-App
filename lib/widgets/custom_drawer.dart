@@ -1,10 +1,9 @@
-import 'package:chatverse_chat_app/controllers/user_controller.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
-import 'package:chatverse_chat_app/views/authentication_screen.dart';
-import 'package:chatverse_chat_app/views/edit_profile_screen.dart';
+import 'package:chatverse_chat_app/views/profile_screen.dart';
 import 'package:chatverse_chat_app/views/settings_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
+import 'package:chatverse_chat_app/widgets/sign_out_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +81,7 @@ class _LeftChild extends StatelessWidget {
                   icon: Icons.person,
                   title: "My Profile",
                   onPressed: () async {
-                    Navigator.pushNamed(context, EditProfileScreen.id);
+                    Navigator.pushNamed(context, ProfileScreen.id);
                   },
                 ),
                 DrawerItem(
@@ -96,9 +95,8 @@ class _LeftChild extends StatelessWidget {
                   icon: Icons.exit_to_app,
                   title: "Sign Out",
                   onPressed: () async {
-                    await UserController.logoutUser();
-                    Navigator.pushReplacementNamed(
-                        context, AuthenticationPage.id);
+                    Navigator.pop(context);
+                    openSignOutDrawer(context);
                   },
                 ),
               ],
@@ -145,10 +143,7 @@ class DrawerItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           this.title,
-          style: Theme
-              .of(context)
-              .textTheme
-              .headline2,
+          style: Theme.of(context).textTheme.headline2,
         ),
         leading: Icon(this.icon, size: 35, color: Colors.black),
         onTap: this.onPressed,

@@ -85,21 +85,23 @@ class _ChatScreenState extends State<ChatScreen> {
                   for (int i = messagesLength - 1; i >= 0; i--) {
 //                    messagesList[i].addAll({"index": i});
 
+                    final Message msg = Message.fromJSONString(messagesList[i]);
+
                     // setting the last [unreadMessageCount] messages isRead as false
-                    if (messagesList[i]['senderId'] == user.id) {
+                    if (msg.senderId == user.id) {
                       if (messagesLength - i <= unreadMessageCount)
-                        messagesList[i]['isRead'] = false;
+                        msg.isRead = false;
                       else
-                        messagesList[i]['isRead'] = true;
+                        msg.isRead = true;
                     }
 
-                    messages.add(Message.fromMap(messagesList[i]));
+                    messages.add(msg);
                   }
 
                   return Expanded(
                     child: ListView.separated(
                       keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
+                          ScrollViewKeyboardDismissBehavior.onDrag,
                       reverse: true,
                       controller: _scrollController,
                       physics: BouncingScrollPhysics(),

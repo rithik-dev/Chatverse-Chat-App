@@ -16,12 +16,17 @@ class RecentChats extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
         ),
         child: Container(
-          child: ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return RecentChatCard(contact: user.contacts[index]);
+          child: NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (overScroll) {
+              overScroll.disallowGlow();
+              return;
             },
-            itemCount: user.contacts.length,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return RecentChatCard(contact: user.contacts[index]);
+              },
+              itemCount: user.contacts.length,
+            ),
           ),
         ),
       ),

@@ -1,18 +1,19 @@
-import 'package:chatverse_chat_app/controllers/message_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 
 class Message {
   bool isRead;
   String text;
-  int index;
+
+//  int index;
   String displayTime;
   String displayDate;
   String senderId;
 
   Message({
     @required this.text,
-    @required this.index,
+//    @required this.index,
     @required this.senderId,
     this.isRead,
     this.displayTime,
@@ -21,22 +22,24 @@ class Message {
 
   @override
   String toString() {
-    return 'Message{isRead: $isRead, text: $text, index: $index, displayTime: $displayTime, senderId: $senderId}';
+    return 'Message{isRead: $isRead, text: $text,displayTime: $displayTime, senderId: $senderId}';
   }
 
-  factory Message.fromMap(Map<String, dynamic> message) {
-    final DateTime dateTime = (message['timestamp'] as Timestamp).toDate();
+  factory Message.fromJSONString(String encodedMessage) {
+//    final DateTime dateTime = (message['timestamp'] as Timestamp).toDate();
+//
+//    final String _displayTime = MessageController.getDisplayTime(dateTime);
+//    final String _displayDate = MessageController.getDisplayDate(dateTime);
 
-    final String _displayTime = MessageController.getDisplayTime(dateTime);
-    final String _displayDate = MessageController.getDisplayDate(dateTime);
+    final Map<String, dynamic> message =
+        jsonDecode(encodedMessage) as Map<String, dynamic>;
 
     return Message(
-      text: message['text'] as String,
-      isRead: message['isRead'] as bool,
-      senderId: message['senderId'] as String,
-      displayTime: _displayTime,
-      displayDate: _displayDate,
-      index: message['index'],
+      text: message['text'],
+      senderId: message['senderId'],
+      displayTime: message['displayTime'],
+      displayDate: message['displayDate'],
+//      index: message['index'],
     );
   }
 }

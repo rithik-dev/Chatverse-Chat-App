@@ -42,8 +42,8 @@ class RecentChatCard extends StatelessWidget {
             messages = [];
 
             for (int i = messagesList.length - 1; i >= 0; i--) {
-              messagesList[i].addAll({"index": i});
-              messages.add(Message.fromMap(messagesList[i]));
+//              messagesList[i].addAll({"index": i});
+              messages.add(Message.fromJSONString(messagesList[i]));
             }
 
             //FIXME: called on null when fresh login
@@ -75,10 +75,7 @@ class RecentChatCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             contact.name,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .headline4,
+                            style: Theme.of(context).textTheme.headline4,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),

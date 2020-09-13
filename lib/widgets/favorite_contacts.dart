@@ -55,28 +55,29 @@ class FavoriteContacts extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: favoriteContacts.length,
             itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, ChatScreen.id,
-                      arguments: favoriteContacts[index]);
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Column(
-                    children: <Widget>[
-                      ProfilePicture(favoriteContacts[index].photoUrl,
-                          radius: 35),
-                      SizedBox(height: 6.0),
-                      Text(
-                        favoriteContacts[index].name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline4,
-                      ),
-                    ],
+              return Container(
+                width: 125,
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, ChatScreen.id,
+                        arguments: favoriteContacts[index]);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Column(
+                      children: <Widget>[
+                        ProfilePicture(favoriteContacts[index].photoUrl,
+                            radius: 35),
+                        SizedBox(height: 6.0),
+                        Text(
+                          favoriteContacts[index].name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

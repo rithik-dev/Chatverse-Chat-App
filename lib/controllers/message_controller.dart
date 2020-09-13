@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:ntp/ntp.dart' show NTP;
 
@@ -12,31 +13,39 @@ class MessageController {
     String senderId,
     String chatRoomId,
   }) async {
-    final DateTime dateTime = await NTP.now();
-    final Timestamp _timestamp = Timestamp.fromDate(dateTime);
+    final Map<String, String> display = await getDisplayDateAndTime();
 
     final Map<String, dynamic> message = {
       "text": text,
       "senderId": senderId,
-      "timestamp": _timestamp,
+      "displayTime": display['displayTime'],
+      "displayDate": display['displayDate'],
     };
+
+    final String encodedMessage = jsonEncode(message);
 
     await FirebaseStorageService.sendMessage(
       chatRoomId: chatRoomId,
-      message: message,
+      encodedMessage: encodedMessage,
       contactId: contactId,
     );
   }
 
-  static String getDisplayTime(DateTime dateTime) {
-    final DateFormat formatter = DateFormat('h:mm a');
-    final String displayTime = formatter.format(dateTime);
-    return displayTime;
-  }
+  static Future<Map<String, String>> getDisplayDateAndTime() async {
+    final DateTime dateTime = await NTP.now();
+    DateFormat formatter;
+    String displayTime;
+    String displayDate;
 
-  static String getDisplayDate(DateTime dateTime) {
-    final DateFormat formatter = DateFormat('d MMMM yyyy');
-    final String displayDate = formatter.format(dateTime);
-    return displayDate;
+    formatter = DateFormat('h:mm a');
+    displayTime = formatter.format(dateTime);
+
+    formatter = DateFormat('d MMMM yyyy');
+    displayDate = formatter.format(dateTime);
+
+    return {
+      'displayTime': displayTime,
+      'displayDate': displayDate,
+    };
   }
 }

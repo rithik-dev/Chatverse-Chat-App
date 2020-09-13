@@ -31,7 +31,7 @@ class MessageCard extends StatelessWidget {
       onLongPress: () {
         // TODO: add options like copy message text, delete, forward
         if (user.id == message.senderId)
-          print("long pressed msg id : ${message.index} ${message.text}");
+          print("long pressed msg : ${message.text}");
       },
       child: Column(
         crossAxisAlignment:

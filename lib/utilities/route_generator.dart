@@ -1,8 +1,8 @@
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
-import 'package:chatverse_chat_app/views/edit_profile_screen.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
 import 'package:chatverse_chat_app/views/intro_screen.dart';
+import 'package:chatverse_chat_app/views/profile_screen.dart';
 import 'package:chatverse_chat_app/views/settings_screen.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +16,9 @@ class RouteGenerator {
       case SettingsScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: SettingsScreen());
-      case EditProfileScreen.id:
+      case ProfileScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: EditProfileScreen());
+            type: PageTransitionType.fade, child: ProfileScreen());
       case ChatScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: ChatScreen(contact: args));

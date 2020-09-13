@@ -41,10 +41,10 @@ class FirebaseStorageService {
   static Future<void> sendMessage({
     String contactId,
     String chatRoomId,
-    Map<String, dynamic> message,
+    String encodedMessage,
   }) async {
     await _firestore.collection("chatrooms").doc(chatRoomId).set({
-      'messages': FieldValue.arrayUnion([message]),
+      'messages': FieldValue.arrayUnion([encodedMessage]),
       "unreadMessageCount($contactId)": FieldValue.increment(1),
     }, SetOptions(merge: true));
   }
