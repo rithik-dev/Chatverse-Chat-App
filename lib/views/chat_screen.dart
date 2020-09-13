@@ -74,11 +74,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   }
                   final Map<String, dynamic> snapshotData =
-                  messageSnapshot.data.data();
+                      messageSnapshot.data.data();
                   messagesList = snapshotData['messages'];
 
                   unreadMessageCount = snapshotData[
-                  'unreadMessageCount(${this.widget.contact.id})'];
+                      'unreadMessageCount(${this.widget.contact.id})'];
                   messages = [];
 
                   messagesLength = messagesList.length;
@@ -145,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                 }
               },
-            )
+            ),
           ],
         ),
       ),

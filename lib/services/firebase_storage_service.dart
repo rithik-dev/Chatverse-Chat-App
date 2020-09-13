@@ -23,6 +23,16 @@ class FirebaseStorageService {
     return null;
   }
 
+  static Future<void> updateUserDetails({String userId, String name}) async {
+    try {
+      await _firestore.collection("users").doc(userId).update({
+        'name': name,
+      });
+    } catch (e) {
+      print("ERROR WHILE UPDATING USER DETAILS");
+    }
+  }
+
   static Future<void> setUserData(
       String userId, Map<String, dynamic> data) async {
     await _firestore.collection("users").doc(userId).set(data);

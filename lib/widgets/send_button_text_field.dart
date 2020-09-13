@@ -21,6 +21,7 @@ class SendButtonTextField extends StatelessWidget {
       child: TextField(
         controller: this.controller,
         textCapitalization: TextCapitalization.sentences,
+        textAlignVertical: TextAlignVertical.center,
         onChanged: this.onChanged,
         autofocus: true,
         decoration: InputDecoration(

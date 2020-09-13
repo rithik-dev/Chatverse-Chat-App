@@ -33,6 +33,14 @@ class UserController {
     return _loggedInUser;
   }
 
+  static Future<void> updateName(String name) async {
+    if (name == null || name.trim() == "") return;
+    await FirebaseStorageService.updateUserDetails(
+      userId: _loggedInUser.id,
+      name: name,
+    );
+  }
+
   static Future<Contact> addContact(String contactId) async {
     String chatRoomId =
         await FirebaseStorageService.addContact(_loggedInUser.id, contactId);

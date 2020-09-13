@@ -2,6 +2,8 @@ import 'package:chatverse_chat_app/controllers/user_controller.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
+import 'package:chatverse_chat_app/views/edit_profile_screen.dart';
+import 'package:chatverse_chat_app/views/settings_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
@@ -79,6 +81,20 @@ class _leftChild extends StatelessWidget {
           SizedBox(height: 20),
           Column(
             children: [
+              DrawerItem(
+                icon: Icons.person,
+                title: "My Profile",
+                onPressed: () async {
+                  Navigator.pushNamed(context, EditProfileScreen.id);
+                },
+              ),
+              DrawerItem(
+                icon: Icons.settings,
+                title: "Settings",
+                onPressed: () async {
+                  Navigator.pushNamed(context, SettingsScreen.id);
+                },
+              ),
               DrawerItem(
                 icon: Icons.exit_to_app,
                 title: "Sign Out",
