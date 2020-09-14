@@ -2,13 +2,13 @@ import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/views/profile_screen.dart';
 import 'package:chatverse_chat_app/views/settings_screen.dart';
+import 'package:chatverse_chat_app/widgets/bottom_sheet_clipper.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:chatverse_chat_app/widgets/sign_out_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:provider/provider.dart';
 
-final Color backgroundColor = Colors.lightBlueAccent;
 final List<Color> gradientColors = [Color(0xFFFB9245), Color(0xFFF54E6B)];
 
 class CustomDrawer extends StatelessWidget {
@@ -32,7 +32,7 @@ class CustomDrawer extends StatelessWidget {
         ),
       ),
       colorTransitionScaffold: Colors.black38,
-      scale: IDOffset.horizontal(0.8),
+      scale: IDOffset.horizontal(0.85),
       proportionalChildArea: true,
       borderRadius: 30,
       leftAnimationType: InnerDrawerAnimation.static,
@@ -96,7 +96,15 @@ class _LeftChild extends StatelessWidget {
                   title: "Sign Out",
                   onPressed: () async {
                     Navigator.pop(context);
-                    openSignOutDrawer(context);
+                    showModalBottomSheet(
+                      shape: BottomSheetClipper(),
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .secondary
+                          .withOpacity(0.8),
+                      context: context,
+                      builder: (context) => SignOutBottomSheet(),
+                    );
                   },
                 ),
               ],
@@ -121,32 +129,41 @@ class DrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      width: 225,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: gradientColors,
+    return InkWell(
+      onTap: this.onPressed,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        width: 200,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: gradientColors,
+          ),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 5,
+              offset: Offset(1, 1),
+            )
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 5,
-            offset: Offset(1, 1),
-          )
-        ],
-      ),
-      child: ListTile(
-        title: Text(
-          this.title,
-          style: Theme.of(context).textTheme.headline2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(this.icon, size: 35, color: Colors.black),
+            SizedBox(width: 20),
+            Text(
+              this.title,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline2,
+            ),
+          ],
         ),
-        leading: Icon(this.icon, size: 35, color: Colors.black),
-        onTap: this.onPressed,
       ),
     );
   }

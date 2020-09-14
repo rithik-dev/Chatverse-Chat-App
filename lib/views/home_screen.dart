@@ -29,20 +29,20 @@ class HomeScreen extends StatelessWidget {
             ),
             elevation: 0,
             actions: [
-              IconButton(
-                icon: Icon(Icons.contacts, color: Colors.white),
-                iconSize: 25,
-                onPressed: () async {
-                  // TODO: open new page and show all users
-                  // TODO: update in provider
-                  // TODO: add refresh indicator
+//              IconButton(
+//                icon: Icon(Icons.contacts, color: Colors.white),
+//                iconSize: 25,
+//                onPressed: () async {
+//                  // TODO: open new page and show all users
+//                  // TODO: update in provider
+//                  // TODO: add refresh indicator
 //                final Contact contact =
 //                    await UserController.addContact(contactId);
 //                user.contacts.add(contact);
 //                user.chatRoomIds.add(contact.chatRoomId);
 //                user.updateUserInProvider(user);
-                },
-              ),
+//                },
+//              ),
             ],
           ),
           body: RefreshIndicator(

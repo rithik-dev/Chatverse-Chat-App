@@ -45,15 +45,15 @@ class UserController {
     );
   }
 
-  static Future<Contact> addContact(String contactId) async {
-    String chatRoomId =
-        await FirebaseStorageService.addContact(_loggedInUser.id, contactId);
-    DocumentSnapshot snapshot =
-        await FirebaseStorageService.getUserDocumentSnapshot(contactId);
-    final Contact contact = Contact.fromDocumentSnapshot(snapshot);
-    contact.chatRoomId = chatRoomId;
-    return contact;
-  }
+//  static Future<Contact> addContact(String contactId) async {
+//    String chatRoomId =
+//        await FirebaseStorageService.addContact(_loggedInUser.id, contactId);
+//    DocumentSnapshot snapshot =
+//        await FirebaseStorageService.getUserDocumentSnapshot(contactId);
+//    final Contact contact = Contact.fromDocumentSnapshot(snapshot);
+//    contact.chatRoomId = chatRoomId;
+//    return contact;
+//  }
 
   static Future<bool> signUpUser(
       {String email, String password, String name}) async {

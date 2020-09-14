@@ -1,7 +1,9 @@
 import 'package:chatverse_chat_app/controllers/user_controller.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
+import 'package:chatverse_chat_app/widgets/bottom_sheet_clipper.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
+import 'package:chatverse_chat_app/widgets/edit_profile_picture_sheet.dart';
 import 'package:chatverse_chat_app/widgets/edit_profile_text_field.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
             body: Column(
               children: [
                 SizedBox(height: 20),
-                _profilePicture(context, user.photoUrl),
+                _ProfilePicture(user.photoUrl),
                 SizedBox(height: 20),
                 EditProfileTextField(
                   prefixIcon: Icons.person,
@@ -60,11 +62,18 @@ class ProfileScreen extends StatelessWidget {
       );
     });
   }
+}
 
-  Widget _profilePicture(BuildContext context, String photoUrl) {
+class _ProfilePicture extends StatelessWidget {
+  final String photoUrl;
+
+  _ProfilePicture(this.photoUrl);
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
-        ProfilePicture(photoUrl, borderWidth: 2),
+        ProfilePicture(this.photoUrl, borderWidth: 2),
         Positioned(
           right: 0,
           bottom: 0,
@@ -79,7 +88,17 @@ class ProfileScreen extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
               onPressed: () {
-                print("edit prof pic");
+                showModalBottomSheet(
+                  shape: BottomSheetClipper(),
+                  backgroundColor:
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .secondary
+                      .withOpacity(0.8),
+                  context: context,
+                  builder: (context) => EditProfilePictureBottomSheet(),
+                );
               },
             ),
           ),

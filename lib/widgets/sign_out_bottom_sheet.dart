@@ -4,14 +4,10 @@ import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void openSignOutDrawer(BuildContext context) {
-  User user;
-  showModalBottomSheet(
-    shape: _BottomSheetShape(),
-    backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
-    context: context,
-    builder: (context) {
-      user = Provider.of<User>(context);
+class SignOutBottomSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<User>(builder: (context, user, snapshot) {
       return Container(
         height: 180,
         padding: EdgeInsets.fromLTRB(15, 55, 15, 25),
@@ -70,40 +66,6 @@ void openSignOutDrawer(BuildContext context) {
           ],
         ),
       );
-    },
-  );
-}
-
-class _BottomSheetShape extends ShapeBorder {
-  @override
-  EdgeInsetsGeometry get dimensions => throw UnimplementedError();
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    return getClip(rect.size);
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) {
-    throw UnimplementedError();
-  }
-
-  Path getClip(Size size) {
-    Path path = Path();
-
-    path.moveTo(0, 40);
-    path.quadraticBezierTo(size.width / 2, 0, size.width, 40);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-
-    return path;
+    });
   }
 }
