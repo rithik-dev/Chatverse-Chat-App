@@ -2,6 +2,7 @@ import 'package:chatverse_chat_app/controllers/user_controller.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class SignOutBottomSheet extends StatelessWidget {
@@ -53,6 +54,10 @@ class SignOutBottomSheet extends StatelessWidget {
                       await UserController.logoutUser();
                       Navigator.pushReplacementNamed(
                           context, AuthenticationPage.id);
+                      Fluttertoast.showToast(
+                        msg: "Signed out successfully !",
+                        gravity: ToastGravity.TOP,
+                      );
                     },
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: Text(

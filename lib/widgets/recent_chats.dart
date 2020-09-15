@@ -1,4 +1,6 @@
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/recent_chat_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,10 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class RecentChats extends StatelessWidget {
   User user;
+
+  final Stream<List<Contact>> contactsStream;
+
+  RecentChats({this.contactsStream});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +27,21 @@ class RecentChats extends StatelessWidget {
               overScroll.disallowGlow();
               return;
             },
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                return RecentChatCard(contact: user.contacts[index]);
+            child: StreamBuilder<List<Contact>>(
+              stream: contactsStream,
+              builder: (context, contactStreamSnapshot) {
+                if (contactStreamSnapshot.hasData) {
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return RecentChatCard(
+                        contact: contactStreamSnapshot.data[index],
+                      );
+                    },
+                    itemCount: contactStreamSnapshot.data.length,
+                  );
+                } else
+                  return CustomLoader();
               },
-              itemCount: user.contacts.length,
             ),
           ),
         ),

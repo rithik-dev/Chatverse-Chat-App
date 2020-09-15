@@ -58,9 +58,10 @@ class FirebaseAuthService {
           "email": email,
           "photoUrl": kDefaultPhotoUrl,
           "contacts": [],
-          "chatrooms": [],
-          "friendRequestsPending": [],
-          "friendRequestsSent": [],
+          "favoriteContactIds": [],
+//          "chatrooms": [],
+//          "friendRequestsPending": [],
+//          "friendRequestsSent": [],
         });
         return true;
       } else
@@ -68,6 +69,41 @@ class FirebaseAuthService {
     } catch (e) {
       print("EXCEPTION WHILE REGISTERING NEW USER : $e");
       throw SignUpException(e.message);
+    }
+  }
+
+  static Future<void> changeCurrentUserPassword(
+      String oldPassword, String newPassword) async {
+    try {
+      final User user = _auth.currentUser;
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email,
+        password: oldPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      await user.updatePassword(newPassword);
+    } catch (e) {
+      print("ERROR WHILE CHANGING CURRENT USER PASSWORD : $e");
+    }
+  }
+
+  static Future<void> changeCurrentUserEmail(
+      {String newEmail, String password}) async {
+    try {
+      final User user = _auth.currentUser;
+
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      await user.updateEmail(newEmail);
+
+      await user.sendEmailVerification();
+    } catch (e) {
+      print("ERROR WHILE CHANGING CURRENT USER EMAIL : $e");
     }
   }
 

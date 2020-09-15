@@ -1,15 +1,16 @@
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
+import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class FavoriteContacts extends StatelessWidget {
-  final List<Contact> favoriteContacts;
+  final Stream<List<Contact>> favoriteContactsStream;
 
-  FavoriteContacts({@required this.favoriteContacts});
+  FavoriteContacts({this.favoriteContactsStream});
 
   User user;
 
@@ -34,11 +35,7 @@ class FavoriteContacts extends StatelessWidget {
                   Icons.more_horiz,
                 ),
                 iconSize: 30.0,
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.7),
+                color: Theme.of(context).colorScheme.secondary.withOpacity(0.7),
                 onPressed: () {},
               ),
             ],
@@ -50,37 +47,49 @@ class FavoriteContacts extends StatelessWidget {
               .of(context)
               .colorScheme
               .onPrimary,
-          child: ListView.builder(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: favoriteContacts.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                width: 125,
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, ChatScreen.id,
-                        arguments: favoriteContacts[index]);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Column(
-                      children: <Widget>[
-                        ProfilePicture(favoriteContacts[index].photoUrl,
-                            radius: 35),
-                        SizedBox(height: 6.0),
-                        Text(
-                          favoriteContacts[index].name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.headline4,
+          child: StreamBuilder<List<Contact>>(
+            stream: favoriteContactsStream,
+            builder: (context, favoriteContactsSnapshot) {
+              if (favoriteContactsSnapshot.hasData) {
+                return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: favoriteContactsSnapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      width: 125,
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, ChatScreen.id,
+                              arguments: favoriteContactsSnapshot.data[index]);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10),
+                          child: Column(
+                            children: <Widget>[
+                              ProfilePicture(
+                                  favoriteContactsSnapshot.data[index].photoUrl,
+                                  radius: 35),
+                              SizedBox(height: 6.0),
+                              Text(
+                                favoriteContactsSnapshot.data[index].name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline4,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                      ),
+                    );
+                  },
+                );
+              } else
+                return CustomLoader();
             },
           ),
         ),

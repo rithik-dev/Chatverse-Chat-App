@@ -1,4 +1,3 @@
-import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/services/firebase_auth_service.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
@@ -12,26 +11,26 @@ class UserController {
     final DocumentSnapshot snapshot =
         await FirebaseStorageService.getUserDocumentSnapshot(userId);
 
-    Map<String, dynamic> data = snapshot.data();
+//    Map<String, dynamic> data = snapshot.data();
 
-    List<Contact> contacts = [];
+//    List<Contact> contacts = [];
 
-    QuerySnapshot allUsersSnapshot = await FirebaseStorageService.getUsers();
+//    QuerySnapshot allUsersSnapshot = await FirebaseStorageService.getUsers();
 
-    for (QueryDocumentSnapshot snapshot in allUsersSnapshot.docs) {
-      if (data['contacts'].keys.contains(snapshot.id)) {
-        contacts.add(Contact.fromDocumentSnapshot(snapshot));
-      }
-    }
+//    for (QueryDocumentSnapshot snapshot in allUsersSnapshot.docs) {
+//      if (data['contacts'].keys.contains(snapshot.id)) {
+//        contacts.add(Contact.fromDocumentSnapshot(snapshot));
+//      }
+//    }
 
     _loggedInUser = User.fromDocumentSnapshot(snapshot);
-    _loggedInUser.contacts = contacts;
-    String contactId;
-
-    for (int index = 0; index < contacts.length; index++) {
-      contactId = contacts[index].id;
-      contacts[index].chatRoomId = data['contacts'][contactId];
-    }
+//    _loggedInUser.contacts = contacts;
+//    String contactId;
+//
+//    for (int index = 0; index < contacts.length; index++) {
+//      contactId = contacts[index].id;
+//      contacts[index].chatRoomId = data['contacts'][contactId];
+//    }
 
     _loggedInUser.updateUserInProvider(_loggedInUser);
     return _loggedInUser;

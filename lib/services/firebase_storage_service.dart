@@ -17,6 +17,10 @@ class FirebaseStorageService {
     return _firestore.collection("chatrooms").doc(chatRoomId).snapshots();
   }
 
+  static Stream<QuerySnapshot> getAllUsersStream() {
+    return _firestore.collection("users").snapshots();
+  }
+
   static Future<QuerySnapshot> getUsers() async {
     try {
       final QuerySnapshot snapshot = await _firestore.collection("users").get();

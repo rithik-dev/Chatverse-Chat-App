@@ -1,10 +1,14 @@
 import 'package:chatverse_chat_app/controllers/user_controller.dart';
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
+import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/category_selector.dart';
 import 'package:chatverse_chat_app/widgets/custom_drawer.dart';
+import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/favorite_contacts.dart';
 import 'package:chatverse_chat_app/widgets/recent_chats.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,32 +54,66 @@ class HomeScreen extends StatelessWidget {
               final User updatedUser = await UserController.getUser(user.id);
               user.updateUserInProvider(updatedUser);
             },
-            child: Column(
-              children: [
-                CategorySelector(
-                  categories: ['Messages', 'Online', 'Groups', 'Requests'],
-                  onChanged: (int index) {
-                    print(index);
-                  },
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.0),
-                        topRight: Radius.circular(30.0),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseStorageService.getAllUsersStream(),
+              builder: (context, snapshot) {
+                Map<String, String> myContacts = user.contacts;
+
+                if (snapshot.hasData) {
+                  List<Contact> contacts = [];
+                  List<Contact> favoriteContacts = [];
+                  for (DocumentSnapshot userSnapshot in snapshot.data.docs) {
+                    if (myContacts.keys.contains(userSnapshot.id)) {
+                      final Contact contact =
+                          Contact.fromDocumentSnapshot(userSnapshot);
+                      contact.chatRoomId = myContacts[userSnapshot.id];
+                      contacts.add(contact);
+                      if (user.favoriteContactIds.contains(userSnapshot.id))
+                        favoriteContacts.add(contact);
+                    }
+                  }
+
+                  Stream<List<Contact>> contactsStream = Stream.value(contacts);
+                  Stream<List<Contact>> favoriteContactsStream =
+                      Stream.value(favoriteContacts);
+
+                  return Column(
+                    children: [
+                      CategorySelector(
+                        categories: [
+                          'Messages',
+                          'Online',
+                          'Groups',
+                          'Requests'
+                        ],
+                        onChanged: (int index) {
+                          print(index);
+                        },
                       ),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        FavoriteContacts(favoriteContacts: user.contacts),
-                        RecentChats(),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0),
+                            ),
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              FavoriteContacts(
+                                  favoriteContactsStream:
+                                      favoriteContactsStream),
+                              RecentChats(contactsStream: contactsStream),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else
+                  return CustomLoader();
+              },
             ),
           ),
         ),

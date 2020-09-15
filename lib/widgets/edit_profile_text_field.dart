@@ -47,16 +47,16 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
           prefixIcon: Icon(this.widget.prefixIcon),
           suffixIcon: this.readOnly
               ? IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: this.toggleReadOnly,
-          )
+                  icon: Icon(Icons.edit),
+                  onPressed: this.toggleReadOnly,
+                )
               : IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () {
-              this.toggleReadOnly();
-              return this.widget.onEditPressed();
-            },
-          ),
+                  icon: Icon(Icons.check),
+                  onPressed: () {
+                    this.toggleReadOnly();
+                    return this.widget.onEditPressed();
+                  },
+                ),
         ),
         style: TextStyle(
           color: Theme
