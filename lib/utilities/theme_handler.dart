@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 class ThemeHandler {
   ThemeHandler._();
 
-//  scaffoldBackgroundColor: Color(0xFF385C6A),
-
   static final Brightness defaultBrightness = Brightness.light;
   static Brightness currentBrightness;
 
@@ -79,6 +77,62 @@ class ThemeHandler {
 
   static final ThemeData darkTheme = baseTheme.copyWith(
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: Color(0xFF385C6A),
+    colorScheme: ColorScheme.dark().copyWith(
+      primary: Colors.black,
+      secondary: Colors.white,
+      // user message bg color
+      onPrimary: Color(0xFFFEF9EB),
+      // contacts message bg color
+      onSecondary: Color(0xFFFFEFEE),
+      // message read icon color
+      secondaryVariant: Colors.yellow,
+    ),
+    textTheme: TextTheme(
+      // drawer name style
+      headline1: TextStyle(
+        fontSize: 25,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.5,
+        color: Colors.black,
+      ),
+
+      // drawer text style
+      headline2: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.5,
+        color: Colors.black,
+      ),
+
+      // fav contacts style
+      headline3: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.0,
+        color: Colors.grey[700],
+      ),
+
+      // message text style
+      headline4: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+
+      // message time style ,last msg style
+      headline5: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.black.withOpacity(0.5),
+      ),
+
+      // input text fields
+      headline6: TextStyle(
+        fontSize: 16.0,
+        color: Colors.black87,
+      ),
+    ),
   );
 
   static Future<void> setDarkTheme(BuildContext context) async {
@@ -93,5 +147,12 @@ class ThemeHandler {
     currentBrightness = brightness;
     print("currentBrightness : $currentBrightness");
     return brightness == Brightness.light ? lightTheme : darkTheme;
+  }
+
+  static Future<void> toggleTheme(BuildContext context) async {
+    if (currentBrightness == Brightness.light)
+      await setDarkTheme(context);
+    else
+      await setLightTheme(context);
   }
 }

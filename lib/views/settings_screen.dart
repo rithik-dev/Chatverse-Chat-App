@@ -1,3 +1,4 @@
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -7,11 +8,19 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: Text(
-            'settings',
-            style: Theme.of(context).textTheme.headline4,
-          ),
+        body: Column(
+          children: [
+            Text(
+              'settings',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            FlatButton(
+              onPressed: () async {
+                await ThemeHandler.toggleTheme(context);
+              },
+              child: Text("toggle theme"),
+            )
+          ],
         ),
       ),
     );

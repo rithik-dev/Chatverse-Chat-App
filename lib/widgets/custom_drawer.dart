@@ -12,10 +12,10 @@ import 'package:provider/provider.dart';
 final List<Color> gradientColors = [Color(0xFFFB9245), Color(0xFFF54E6B)];
 
 class CustomDrawer extends StatelessWidget {
-  final Scaffold scaffold;
+  final Widget child;
 
   CustomDrawer({
-    @required this.scaffold,
+    @required this.child,
   });
 
   @override
@@ -38,7 +38,7 @@ class CustomDrawer extends StatelessWidget {
       leftAnimationType: InnerDrawerAnimation.static,
       rightAnimationType: InnerDrawerAnimation.quadratic,
       leftChild: _LeftChild(),
-      scaffold: this.scaffold,
+      scaffold: this.child,
     );
   }
 }

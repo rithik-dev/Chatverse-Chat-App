@@ -54,6 +54,18 @@ class UserController {
 //    return contact;
 //  }
 
+  static Future<void> addContactToFavorites(String contactId) async {
+    await FirebaseStorageService.addContactToFavorites(
+      userId: _loggedInUser.id,
+      contactId: contactId,
+    );
+  }
+
+  static Future<void> removeContactFromFavorites(String contactId) async {
+    await FirebaseStorageService.removeContactFromFavorites(
+        userId: _loggedInUser.id, contactId: contactId);
+  }
+
   static Future<bool> signUpUser(
       {String email, String password, String name}) async {
     final bool success = await FirebaseAuthService.signUpUser(

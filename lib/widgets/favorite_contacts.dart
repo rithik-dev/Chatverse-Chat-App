@@ -42,11 +42,8 @@ class FavoriteContacts extends StatelessWidget {
           ),
         ),
         Container(
-          height: 110.0,
-          color: Theme
-              .of(context)
-              .colorScheme
-              .onPrimary,
+          height: user.favoriteContactIds.length == 0 ? 0 : 110.0,
+          color: Theme.of(context).colorScheme.onPrimary,
           child: StreamBuilder<List<Contact>>(
             stream: favoriteContactsStream,
             builder: (context, favoriteContactsSnapshot) {
@@ -58,7 +55,6 @@ class FavoriteContacts extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       width: 125,
-                      alignment: Alignment.center,
                       child: GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, ChatScreen.id,

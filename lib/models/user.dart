@@ -6,6 +6,7 @@ class User extends ChangeNotifier {
   String email;
   String photoUrl;
   String id;
+  String notificationToken;
 
 //  List<String> friendRequestSentIds;
 //  List<String> friendRequestPendingIds;

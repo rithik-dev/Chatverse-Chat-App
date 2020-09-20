@@ -1,7 +1,9 @@
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/providers/appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_core_service.dart';
+import 'package:chatverse_chat_app/services/push_notification_service.dart';
 import 'package:chatverse_chat_app/utilities/route_generator.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
@@ -23,6 +25,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseCoreService.initApp();
+  await PushNotificationsService.initFirebaseMessaging();
   runApp(MyApp());
 }
 
@@ -37,6 +40,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<LoadingScreenProvider>(
           create: (_) => LoadingScreenProvider(),
         ),
+        ChangeNotifierProvider<AppBarProvider>(
+          create: (_) => AppBarProvider(),
+        ),
         Provider<DrawerProvider>(
           create: (_) => DrawerProvider(),
         ),
@@ -47,6 +53,7 @@ class MyApp extends StatelessWidget {
         themedWidgetBuilder: (context, theme) {
           return MaterialApp(
             theme: theme,
+            darkTheme: ThemeHandler.darkTheme,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: RouteGenerator.generateRoute,
             initialRoute: SplashScreen.id,
