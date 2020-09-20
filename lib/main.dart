@@ -21,6 +21,8 @@ import 'package:provider/provider.dart';
 // TODO: long tap on message to delete message?
 // TODO: notifications when new message??
 // TODO: handle cannot add contacts exception
+//TODO: add emoji keyboard
+//TODO: add voice recognition
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

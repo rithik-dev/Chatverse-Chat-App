@@ -6,6 +6,7 @@ import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/date_separator.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
+import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:chatverse_chat_app/widgets/send_button_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -48,17 +49,22 @@ class _ChatScreenState extends State<ChatScreen> {
     user = Provider.of<User>(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(this.widget.contact.name),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () {},
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(75),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+            child: AppBar(
+              leading: ProfilePicture(this.widget.contact.photoUrl),
+              title: Text(this.widget.contact.name),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {},
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-        backgroundColor: Theme.of(context).backgroundColor,
         body: Column(
           children: [
             StreamBuilder<DocumentSnapshot>(
@@ -134,6 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (messageText != null && messageText != "") {
                   _messageController.clear();
 
+                  //FIXME: fix bug when sending a lot of messages and not sending
                   final String msg = messageText;
                   messageText = "";
                   MessageController.sendMessage(

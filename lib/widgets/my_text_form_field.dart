@@ -1,3 +1,4 @@
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 
 class MyTextFormField extends StatefulWidget {
@@ -60,6 +61,8 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
       keyboardType: keyboardTypes[this.widget.labelText] ?? TextInputType.text,
       obscureText: this.widget.isPasswordField ? !_showPassword : false,
       decoration: InputDecoration(
+        hintStyle:
+            Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.black),
         suffixIcon: this.widget.showSuffixIcon
             ? this.widget.isPasswordField
                 ? IconButton(
@@ -67,23 +70,23 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
                         ? Icon(Icons.visibility)
                         : Icon(Icons.visibility_off),
                     iconSize: 30.0,
+                    color: Colors.deepOrangeAccent,
                     onPressed: this.toggleShowPassword,
                   )
                 : IconButton(
           icon: Icon(this.widget.suffixIcon),
           onPressed: this.widget.suffixIconOnPressed,
+          color: Colors.deepOrangeAccent,
         )
             : null,
         prefixIcon: this.widget.showPrefixIcon
             ? Icon(
           this.widget.prefixIcon,
+          color: Colors.deepOrangeAccent,
         )
             : null,
         labelText: this.widget.labelText,
-        labelStyle: TextStyle(color: Theme
-            .of(context)
-            .colorScheme
-            .secondary),
+        labelStyle: TextStyle(color: ThemeHandler.primaryColor(context)),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
         ),
@@ -91,12 +94,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
           borderSide: BorderSide(color: Colors.transparent),
         ),
       ),
-      style: TextStyle(
-        color: Theme
-            .of(context)
-            .colorScheme
-            .secondary,
-      ),
+      style: TextStyle(color: ThemeHandler.primaryColor(context)),
     );
   }
 }

@@ -24,7 +24,7 @@ class CustomLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SpinKitChasingDots(
-        color: Colors.blue,
+        color: Theme.of(context).accentColor,
       ),
     );
   }

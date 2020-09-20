@@ -7,30 +7,42 @@ class ProfilePicture extends StatelessWidget {
   final double radius;
   final double borderWidth;
   final Color borderColor;
+  final VoidCallback onPressed;
+  final VoidCallback onLongPress;
+  final Function(DragStartDetails) onVerticalDragStart;
 
   ProfilePicture(
     this.url, {
     this.radius = 50.0,
     this.borderWidth = 0.0,
     this.borderColor = Colors.black,
+    this.onPressed,
+    this.onLongPress,
+    this.onVerticalDragStart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: this.borderColor,
-      radius: this.radius + this.borderWidth,
-      child: ClipOval(
-        child: CachedNetworkImage(
-          fit: BoxFit.cover,
-          width: this.radius * 2,
-          height: this.radius * 2,
-          imageUrl: this.url,
-          placeholder: (context, url) => Shimmer.fromColors(
-              child: CircleAvatar(radius: this.radius),
-              baseColor: Colors.grey,
-              highlightColor: Colors.grey[300]),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+    return GestureDetector(
+      onTap: this.onPressed,
+      onLongPress: this.onLongPress,
+      onVerticalDragStart: this.onVerticalDragStart,
+      child: CircleAvatar(
+        backgroundColor: this.borderColor,
+        radius: this.radius + this.borderWidth,
+        child: ClipOval(
+          child: CachedNetworkImage(
+            fit: BoxFit.cover,
+            width: this.radius * 2,
+            height: this.radius * 2,
+            imageUrl: this.url,
+            placeholder: (context, url) =>
+                Shimmer.fromColors(
+                    child: CircleAvatar(radius: this.radius),
+                    baseColor: Colors.grey,
+                    highlightColor: Colors.grey[300]),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
         ),
       ),
     );

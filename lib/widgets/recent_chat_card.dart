@@ -3,6 +3,7 @@ import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/appbar_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
@@ -73,7 +74,7 @@ class RecentChatCard extends StatelessWidget {
               return Container(
                 color: (appBarProvider.contactIsSelected &&
                         appBarProvider.contactId == contact.id)
-                    ? Colors.teal
+                    ? ThemeHandler.selectedContactBackgroundColor(context)
                     : Colors.transparent,
                 padding: EdgeInsets.all(5),
                 child: Container(
@@ -82,8 +83,8 @@ class RecentChatCard extends StatelessWidget {
                   margin: EdgeInsets.only(right: 25.0),
                   decoration: BoxDecoration(
                     color: hasUnreadMessages
-                        ? Theme.of(context).colorScheme.onSecondary
-                        : Theme.of(context).scaffoldBackgroundColor,
+                        ? ThemeHandler.unreadMessageBackgroundColor(context)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(20.0),
                       bottomRight: Radius.circular(20.0),
@@ -101,9 +102,12 @@ class RecentChatCard extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 contact.name,
-                                style: Theme.of(context).textTheme.headline4,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline6,
                               ),
                               SizedBox(height: 10.0),
                               Container(
@@ -112,9 +116,12 @@ class RecentChatCard extends StatelessWidget {
                                   messages.length == 0
                                       ? "Tap to start chatting..."
                                       : messages[0].text,
-                                  style: Theme.of(context).textTheme.headline5,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyText2,
                                 ),
                               ),
                             ],
@@ -127,7 +134,10 @@ class RecentChatCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             messages.length == 0 ? "" : messages[0].displayTime,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyText2,
                           ),
                           SizedBox(height: 10.0),
                           unreadMessagesCount > 0
@@ -135,8 +145,10 @@ class RecentChatCard extends StatelessWidget {
                                   width: 30.0,
                                   height: 20.0,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
                                     borderRadius: BorderRadius.circular(30.0),
+                                      color: Theme
+                                          .of(context)
+                                          .accentColor
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
@@ -144,7 +156,6 @@ class RecentChatCard extends StatelessWidget {
                                         ? "999+"
                                         : unreadMessagesCount.toString(),
                                     style: TextStyle(
-                                      color: Colors.white,
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.bold,
                                     ),

@@ -12,7 +12,6 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Text(
               'settings',
-              style: Theme.of(context).textTheme.headline4,
             ),
             FlatButton(
               onPressed: () async {

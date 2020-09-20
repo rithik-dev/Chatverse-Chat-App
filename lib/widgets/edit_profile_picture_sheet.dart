@@ -183,7 +183,6 @@ class _EditProfilePictureBottomSheetState
                 Center(
                   child: Text(
                     "Please select an image",
-                    style: Theme.of(context).textTheme.headline1,
                   ),
                 ),
                 SizedBox(height: 100),

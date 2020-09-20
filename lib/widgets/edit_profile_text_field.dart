@@ -1,3 +1,4 @@
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileTextField extends StatefulWidget {
@@ -32,7 +33,7 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+        color: ThemeHandler.primaryColor(context).withOpacity(0.8),
         borderRadius: BorderRadius.circular(30),
       ),
       child: TextFormField(
@@ -44,14 +45,19 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(20),
           border: InputBorder.none,
-          prefixIcon: Icon(this.widget.prefixIcon),
+          prefixIcon: Icon(
+            this.widget.prefixIcon,
+            color: ThemeHandler.secondaryColor(context),
+          ),
           suffixIcon: this.readOnly
               ? IconButton(
                   icon: Icon(Icons.edit),
+                  color: ThemeHandler.secondaryColor(context),
                   onPressed: this.toggleReadOnly,
                 )
               : IconButton(
                   icon: Icon(Icons.check),
+                  color: ThemeHandler.secondaryColor(context),
                   onPressed: () {
                     this.toggleReadOnly();
                     return this.widget.onEditPressed();
@@ -59,10 +65,7 @@ class _EditProfileTextFieldState extends State<EditProfileTextField> {
                 ),
         ),
         style: TextStyle(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .secondary,
+          color: ThemeHandler.secondaryColor(context),
         ),
       ),
     );

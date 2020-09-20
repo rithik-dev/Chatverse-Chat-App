@@ -5,7 +5,6 @@ import 'package:chatverse_chat_app/providers/appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
-import 'package:chatverse_chat_app/widgets/category_selector.dart';
 import 'package:chatverse_chat_app/widgets/custom_drawer.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/favorite_contacts.dart';
@@ -25,135 +24,122 @@ class HomeScreen extends StatelessWidget {
             (context, user, appBarProvider, loadingProvider, snapshot) {
           return CustomLoadingScreen(
             child: Scaffold(
-              backgroundColor: Theme.of(context).primaryColor,
-              appBar: AppBar(
-                leading: AnimatedCrossFade(
-                  firstChild: IconButton(
-                    icon: Icon(Icons.menu),
-                    iconSize: 25,
-                    onPressed: () {
-                      Provider.of<DrawerProvider>(context, listen: false)
-                          .toggle();
-                    },
-                  ),
-                  secondChild: IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    iconSize: 25,
-                    onPressed: () {
-                      appBarProvider.unSelectContact();
-                    },
-                  ),
-                  duration: Duration(milliseconds: 150),
-                  crossFadeState: appBarProvider.contactIsSelected
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                ),
-                elevation: 0,
-                actions: [
-                  if (appBarProvider.contactIsSelected) ...[
-                    appBarProvider.contactIsFavorite
-                        ? IconButton(
-                            icon: Icon(Icons.favorite),
-                            onPressed: () async {
-                              loadingProvider.startLoading();
-                              await UserController.removeContactFromFavorites(
-                                  appBarProvider.contactId);
-                              user.favoriteContactIds
-                                  .remove(appBarProvider.contactId);
-                              appBarProvider.unSelectContact();
-                              user.updateUserInProvider(user);
-                              loadingProvider.stopLoading();
-                            },
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.favorite_border),
-                            onPressed: () async {
-                              loadingProvider.startLoading();
-                              await UserController.addContactToFavorites(
-                                  appBarProvider.contactId);
-                              user.favoriteContactIds
-                                  .add(appBarProvider.contactId);
-                              appBarProvider.unSelectContact();
-                              user.updateUserInProvider(user);
-                              loadingProvider.stopLoading();
-                            },
-                          ),
-                    IconButton(
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {},
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(75),
+                child: AppBar(
+                  leading: AnimatedCrossFade(
+                    firstChild: IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: () {
+                        Provider.of<DrawerProvider>(context, listen: false)
+                            .toggle();
+                      },
                     ),
-                  ]
-                ],
-              ),
-              body: RefreshIndicator(
-                onRefresh: () async {
-                  final User updatedUser =
-                      await UserController.getUser(user.id);
-                  user.updateUserInProvider(updatedUser);
-                },
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseStorageService.getAllUsersStream(),
-                  builder: (context, snapshot) {
-                    Map<String, String> myContacts = user.contacts;
-
-                    if (snapshot.hasData) {
-                      List<Contact> contacts = [];
-                      List<Contact> favoriteContacts = [];
-                      for (DocumentSnapshot userSnapshot
-                          in snapshot.data.docs) {
-                        if (myContacts.keys.contains(userSnapshot.id)) {
-                          final Contact contact =
-                              Contact.fromDocumentSnapshot(userSnapshot);
-                          contact.chatRoomId = myContacts[userSnapshot.id];
-                          contacts.add(contact);
-                          if (user.favoriteContactIds.contains(userSnapshot.id))
-                            favoriteContacts.add(contact);
-                        }
-                      }
-
-                      Stream<List<Contact>> contactsStream =
-                          Stream.value(contacts);
-                      Stream<List<Contact>> favoriteContactsStream =
-                          Stream.value(favoriteContacts);
-
-                      return Column(
-                        children: [
-                          CategorySelector(
-                            categories: [
-                              'Messages',
-                              'Online',
-                              'Groups',
-                              'Requests'
-                            ],
-                            onChanged: (int index) {
-                              print(index);
-                            },
-                          ),
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30.0),
-                                  topRight: Radius.circular(30.0),
-                                ),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  FavoriteContacts(
-                                      favoriteContactsStream:
-                                          favoriteContactsStream),
-                                  RecentChats(contactsStream: contactsStream),
-                                ],
-                              ),
+                    secondChild: IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        appBarProvider.unSelectContact();
+                      },
+                    ),
+                    duration: Duration(milliseconds: 250),
+                    crossFadeState: appBarProvider.contactIsSelected
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                  ),
+                  actions: [
+                    if (appBarProvider.contactIsSelected) ...[
+                      appBarProvider.contactIsFavorite
+                          ? IconButton(
+                              icon: Icon(Icons.favorite),
+                              color: Colors.red,
+                              onPressed: () async {
+                                loadingProvider.startLoading();
+                                await UserController.removeContactFromFavorites(
+                                    appBarProvider.contactId);
+                                user.favoriteContactIds
+                                    .remove(appBarProvider.contactId);
+                                appBarProvider.unSelectContact();
+                                user.updateUserInProvider(user);
+                                loadingProvider.stopLoading();
+                              },
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.favorite_border),
+                              color: Colors.red,
+                              onPressed: () async {
+                                loadingProvider.startLoading();
+                                await UserController.addContactToFavorites(
+                                    appBarProvider.contactId);
+                                user.favoriteContactIds
+                                    .add(appBarProvider.contactId);
+                                appBarProvider.unSelectContact();
+                                user.updateUserInProvider(user);
+                                loadingProvider.stopLoading();
+                              },
                             ),
-                          ),
-                        ],
-                      );
-                    } else
-                      return CustomLoader();
-                  },
+                      IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {},
+                      ),
+                    ]
+                  ],
                 ),
+              ),
+              body: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseStorageService.getAllUsersStream(),
+                builder: (context, snapshot) {
+                  Map<String, String> myContacts = user.contacts;
+
+                  if (snapshot.hasData) {
+                    List<Contact> contacts = [];
+                    List<Contact> favoriteContacts = [];
+                    for (DocumentSnapshot userSnapshot in snapshot.data.docs) {
+                      if (myContacts.keys.contains(userSnapshot.id)) {
+                        final Contact contact =
+                            Contact.fromDocumentSnapshot(userSnapshot);
+                        contact.chatRoomId = myContacts[userSnapshot.id];
+                        contacts.add(contact);
+                        if (user.favoriteContactIds.contains(userSnapshot.id))
+                          favoriteContacts.add(contact);
+                      }
+                    }
+
+                    Stream<List<Contact>> contactsStream =
+                        Stream.value(contacts);
+                    Stream<List<Contact>> favoriteContactsStream =
+                        Stream.value(favoriteContacts);
+
+                    return Column(
+                      children: [
+//                          CategorySelector(
+//                            categories: [
+//                              'Messages',
+//                              'Online',
+//                              'Groups',
+//                              'Requests'
+//                            ],
+//                            onChanged: (int index) {
+//                              print(index);
+//                            },
+//                          ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              if (favoriteContacts.length != 0) ...[
+                                FavoriteContacts(
+                                    favoriteContactsStream:
+                                        favoriteContactsStream),
+                                SizedBox(height: 10),
+                              ],
+                              RecentChats(contactsStream: contactsStream),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  } else
+                    return CustomLoader();
+                },
               ),
             ),
           );

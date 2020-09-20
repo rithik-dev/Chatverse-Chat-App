@@ -19,9 +19,11 @@ class SignOutBottomSheet extends StatelessWidget {
             Text(
               "${user.name}, are you sure you want to sign out ?",
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+              softWrap: true,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,14 +35,10 @@ class SignOutBottomSheet extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     borderSide: BorderSide(
-                      color: Theme.of(context).scaffoldBackgroundColor,
+                      color: Colors.lightBlueAccent,
                     ),
-                    color: Theme.of(context).primaryColor,
                     child: Text(
                       "Stay logged in",
-                      style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
                     ),
                   ),
                 ),
@@ -49,6 +47,7 @@ class SignOutBottomSheet extends StatelessWidget {
                 ),
                 Expanded(
                   child: MaterialButton(
+                    color: Colors.blueAccent,
                     onPressed: () async {
                       Navigator.pop(context);
                       await UserController.logoutUser();
@@ -59,10 +58,8 @@ class SignOutBottomSheet extends StatelessWidget {
                         gravity: ToastGravity.TOP,
                       );
                     },
-                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Text(
                       "Sign out",
-                      style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
                 ),

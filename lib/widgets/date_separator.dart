@@ -15,17 +15,17 @@ class DateSeparator extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.lightBlueAccent,
+            color: Colors.deepOrangeAccent,
             blurRadius: 5,
             offset: Offset(1, 1),
           )
         ],
         borderRadius: BorderRadius.circular(10),
-        color: Colors.lightBlue,
+        color: Colors.deepOrange,
       ),
       child: Text(
         this.date,
-        style: Theme.of(context).textTheme.headline4,
+        style: Theme.of(context).textTheme.bodyText1,
       ),
     );
   }

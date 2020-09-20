@@ -20,7 +20,6 @@ class _CategorySelectorState extends State<CategorySelector> {
   Widget build(BuildContext context) {
     return Container(
       height: 90.0,
-      color: Theme.of(context).primaryColor,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -42,8 +41,8 @@ class _CategorySelectorState extends State<CategorySelector> {
                 this.widget.categories[index],
                 style: TextStyle(
                   color: index == _selectedIndex
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.primary,
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,

@@ -4,6 +4,7 @@ import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_auth_service.dart';
 import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:chatverse_chat_app/utilities/functions.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/my_text_form_field.dart';
@@ -145,8 +146,9 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                    color: ThemeHandler.secondaryColor(context),
+                  ),
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: 10.0, left: 15, right: 15, bottom: 20),
@@ -233,15 +235,9 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             child: GestureDetector(
               child: Text(
                 "Forgot Password?",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline4
-                    .copyWith(
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
-                ),
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: ThemeHandler.secondaryColor(context),
+                    ),
               ),
               onTap: () async {
                 if (this._signInEmail == null || this._signInEmail.trim() == "")
@@ -282,9 +278,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 Container(
                   width: 55,
                   height: 1,
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
+                  color: ThemeHandler.secondaryColor(context),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -293,20 +287,16 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     style: Theme
                         .of(context)
                         .textTheme
-                        .headline4
+                        .headline6
                         .copyWith(
-                      color: Theme
-                          .of(context)
-                          .scaffoldBackgroundColor,
+                      color: ThemeHandler.secondaryColor(context),
                     ),
                   ),
                 ),
                 Container(
                   width: 55,
                   height: 1,
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
+                  color: ThemeHandler.secondaryColor(context),
                 ),
               ],
             ),
@@ -343,7 +333,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ThemeHandler.secondaryColor(context),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
@@ -468,9 +458,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 Container(
                   width: 55,
                   height: 1,
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
+                  color: ThemeHandler.secondaryColor(context),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -479,20 +467,16 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     style: Theme
                         .of(context)
                         .textTheme
-                        .headline4
+                        .headline6
                         .copyWith(
-                      color: Theme
-                          .of(context)
-                          .scaffoldBackgroundColor,
+                      color: ThemeHandler.secondaryColor(context),
                     ),
                   ),
                 ),
                 Container(
                   width: 55,
                   height: 1,
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
+                  color: ThemeHandler.secondaryColor(context),
                 ),
               ],
             ),
@@ -549,10 +533,14 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12.0),
           child: Center(
-            child: Text(text, style: Theme
-                .of(context)
-                .textTheme
-                .headline2),
+            child: Text(text,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline6
+                    .copyWith(
+                  color: ThemeHandler.secondaryColor(context),
+                )),
           ),
         ),
       ),
@@ -565,11 +553,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .secondary
-              .withOpacity(0.12),
+          color: ThemeHandler.secondaryColor(context),
           borderRadius: BorderRadius.circular(25),
         ),
         child: Row(
@@ -589,10 +573,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
         child: Container(
           decoration: BoxDecoration(
               color: _index == index
-                  ? Theme
-                  .of(context)
-                  .colorScheme
-                  .primary
+                  ? ThemeHandler.primaryColor(context)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(25)),
           child: Center(
@@ -604,16 +585,13 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     ? Theme
                     .of(context)
                     .textTheme
-                    .headline2
+                    .headline6
+                    .copyWith(color: ThemeHandler.secondaryColor(context))
                     : Theme
                     .of(context)
                     .textTheme
-                    .headline4
-                    .copyWith(
-                  color: Theme
-                      .of(context)
-                      .scaffoldBackgroundColor,
-                ),
+                    .headline6
+                    .copyWith(color: ThemeHandler.primaryColor(context)),
               ),
             ),
           ),

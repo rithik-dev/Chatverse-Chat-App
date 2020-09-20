@@ -1,5 +1,6 @@
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,7 @@ class MessageCard extends StatelessWidget {
       onLongPress: this.onLongPress,
       child: Column(
         crossAxisAlignment:
-        senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Container(
             width: this._getCardWidth(context),
@@ -45,8 +46,8 @@ class MessageCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             decoration: BoxDecoration(
               color: senderIsMe
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : Theme.of(context).colorScheme.onSecondary,
+                  ? ThemeHandler.myMessageCardColor(context)
+                  : ThemeHandler.contactMessageCardColor(context),
               borderRadius: senderIsMe
                   ? BorderRadius.only(
                       topLeft: Radius.circular(15.0),
@@ -64,10 +65,7 @@ class MessageCard extends StatelessWidget {
               children: <Widget>[
                 SelectableText(
                   message.text,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline4,
+                  style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(height: 8.0),
                 Row(
@@ -81,7 +79,7 @@ class MessageCard extends StatelessWidget {
                       style: Theme
                           .of(context)
                           .textTheme
-                          .headline5,
+                          .subtitle2,
                     ),
                     senderIsMe ? SizedBox(width: 10.0) : SizedBox.shrink(),
                     senderIsMe
@@ -89,12 +87,10 @@ class MessageCard extends StatelessWidget {
                       message.isRead
                           ? Icons.check_circle
                           : Icons.check_circle_outline,
-                      color:
-                      Theme
+                      size: 20,
+                      color: Theme
                           .of(context)
-                          .colorScheme
-                          .secondaryVariant,
-                      size: 22,
+                          .accentColor,
                     )
                         : SizedBox.shrink(),
                   ],

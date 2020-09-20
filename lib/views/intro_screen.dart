@@ -12,7 +12,6 @@ class IntroScreen extends StatelessWidget {
           child: FlatButton(
             child: Text(
               "GO",
-              style: Theme.of(context).textTheme.headline4,
             ),
             onPressed: () {
               Navigator.pushReplacementNamed(context, AuthenticationPage.id);

@@ -18,9 +18,7 @@ class RecentChats extends StatelessWidget {
     user = Provider.of<User>(context);
     return Expanded(
       child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        decoration: BoxDecoration(),
         child: Container(
           child: NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (overScroll) {
@@ -31,7 +29,13 @@ class RecentChats extends StatelessWidget {
               stream: contactsStream,
               builder: (context, contactStreamSnapshot) {
                 if (contactStreamSnapshot.hasData) {
-                  return ListView.builder(
+                  return ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        height: 4,
+                        color: Colors.grey,
+                      );
+                    },
                     itemBuilder: (context, index) {
                       return RecentChatCard(
                         contact: contactStreamSnapshot.data[index],

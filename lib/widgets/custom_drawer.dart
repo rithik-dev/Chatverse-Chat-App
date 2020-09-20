@@ -1,5 +1,6 @@
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/profile_screen.dart';
 import 'package:chatverse_chat_app/views/settings_screen.dart';
 import 'package:chatverse_chat_app/widgets/bottom_sheet_clipper.dart';
@@ -66,9 +67,9 @@ class _LeftChild extends StatelessWidget {
                   Expanded(
                     child: Text(
                       user.name,
-                      style: Theme.of(context).textTheme.headline1,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
                 ],
@@ -98,10 +99,8 @@ class _LeftChild extends StatelessWidget {
                     Navigator.pop(context);
                     showModalBottomSheet(
                       shape: BottomSheetClipper(),
-                      backgroundColor: Theme.of(context)
-                          .colorScheme
-                          .secondary
-                          .withOpacity(0.8),
+                      backgroundColor:
+                      ThemeHandler.favoriteContactsBackgroundColor(context),
                       context: context,
                       builder: (context) => SignOutBottomSheet(),
                     );
@@ -160,7 +159,7 @@ class DrawerItem extends StatelessWidget {
               style: Theme
                   .of(context)
                   .textTheme
-                  .headline2,
+                  .headline6,
             ),
           ],
         ),
