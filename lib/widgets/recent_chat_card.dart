@@ -70,14 +70,13 @@ class RecentChatCard extends StatelessWidget {
                 messages.add(message);
               }
 
-              unreadMessagesCount =
-                  snapshotData['unreadMessageCount(${user.id})'];
+              unreadMessagesCount = snapshotData[user.id]['unreadMessageCount'];
               hasUnreadMessages = unreadMessagesCount != 0;
 
               //FIXME: extremely long name overflow error
               return Container(
                 color: (homeScreenAppBarProvider.contactIsSelected &&
-                    homeScreenAppBarProvider.contactId == contact.id)
+                        homeScreenAppBarProvider.contactId == contact.id)
                     ? ThemeHandler.selectedContactBackgroundColor(context)
                     : Colors.transparent,
                 padding: EdgeInsets.all(5),

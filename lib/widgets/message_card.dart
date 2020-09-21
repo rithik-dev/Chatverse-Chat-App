@@ -9,16 +9,12 @@ import 'package:provider/provider.dart';
 class MessageCard extends StatelessWidget {
   final Message message;
   final String chatRoomId;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
   User user;
   ChatScreenAppBarProvider chatScreenAppBarProvider;
 
   MessageCard({
     @required this.message,
     @required this.chatRoomId,
-    @required this.onTap,
-    @required this.onLongPress,
   });
 
   bool senderIsMe;
@@ -40,8 +36,6 @@ class MessageCard extends StatelessWidget {
     chatScreenAppBarProvider = Provider.of<ChatScreenAppBarProvider>(context);
     senderIsMe = user.id == message.senderId;
     return GestureDetector(
-      onTap: this.onTap,
-      onLongPress: this.onLongPress,
       child: Column(
         crossAxisAlignment:
             senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -56,13 +50,13 @@ class MessageCard extends StatelessWidget {
                   : ThemeHandler.contactMessageCardColor(context),
               borderRadius: this.senderIsMe
                   ? BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                bottomLeft: Radius.circular(15.0),
-              )
+                      topLeft: Radius.circular(15.0),
+                      bottomLeft: Radius.circular(15.0),
+                    )
                   : BorderRadius.only(
-                topRight: Radius.circular(15.0),
-                bottomRight: Radius.circular(15.0),
-              ),
+                      topRight: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
             ),
             child: Column(
               crossAxisAlignment: this.senderIsMe

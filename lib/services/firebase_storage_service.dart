@@ -78,8 +78,21 @@ class FirebaseStorageService {
   }) async {
     await _firestore.collection("chatrooms").doc(chatRoomId).set({
       'messages': FieldValue.arrayUnion([encodedMessage]),
-      "unreadMessageCount($contactId)": FieldValue.increment(1),
+      contactId: {
+        'unreadMessageCount': FieldValue.increment(1),
+      }
     }, SetOptions(merge: true));
+  }
+
+  static Future<void> setMessages({
+    String chatRoomId,
+    List messagesList,
+  }) async {
+    await _firestore.collection("chatrooms").doc(chatRoomId).update(
+      {
+        'messages': messagesList,
+      },
+    );
   }
 
   static void resetUnreadMessages({
@@ -88,7 +101,11 @@ class FirebaseStorageService {
   }) async {
     if (reference != null) {
       _firestore.runTransaction((Transaction myTransaction) {
-        myTransaction.update(reference, {"unreadMessageCount($userId)": 0});
+        myTransaction.update(reference, {
+          userId: {
+            'unreadMessageCount': 0,
+          }
+        });
         return;
       });
     }
@@ -122,7 +139,7 @@ class FirebaseStorageService {
   static Future<String> uploadFile(String userId, File image) async {
     try {
       StorageUploadTask uploadTask =
-      _storage.ref().child('Profile Pictures/$userId.png').putFile(image);
+          _storage.ref().child('Profile Pictures/$userId.png').putFile(image);
       await uploadTask.onComplete;
       String fileURL = await _storage
           .ref()
