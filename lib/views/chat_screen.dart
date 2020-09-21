@@ -26,13 +26,11 @@ class _ChatScreenState extends State<ChatScreen> {
   User user;
 
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _messageController = TextEditingController();
 
   List<Message> messages;
   Message message;
   List messagesList;
 
-  String messageText;
   int messagesLength;
 
   int unreadMessageCount;
@@ -41,7 +39,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     _scrollController.dispose();
-    _messageController.dispose();
   }
 
   @override
@@ -54,7 +51,10 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Padding(
             padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
             child: AppBar(
-              leading: ProfilePicture(this.widget.contact.photoUrl),
+              leading: Hero(
+                tag: this.widget.contact.id,
+                child: ProfilePicture(this.widget.contact.photoUrl),
+              ),
               title: Text(this.widget.contact.name),
               actions: [
                 IconButton(
@@ -132,17 +132,10 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
             SendButtonTextField(
-              controller: _messageController,
-              onChanged: (String msg) {
-                messageText = msg;
-              },
-              onSend: () async {
+              onSend: (String messageText) {
                 if (messageText != null && messageText != "") {
-                  _messageController.clear();
-
                   //FIXME: fix bug when sending a lot of messages and not sending
                   final String msg = messageText;
-                  messageText = "";
                   MessageController.sendMessage(
                     contactId: this.widget.contact.id,
                     text: msg,

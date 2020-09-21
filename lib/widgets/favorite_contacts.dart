@@ -19,6 +19,7 @@ class FavoriteContacts extends StatelessWidget {
     return Consumer2<User, AppBarProvider>(
         builder: (context, user, appBarProvider, snapshot) {
       return Container(
+        height: user.favoriteContactIds.length == 0 ? 0 : 170,
         decoration: BoxDecoration(
           color: ThemeHandler.favoriteContactsBackgroundColor(context),
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
@@ -46,7 +47,7 @@ class FavoriteContacts extends StatelessWidget {
               ),
             ),
             Container(
-              height: 110.0,
+              height: 100.0,
               child: StreamBuilder<List<Contact>>(
                 stream: favoriteContactsStream,
                 builder: (context, favoriteContactsSnapshot) {
@@ -57,7 +58,7 @@ class FavoriteContacts extends StatelessWidget {
                       itemCount: favoriteContactsSnapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
-                          width: 125,
+                          width: 100,
                           child: Column(
                             children: <Widget>[
                               ProfilePicture(
@@ -69,13 +70,13 @@ class FavoriteContacts extends StatelessWidget {
                                           .contactId ==
                                       favoriteContactsSnapshot.data[index].id)
                                     appBarProvider.unSelectContact();
-                                  else
-                                    appBarProvider.selectContact(
-                                      contactId: favoriteContactsSnapshot
-                                          .data[index].id,
-                                      favoriteContactIds:
-                                          user.favoriteContactIds,
-                                    );
+                                    else
+                                      appBarProvider.selectContact(
+                                        contactId: favoriteContactsSnapshot
+                                            .data[index].id,
+                                        favoriteContactIds:
+                                        user.favoriteContactIds,
+                                      );
                                   else
                                     Navigator.pushNamed(context, ChatScreen.id,
                                         arguments: favoriteContactsSnapshot
@@ -89,7 +90,7 @@ class FavoriteContacts extends StatelessWidget {
                                       contactId: favoriteContactsSnapshot
                                           .data[index].id,
                                       favoriteContactIds:
-                                          user.favoriteContactIds,
+                                      user.favoriteContactIds,
                                     );
                                 },
                                 onVerticalDragStart: (details) {
@@ -97,7 +98,7 @@ class FavoriteContacts extends StatelessWidget {
                                     appBarProvider.unSelectContact();
                                 },
                               ),
-                              SizedBox(height: 6.0),
+                              SizedBox(height: 10.0),
                               Text(
                                 favoriteContactsSnapshot.data[index].name,
                                 maxLines: 1,

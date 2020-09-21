@@ -125,12 +125,10 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             children: <Widget>[
-                              if (favoriteContacts.length != 0) ...[
                                 FavoriteContacts(
                                     favoriteContactsStream:
                                         favoriteContactsStream),
                                 SizedBox(height: 10),
-                              ],
                               RecentChats(contactsStream: contactsStream),
                             ],
                           ),

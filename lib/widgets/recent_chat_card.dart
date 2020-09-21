@@ -5,8 +5,8 @@ import 'package:chatverse_chat_app/providers/appbar_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
-import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
+import 'package:chatverse_chat_app/widgets/recent_chat_card_shimmer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -95,7 +95,10 @@ class RecentChatCard extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          ProfilePicture(contact.photoUrl, radius: 35),
+                          Hero(
+                            tag: contact.id,
+                            child: ProfilePicture(contact.photoUrl, radius: 35),
+                          ),
                           SizedBox(width: 10.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,10 +107,7 @@ class RecentChatCard extends StatelessWidget {
                                 contact.name,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .headline6,
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                               SizedBox(height: 10.0),
                               Container(
@@ -146,9 +146,7 @@ class RecentChatCard extends StatelessWidget {
                                   height: 20.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(30.0),
-                                      color: Theme
-                                          .of(context)
-                                          .accentColor
+                                    color: Color(0xFFe43f5a),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
@@ -169,7 +167,7 @@ class RecentChatCard extends StatelessWidget {
                 ),
               );
             } else
-              return CustomLoader();
+              return RecentChatCardShimmer();
           },
         ),
       );

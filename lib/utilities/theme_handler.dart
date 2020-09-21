@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ThemeHandler {
   ThemeHandler._();
 
-  static final Brightness defaultBrightness = Brightness.light;
+  static final Brightness defaultBrightness = Brightness.dark;
 
 //  static final baseTheme = ThemeData();
 //
@@ -202,7 +202,7 @@ class ThemeHandler {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.white, size: 30),
         actionsIconTheme: IconThemeData(color: Colors.white, size: 30)),
-    accentColor: Colors.lightBlueAccent,
+    accentColor: Colors.tealAccent,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     iconTheme: IconThemeData(color: Colors.white),
@@ -218,6 +218,7 @@ class ThemeHandler {
 
   static ThemeData getThemeData(Brightness brightness) {
     print("currentBrightness : $brightness");
+    return darkTheme;
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
 

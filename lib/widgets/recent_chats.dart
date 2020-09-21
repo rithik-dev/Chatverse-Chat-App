@@ -1,7 +1,7 @@
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
-import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/recent_chat_card.dart';
+import 'package:chatverse_chat_app/widgets/recent_chat_card_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,12 @@ class RecentChats extends StatelessWidget {
                     itemCount: contactStreamSnapshot.data.length,
                   );
                 } else
-                  return CustomLoader();
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return RecentChatCardShimmer();
+                    },
+                    itemCount: user.favoriteContactIds.length,
+                  );
               },
             ),
           ),
