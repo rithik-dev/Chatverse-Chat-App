@@ -11,8 +11,12 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class FavoriteContacts extends StatelessWidget {
   final Stream<List<Contact>> favoriteContactsStream;
+  final VoidCallback removeAllFavoriteContactsCallback;
 
-  FavoriteContacts({this.favoriteContactsStream});
+  FavoriteContacts({
+    this.favoriteContactsStream,
+    this.removeAllFavoriteContactsCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +41,30 @@ class FavoriteContacts extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   IconButton(
-                    icon: Icon(
-                      Icons.more_horiz,
-                    ),
+                    icon: Icon(Icons.more_horiz),
                     iconSize: 30.0,
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: Theme
+                                .of(context)
+                                .scaffoldBackgroundColor,
+                            title: Text("Favorite Contacts"),
+                            content: RaisedButton.icon(
+                              color: Colors.transparent,
+                              icon: Icon(Icons.remove_circle),
+                              label: Text("Remove all favorites"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                return this.removeAllFavoriteContactsCallback();
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

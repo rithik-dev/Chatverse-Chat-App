@@ -59,11 +59,12 @@ class FirebaseStorageService {
     });
   }
 
-  static Future<void> removeContactFromFavorites(
-      {String userId, String contactId}) async {
-    await _firestore.collection("users").doc(userId).update({
-      'favoriteContactIds': FieldValue.arrayRemove([contactId])
-    });
+  static Future<void> removeContactsFromFavorites(
+      {String userId, List<String> contactIds}) async {
+    await _firestore
+        .collection("users")
+        .doc(userId)
+        .update({'favoriteContactIds': FieldValue.arrayRemove(contactIds)});
   }
 
   static Future<void> setUserData(

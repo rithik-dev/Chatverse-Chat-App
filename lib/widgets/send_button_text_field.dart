@@ -95,6 +95,7 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
                   _tempMessage = this._messageText;
                   setState(() {
                     this._messageText = "";
+                    this._textEditingController.text = "";
                     this._textEditingController.clear();
                   });
                   return this.widget.onSend(_tempMessage);
@@ -118,8 +119,18 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
       bool available = await _speech.initialize(
         onStatus: (val) {
           setState(() {
-            if (val == "listening") this._isListening = true;
-            if (val == "notListening") this._isListening = false;
+            if (val == "listening") {
+              this._isListening = true;
+              this._messageText = "";
+              this._textEditingController.text = "";
+              this._textEditingController.clear();
+            }
+            if (val == "notListening") {
+              this._isListening = false;
+              this._messageText = "";
+              this._textEditingController.text = "";
+              this._textEditingController.clear();
+            }
           });
         },
         onError: (val) {

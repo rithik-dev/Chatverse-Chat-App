@@ -91,7 +91,7 @@ class RecentChatCard extends StatelessWidget {
                 padding: EdgeInsets.all(5),
                 child: Container(
                   padding:
-                  EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                   margin: EdgeInsets.only(right: 25.0),
                   decoration: BoxDecoration(
                     color: hasUnreadMessages

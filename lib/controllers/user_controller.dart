@@ -61,9 +61,10 @@ class UserController {
     );
   }
 
-  static Future<void> removeContactFromFavorites(String contactId) async {
-    await FirebaseStorageService.removeContactFromFavorites(
-        userId: _loggedInUser.id, contactId: contactId);
+  static Future<void> removeContactFromFavorites(
+      List<String> contactIds) async {
+    await FirebaseStorageService.removeContactsFromFavorites(
+        userId: _loggedInUser.id, contactIds: contactIds);
   }
 
   static Future<bool> signUpUser(

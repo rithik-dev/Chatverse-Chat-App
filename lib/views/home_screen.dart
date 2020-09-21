@@ -43,26 +43,25 @@ class HomeScreen extends StatelessWidget {
                       },
                     ),
                     duration: Duration(milliseconds: 250),
-                        crossFadeState: homeScreenAppBarProvider
-                            .contactIsSelected
-                            ? CrossFadeState.showSecond
-                            : CrossFadeState.showFirst,
+                    crossFadeState: homeScreenAppBarProvider.contactIsSelected
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
                   ),
                   actions: [
                     if (homeScreenAppBarProvider.contactIsSelected) ...[
                       homeScreenAppBarProvider.contactIsFavorite
                           ? IconButton(
-                        icon: Icon(Icons.favorite),
-                        color: Colors.red,
-                        onPressed: () async {
-                          loadingProvider.startLoading();
-                          await UserController.removeContactFromFavorites(
-                              homeScreenAppBarProvider.contactId);
-                          user.favoriteContactIds
-                              .remove(homeScreenAppBarProvider.contactId);
-                          homeScreenAppBarProvider.unSelectContact();
-                          user.updateUserInProvider(user);
-                          loadingProvider.stopLoading();
+                              icon: Icon(Icons.favorite),
+                              color: Colors.red,
+                              onPressed: () async {
+                                loadingProvider.startLoading();
+                                await UserController.removeContactFromFavorites(
+                                    [homeScreenAppBarProvider.contactId]);
+                                user.favoriteContactIds
+                                    .remove(homeScreenAppBarProvider.contactId);
+                                homeScreenAppBarProvider.unSelectContact();
+                                user.updateUserInProvider(user);
+                                loadingProvider.stopLoading();
                               },
                             )
                           : IconButton(
@@ -127,10 +126,20 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             children: <Widget>[
-                                FavoriteContacts(
-                                    favoriteContactsStream:
-                                        favoriteContactsStream),
-                                SizedBox(height: 10),
+                              FavoriteContacts(
+                                favoriteContactsStream: favoriteContactsStream,
+                                removeAllFavoriteContactsCallback: () async {
+                                  loadingProvider.startLoading();
+                                  await UserController
+                                      .removeContactFromFavorites(
+                                    user.favoriteContactIds,
+                                  );
+                                  loadingProvider.stopLoading();
+                                  user.favoriteContactIds.clear();
+                                  user.updateUserInProvider(user);
+                                },
+                              ),
+                              SizedBox(height: 10),
                               RecentChats(contactsStream: contactsStream),
                             ],
                           ),
