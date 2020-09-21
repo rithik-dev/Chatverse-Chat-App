@@ -1,6 +1,7 @@
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
+import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,10 @@ class MessageCard extends StatelessWidget {
     user = Provider.of<User>(context);
     chatScreenAppBarProvider = Provider.of<ChatScreenAppBarProvider>(context);
     senderIsMe = user.id == message.senderId;
+
+    if (this.senderIsMe && this.message.isDeletedForMe)
+      message.text = kDeletedMessageString;
+
     return GestureDetector(
       child: Column(
         crossAxisAlignment:
@@ -65,7 +70,12 @@ class MessageCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   this.message.text,
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontStyle: this.message.isDeletedForMe
+                        ? FontStyle.italic
+                        : FontStyle.normal,
+                  ),
                 ),
                 SizedBox(height: 8.0),
                 Row(

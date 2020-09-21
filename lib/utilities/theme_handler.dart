@@ -205,6 +205,7 @@ class ThemeHandler {
     accentColor: Colors.tealAccent,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
+    canvasColor: Color(0xFF1b1b2f),
     iconTheme: IconThemeData(color: Colors.tealAccent),
   );
 

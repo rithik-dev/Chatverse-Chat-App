@@ -95,17 +95,41 @@ class FirebaseStorageService {
     );
   }
 
+  static Future<void> deleteMessage({
+    @required String chatRoomId,
+    String userId,
+    String contactId,
+    bool deleteForEveryone = false,
+    @required int messageIndex,
+  }) async {
+    await _firestore.collection("chatrooms").doc(chatRoomId).set(
+      {
+        userId: {
+          'deletedMessagesIndex': FieldValue.arrayUnion([messageIndex]),
+        },
+        contactId: {
+          'deletedMessagesIndex':
+              FieldValue.arrayUnion(deleteForEveryone ? [messageIndex] : []),
+        },
+      },
+      SetOptions(merge: true),
+    );
+  }
+
   static void resetUnreadMessages({
     @required String userId,
     @required DocumentReference reference,
   }) async {
     if (reference != null) {
       _firestore.runTransaction((Transaction myTransaction) {
-        myTransaction.update(reference, {
-          userId: {
-            'unreadMessageCount': 0,
-          }
-        });
+        myTransaction.set(
+            reference,
+            {
+              userId: {
+                'unreadMessageCount': 0,
+              }
+            },
+            SetOptions(merge: true));
         return;
       });
     }
