@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class AppBarProvider extends ChangeNotifier {
+class HomeScreenAppBarProvider extends ChangeNotifier {
   String contactId;
   bool contactIsSelected = false;
   bool contactIsFavorite;

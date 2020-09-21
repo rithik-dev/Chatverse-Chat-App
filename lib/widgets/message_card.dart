@@ -1,5 +1,6 @@
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,12 +9,15 @@ import 'package:provider/provider.dart';
 class MessageCard extends StatelessWidget {
   final Message message;
   final String chatRoomId;
+  final VoidCallback onTap;
   final VoidCallback onLongPress;
   User user;
+  ChatScreenAppBarProvider chatScreenAppBarProvider;
 
   MessageCard({
     @required this.message,
     @required this.chatRoomId,
+    @required this.onTap,
     @required this.onLongPress,
   });
 
@@ -33,8 +37,10 @@ class MessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
+    chatScreenAppBarProvider = Provider.of<ChatScreenAppBarProvider>(context);
     senderIsMe = user.id == message.senderId;
     return GestureDetector(
+      onTap: this.onTap,
       onLongPress: this.onLongPress,
       child: Column(
         crossAxisAlignment:
@@ -45,46 +51,46 @@ class MessageCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 2.5),
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             decoration: BoxDecoration(
-              color: senderIsMe
+              color: this.senderIsMe
                   ? ThemeHandler.myMessageCardColor(context)
                   : ThemeHandler.contactMessageCardColor(context),
-              borderRadius: senderIsMe
+              borderRadius: this.senderIsMe
                   ? BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      bottomLeft: Radius.circular(15.0),
-                    )
+                topLeft: Radius.circular(15.0),
+                bottomLeft: Radius.circular(15.0),
+              )
                   : BorderRadius.only(
-                      topRight: Radius.circular(15.0),
-                      bottomRight: Radius.circular(15.0),
-                    ),
+                topRight: Radius.circular(15.0),
+                bottomRight: Radius.circular(15.0),
+              ),
             ),
             child: Column(
-              crossAxisAlignment: senderIsMe
+              crossAxisAlignment: this.senderIsMe
                   ? CrossAxisAlignment.end
                   : CrossAxisAlignment.start,
               children: <Widget>[
-                SelectableText(
-                  message.text,
+                Text(
+                  this.message.text,
                   style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(height: 8.0),
                 Row(
-                  mainAxisAlignment: senderIsMe
+                  mainAxisAlignment: this.senderIsMe
                       ? MainAxisAlignment.spaceBetween
                       : MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      message.displayTime,
+                      this.message.displayTime,
                       style: Theme
                           .of(context)
                           .textTheme
                           .subtitle2,
                     ),
-                    senderIsMe ? SizedBox(width: 10.0) : SizedBox.shrink(),
-                    senderIsMe
+                    this.senderIsMe ? SizedBox(width: 10.0) : SizedBox.shrink(),
+                    this.senderIsMe
                         ? Icon(
-                      message.isRead
+                      this.message.isRead
                           ? Icons.check_circle
                           : Icons.check_circle_outline,
                       size: 20,

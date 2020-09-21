@@ -1,8 +1,8 @@
 import 'package:chatverse_chat_app/controllers/user_controller.dart';
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
-import 'package:chatverse_chat_app/providers/appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
+import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/custom_drawer.dart';
@@ -20,8 +20,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: CustomDrawer(
-        child: Consumer3<User, AppBarProvider, LoadingScreenProvider>(builder:
-            (context, user, appBarProvider, loadingProvider, snapshot) {
+        child: Consumer3<User, HomeScreenAppBarProvider, LoadingScreenProvider>(
+            builder: (context, user, homeScreenAppBarProvider, loadingProvider,
+                snapshot) {
           return CustomLoadingScreen(
             child: Scaffold(
               appBar: PreferredSize(
@@ -38,29 +39,30 @@ class HomeScreen extends StatelessWidget {
                     secondChild: IconButton(
                       icon: Icon(Icons.arrow_back_ios),
                       onPressed: () {
-                        appBarProvider.unSelectContact();
+                        homeScreenAppBarProvider.unSelectContact();
                       },
                     ),
                     duration: Duration(milliseconds: 250),
-                    crossFadeState: appBarProvider.contactIsSelected
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
+                        crossFadeState: homeScreenAppBarProvider
+                            .contactIsSelected
+                            ? CrossFadeState.showSecond
+                            : CrossFadeState.showFirst,
                   ),
                   actions: [
-                    if (appBarProvider.contactIsSelected) ...[
-                      appBarProvider.contactIsFavorite
+                    if (homeScreenAppBarProvider.contactIsSelected) ...[
+                      homeScreenAppBarProvider.contactIsFavorite
                           ? IconButton(
-                              icon: Icon(Icons.favorite),
-                              color: Colors.red,
-                              onPressed: () async {
-                                loadingProvider.startLoading();
-                                await UserController.removeContactFromFavorites(
-                                    appBarProvider.contactId);
-                                user.favoriteContactIds
-                                    .remove(appBarProvider.contactId);
-                                appBarProvider.unSelectContact();
-                                user.updateUserInProvider(user);
-                                loadingProvider.stopLoading();
+                        icon: Icon(Icons.favorite),
+                        color: Colors.red,
+                        onPressed: () async {
+                          loadingProvider.startLoading();
+                          await UserController.removeContactFromFavorites(
+                              homeScreenAppBarProvider.contactId);
+                          user.favoriteContactIds
+                              .remove(homeScreenAppBarProvider.contactId);
+                          homeScreenAppBarProvider.unSelectContact();
+                          user.updateUserInProvider(user);
+                          loadingProvider.stopLoading();
                               },
                             )
                           : IconButton(
@@ -69,10 +71,10 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () async {
                                 loadingProvider.startLoading();
                                 await UserController.addContactToFavorites(
-                                    appBarProvider.contactId);
+                                    homeScreenAppBarProvider.contactId);
                                 user.favoriteContactIds
-                                    .add(appBarProvider.contactId);
-                                appBarProvider.unSelectContact();
+                                    .add(homeScreenAppBarProvider.contactId);
+                                homeScreenAppBarProvider.unSelectContact();
                                 user.updateUserInProvider(user);
                                 loadingProvider.stopLoading();
                               },

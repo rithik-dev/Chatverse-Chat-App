@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Functions {
   Functions._();
@@ -11,5 +12,9 @@ class Functions {
         duration: duration ?? Duration(seconds: 2),
         action: action);
     Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  static void copyToClipboard(String data) {
+    Clipboard.setData(ClipboardData(text: data));
   }
 }

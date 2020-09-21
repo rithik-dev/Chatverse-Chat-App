@@ -1,6 +1,6 @@
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/user.dart';
-import 'package:chatverse_chat_app/providers/appbar_provider.dart';
+import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
@@ -16,8 +16,8 @@ class FavoriteContacts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<User, AppBarProvider>(
-        builder: (context, user, appBarProvider, snapshot) {
+    return Consumer2<User, HomeScreenAppBarProvider>(
+        builder: (context, user, homeScreenAppBarProvider, snapshot) {
       return Container(
         height: user.favoriteContactIds.length == 0 ? 0 : 170,
         decoration: BoxDecoration(
@@ -48,6 +48,7 @@ class FavoriteContacts extends StatelessWidget {
             ),
             Container(
               height: 100.0,
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: StreamBuilder<List<Contact>>(
                 stream: favoriteContactsStream,
                 builder: (context, favoriteContactsSnapshot) {
@@ -58,20 +59,22 @@ class FavoriteContacts extends StatelessWidget {
                       itemCount: favoriteContactsSnapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
-                          width: 100,
+                          width: 110,
                           child: Column(
                             children: <Widget>[
                               ProfilePicture(
                                 favoriteContactsSnapshot.data[index].photoUrl,
                                 radius: 35,
                                 onPressed: () {
-                                  if (appBarProvider
-                                      .contactIsSelected) if (appBarProvider
-                                          .contactId ==
-                                      favoriteContactsSnapshot.data[index].id)
-                                    appBarProvider.unSelectContact();
+                                  if (homeScreenAppBarProvider
+                                      .contactIsSelected)
+                                    if (homeScreenAppBarProvider
+                                        .contactId ==
+                                        favoriteContactsSnapshot.data[index].id)
+                                      homeScreenAppBarProvider
+                                          .unSelectContact();
                                     else
-                                      appBarProvider.selectContact(
+                                      homeScreenAppBarProvider.selectContact(
                                         contactId: favoriteContactsSnapshot
                                             .data[index].id,
                                         favoriteContactIds:
@@ -83,10 +86,11 @@ class FavoriteContacts extends StatelessWidget {
                                             .data[index]);
                                 },
                                 onLongPress: () async {
-                                  if (appBarProvider.contactIsSelected)
-                                    appBarProvider.unSelectContact();
+                                  if (homeScreenAppBarProvider
+                                      .contactIsSelected)
+                                    homeScreenAppBarProvider.unSelectContact();
                                   else
-                                    appBarProvider.selectContact(
+                                    homeScreenAppBarProvider.selectContact(
                                       contactId: favoriteContactsSnapshot
                                           .data[index].id,
                                       favoriteContactIds:
@@ -94,14 +98,16 @@ class FavoriteContacts extends StatelessWidget {
                                     );
                                 },
                                 onVerticalDragStart: (details) {
-                                  if (appBarProvider.contactIsSelected)
-                                    appBarProvider.unSelectContact();
+                                  if (homeScreenAppBarProvider
+                                      .contactIsSelected)
+                                    homeScreenAppBarProvider.unSelectContact();
                                 },
                               ),
                               SizedBox(height: 10.0),
                               Text(
                                 favoriteContactsSnapshot.data[index].name,
                                 maxLines: 1,
+                                textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ],

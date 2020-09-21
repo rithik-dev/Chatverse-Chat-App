@@ -18,7 +18,6 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
   String _tempMessage;
 
   final TextEditingController _textEditingController = TextEditingController();
-  AnimationController _animationController;
 
   stt.SpeechToText _speech;
   bool _isListening = false;
@@ -85,7 +84,7 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
             radius: 25,
             backgroundColor: Theme.of(context).accentColor,
             child: AnimatedCrossFade(
-              duration: Duration(milliseconds: 250),
+              duration: Duration(milliseconds: 200),
               firstChild: IconButton(
                 icon: Icon(this._isListening ? Icons.mic : Icons.mic_none),
                 onPressed: this._listen,

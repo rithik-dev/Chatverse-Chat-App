@@ -1,6 +1,7 @@
 import 'package:chatverse_chat_app/models/user.dart';
-import 'package:chatverse_chat_app/providers/appbar_provider.dart';
+import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/drawer_provider.dart';
+import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_core_service.dart';
 import 'package:chatverse_chat_app/services/push_notification_service.dart';
@@ -11,7 +12,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// TODO: make favorite contacts list view
 // TODO: add like message feature
 // TODO: add feature to drag and drop a person to the fav contacts list
 // TODO: show green dot is user is online
@@ -22,8 +22,7 @@ import 'package:provider/provider.dart';
 // TODO: notifications when new message??
 // TODO: handle cannot add contacts exception
 //TODO: add emoji keyboard
-//TODO: add voice recognition
-
+//TODO: add delete for me message option
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseCoreService.initApp();
@@ -42,8 +41,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<LoadingScreenProvider>(
           create: (_) => LoadingScreenProvider(),
         ),
-        ChangeNotifierProvider<AppBarProvider>(
-          create: (_) => AppBarProvider(),
+        ChangeNotifierProvider<HomeScreenAppBarProvider>(
+          create: (_) => HomeScreenAppBarProvider(),
+        ),
+        ChangeNotifierProvider<ChatScreenAppBarProvider>(
+          create: (_) => ChatScreenAppBarProvider(),
         ),
         Provider<DrawerProvider>(
           create: (_) => DrawerProvider(),

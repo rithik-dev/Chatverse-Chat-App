@@ -1,7 +1,7 @@
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
-import 'package:chatverse_chat_app/providers/appbar_provider.dart';
+import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
@@ -24,15 +24,17 @@ class RecentChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<User, AppBarProvider>(
-        builder: (context, user, appBarProvider, snapshot) {
+    return Consumer2<User, HomeScreenAppBarProvider>(
+        builder: (context, user, homeScreenAppBarProvider, snapshot) {
       return GestureDetector(
         onTap: () {
-          if (appBarProvider.contactIsSelected) if (appBarProvider.contactId ==
+          if (homeScreenAppBarProvider
+              .contactIsSelected) if (homeScreenAppBarProvider
+                  .contactId ==
               contact.id)
-            appBarProvider.unSelectContact();
+            homeScreenAppBarProvider.unSelectContact();
           else
-            appBarProvider.selectContact(
+            homeScreenAppBarProvider.selectContact(
               contactId: contact.id,
               favoriteContactIds: user.favoriteContactIds,
             );
@@ -40,17 +42,17 @@ class RecentChatCard extends StatelessWidget {
             Navigator.pushNamed(context, ChatScreen.id, arguments: contact);
         },
         onLongPress: () async {
-          if (appBarProvider.contactIsSelected)
-            appBarProvider.unSelectContact();
+          if (homeScreenAppBarProvider.contactIsSelected)
+            homeScreenAppBarProvider.unSelectContact();
           else
-            appBarProvider.selectContact(
+            homeScreenAppBarProvider.selectContact(
               contactId: contact.id,
               favoriteContactIds: user.favoriteContactIds,
             );
         },
         onVerticalDragStart: (details) {
-          if (appBarProvider.contactIsSelected)
-            appBarProvider.unSelectContact();
+          if (homeScreenAppBarProvider.contactIsSelected)
+            homeScreenAppBarProvider.unSelectContact();
         },
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseStorageService.getMessagesStream(contact.chatRoomId),
@@ -63,23 +65,25 @@ class RecentChatCard extends StatelessWidget {
               messages = [];
 
               for (int i = messagesList.length - 1; i >= 0; i--) {
-//              messagesList[i].addAll({"index": i});
-                messages.add(Message.fromJSONString(messagesList[i]));
+                final Message message = Message.fromJSONString(messagesList[i]);
+                message.index = i;
+                messages.add(message);
               }
 
               unreadMessagesCount =
                   snapshotData['unreadMessageCount(${user.id})'];
               hasUnreadMessages = unreadMessagesCount != 0;
 
+              //FIXME: extremely long name overflow error
               return Container(
-                color: (appBarProvider.contactIsSelected &&
-                        appBarProvider.contactId == contact.id)
+                color: (homeScreenAppBarProvider.contactIsSelected &&
+                    homeScreenAppBarProvider.contactId == contact.id)
                     ? ThemeHandler.selectedContactBackgroundColor(context)
                     : Colors.transparent,
                 padding: EdgeInsets.all(5),
                 child: Container(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                  EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                   margin: EdgeInsets.only(right: 25.0),
                   decoration: BoxDecoration(
                     color: hasUnreadMessages

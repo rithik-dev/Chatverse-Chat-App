@@ -48,7 +48,7 @@ class RecentChats extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return RecentChatCardShimmer();
                     },
-                    itemCount: user.favoriteContactIds.length,
+                    itemCount: user.contacts.keys.length,
                   );
               },
             ),

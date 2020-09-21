@@ -6,14 +6,14 @@ class Message {
   bool isRead;
   String text;
 
-//  int index;
+  int index;
   String displayTime;
   String displayDate;
   String senderId;
 
   Message({
     @required this.text,
-//    @required this.index,
+    @required this.index,
     @required this.senderId,
     this.isRead,
     this.displayTime,
@@ -34,7 +34,7 @@ class Message {
       senderId: message['senderId'],
       displayTime: message['displayTime'],
       displayDate: message['displayDate'],
-//      index: message['index'],
+      index: message['index'],
     );
   }
 

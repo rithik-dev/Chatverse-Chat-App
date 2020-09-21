@@ -200,12 +200,12 @@ class ThemeHandler {
         centerTitle: true,
         color: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white, size: 30),
-        actionsIconTheme: IconThemeData(color: Colors.white, size: 30)),
+        iconTheme: IconThemeData(color: Colors.tealAccent, size: 30),
+        actionsIconTheme: IconThemeData(color: Colors.tealAccent, size: 30)),
     accentColor: Colors.tealAccent,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: IconThemeData(color: Colors.tealAccent),
   );
 
   static Future<void> setDarkTheme(BuildContext context) async {

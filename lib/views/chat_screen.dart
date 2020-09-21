@@ -2,7 +2,9 @@ import 'package:chatverse_chat_app/controllers/message_controller.dart';
 import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/date_separator.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
@@ -23,14 +25,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  User user;
-
   final ScrollController _scrollController = ScrollController();
 
   List<Message> messages;
-  Message message;
   List messagesList;
 
+  Message message;
   int messagesLength;
 
   int unreadMessageCount;
@@ -38,122 +38,197 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     super.dispose();
-    _scrollController.dispose();
+    this._scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<User>(context);
     return SafeArea(
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(75),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-            child: AppBar(
-              leading: Hero(
-                tag: this.widget.contact.id,
-                child: ProfilePicture(this.widget.contact.photoUrl),
+      child: Consumer2<User, ChatScreenAppBarProvider>(
+          builder: (context, user, chatScreenAppBarProvider, snapshot) {
+        return WillPopScope(
+          onWillPop: () {
+            chatScreenAppBarProvider.unSelectMessage();
+            return Future.value(true);
+          },
+          child: Scaffold(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(75),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                child: AnimatedCrossFade(
+                  duration: Duration(milliseconds: 250),
+                  // appbar when message is not selected
+                  firstChild: AppBar(
+                    leading: ProfilePicture(this.widget.contact.photoUrl),
+                    centerTitle: true,
+                    title: Text(this.widget.contact.name),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  // appbar when message is selected
+                  secondChild: AppBar(
+                    leading: ProfilePicture(this.widget.contact.photoUrl),
+                    centerTitle: false,
+                    title: Text(this.widget.contact.name),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.content_copy),
+                        onPressed: () {
+                          chatScreenAppBarProvider.copySelectedMessage();
+                        },
+                      ),
+                      // show delete button only if logged in user is sender
+                      if (chatScreenAppBarProvider.messageIsSelected) ...[
+                        (chatScreenAppBarProvider.message.senderId == user.id)
+                            ? IconButton(
+                                icon: Icon(Icons.delete),
+                                color: Colors.redAccent,
+                                onPressed: () {},
+                              )
+                            : SizedBox.shrink(),
+                        IconButton(
+                          icon: Icon(Icons.forward),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.cancel),
+                          onPressed: () {
+                            chatScreenAppBarProvider.unSelectMessage();
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                  crossFadeState: chatScreenAppBarProvider.messageIsSelected
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                ),
               ),
-              title: Text(this.widget.contact.name),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () {},
+            ),
+            body: Column(
+              children: [
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseStorageService.getMessagesStream(
+                      widget.contact.chatRoomId),
+                  builder: (context, messageSnapshot) {
+                    if (messageSnapshot.hasData) {
+                      if (messageSnapshot.data.id ==
+                          this.widget.contact.chatRoomId) {
+                        FirebaseStorageService.resetUnreadMessages(
+                          userId: user.id,
+                          reference: messageSnapshot.data.reference,
+                        );
+                      }
+                      final Map<String, dynamic> snapshotData =
+                          messageSnapshot.data.data();
+                      messagesList = snapshotData['messages'];
+
+                      unreadMessageCount = snapshotData[
+                          'unreadMessageCount(${this.widget.contact.id})'];
+                      messages = [];
+
+                      messagesLength = messagesList.length;
+                      for (int i = messagesLength - 1; i >= 0; i--) {
+                        message = Message.fromJSONString(messagesList[i]);
+                        message.index = i;
+
+                        // setting the last [unreadMessageCount] messages isRead as false
+                        if (message.senderId == user.id) {
+                          if (messagesLength - i <= unreadMessageCount)
+                            message.isRead = false;
+                          else
+                            message.isRead = true;
+                        }
+
+                        messages.add(message);
+                      }
+
+                      return Expanded(
+                        child: ListView.separated(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          reverse: true,
+                          controller: _scrollController,
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          separatorBuilder: (context, index) {
+                            if (messages[index].displayDate !=
+                                messages[index + 1].displayDate)
+                              return DateSeparator(messages[index].displayDate);
+                            else
+                              return SizedBox.shrink();
+                          },
+                          itemBuilder: (context, index) {
+                            return Container(
+                              color: (chatScreenAppBarProvider
+                                          .messageIsSelected &&
+                                      chatScreenAppBarProvider.message.index ==
+                                          messages[index].index)
+                                  ? ThemeHandler.selectedContactBackgroundColor(
+                                      context)
+                                  : Colors.transparent,
+                              child: MessageCard(
+                                message: messages[index],
+                                chatRoomId: this.widget.contact.chatRoomId,
+                                onTap: () {
+                                  if (chatScreenAppBarProvider
+                                      .messageIsSelected) if (chatScreenAppBarProvider
+                                          .message.index ==
+                                      messages[index].index)
+                                    chatScreenAppBarProvider.unSelectMessage();
+                                  else
+                                    chatScreenAppBarProvider.selectMessage(
+                                        message: messages[index]);
+                                },
+                                onLongPress: () async {
+                                  if (chatScreenAppBarProvider
+                                      .messageIsSelected)
+                                    chatScreenAppBarProvider.unSelectMessage();
+                                  else
+                                    chatScreenAppBarProvider.selectMessage(
+                                        message: messages[index]);
+                                },
+                              ),
+                            );
+                          },
+                          itemCount: messages.length,
+                        ),
+                      );
+                    } else
+                      return CustomLoader();
+                  },
+                ),
+                SendButtonTextField(
+                  onSend: (String messageText) {
+                    if (messageText != null && messageText != "") {
+                      //FIXME: fix bug when sending a lot of messages and not sending
+                      final String msg = messageText;
+                      MessageController.sendMessage(
+                        contactId: this.widget.contact.id,
+                        text: msg,
+                        chatRoomId: this.widget.contact.chatRoomId,
+                        senderId: user.id,
+                      );
+
+                      _scrollController.animateTo(
+                        0.0,
+                        curve: Curves.easeOut,
+                        duration: const Duration(milliseconds: 300),
+                      );
+                      chatScreenAppBarProvider.unSelectMessage();
+                    }
+                  },
                 ),
               ],
             ),
           ),
-        ),
-        body: Column(
-          children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseStorageService.getMessagesStream(
-                  widget.contact.chatRoomId),
-              builder: (context, messageSnapshot) {
-                if (messageSnapshot.hasData) {
-                  if (messageSnapshot.data.id ==
-                      this.widget.contact.chatRoomId) {
-                    FirebaseStorageService.resetUnreadMessages(
-                      userId: this.user.id,
-                      reference: messageSnapshot.data.reference,
-                    );
-                  }
-                  final Map<String, dynamic> snapshotData =
-                      messageSnapshot.data.data();
-                  messagesList = snapshotData['messages'];
-
-                  unreadMessageCount = snapshotData[
-                      'unreadMessageCount(${this.widget.contact.id})'];
-                  messages = [];
-
-                  messagesLength = messagesList.length;
-                  for (int i = messagesLength - 1; i >= 0; i--) {
-//                    messagesList[i].addAll({"index": i});
-
-                    final Message msg = Message.fromJSONString(messagesList[i]);
-
-                    // setting the last [unreadMessageCount] messages isRead as false
-                    if (msg.senderId == user.id) {
-                      if (messagesLength - i <= unreadMessageCount)
-                        msg.isRead = false;
-                      else
-                        msg.isRead = true;
-                    }
-
-                    messages.add(msg);
-                  }
-
-                  return Expanded(
-                    child: ListView.separated(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      reverse: true,
-                      controller: _scrollController,
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      separatorBuilder: (context, index) {
-                        if (messages[index].displayDate !=
-                            messages[index + 1].displayDate)
-                          return DateSeparator(messages[index].displayDate);
-                        else
-                          return SizedBox.shrink();
-                      },
-                      itemBuilder: (context, index) => MessageCard(
-                        message: messages[index],
-                        chatRoomId: this.widget.contact.chatRoomId,
-                        onLongPress: () {},
-                      ),
-                      itemCount: messages.length,
-                    ),
-                  );
-                } else
-                  return CustomLoader();
-              },
-            ),
-            SendButtonTextField(
-              onSend: (String messageText) {
-                if (messageText != null && messageText != "") {
-                  //FIXME: fix bug when sending a lot of messages and not sending
-                  final String msg = messageText;
-                  MessageController.sendMessage(
-                    contactId: this.widget.contact.id,
-                    text: msg,
-                    chatRoomId: this.widget.contact.chatRoomId,
-                    senderId: user.id,
-                  );
-
-                  _scrollController.animateTo(
-                    0.0,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+        );
+      }),
     );
   }
 }
