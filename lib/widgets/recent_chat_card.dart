@@ -3,6 +3,7 @@ import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
@@ -67,6 +68,14 @@ class RecentChatCard extends StatelessWidget {
               for (int i = messagesList.length - 1; i >= 0; i--) {
                 final Message message = Message.fromJSONString(messagesList[i]);
                 message.index = i;
+                message.isDeletedForMe =
+                    (snapshotData[user.id]['deletedMessagesIndex'] as List)
+                            .cast<int>()
+                            ?.contains(i) ??
+                        false;
+
+                if (message.isDeletedForMe)
+                  message.text = kDeletedMessageString;
                 messages.add(message);
               }
 
@@ -124,7 +133,13 @@ class RecentChatCard extends StatelessWidget {
                                   style: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText2,
+                                      .bodyText2
+                                      .copyWith(
+                                    fontStyle:
+                                    this.messages[0].isDeletedForMe
+                                        ? FontStyle.italic
+                                        : FontStyle.normal,
+                                  ),
                                 ),
                               ),
                             ],

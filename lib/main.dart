@@ -23,7 +23,8 @@ import 'package:provider/provider.dart';
 // TODO: handle cannot add contacts exception
 //TODO: add emoji keyboard
 //TODO: add delete for me message option
-//TODO : use about dialog to show version and other stuff
+//TODO : use about dialog to show version and other stuff (AboutDialog widget)
+//TODO:add last message timestamp in firebase and sort messages using it in recent chats
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseCoreService.initApp();
