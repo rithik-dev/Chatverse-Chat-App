@@ -5,6 +5,7 @@ import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/date_separator.dart';
@@ -186,23 +187,26 @@ class _ChatScreenState extends State<ChatScreen> {
                             messagesLength = messagesList.length;
                             for (int i = messagesLength - 1; i >= 0; i--) {
                               message = Message.fromJSONString(messagesList[i]);
-                              message.index = i;
-                              message.isDeletedForMe =
-                                  (messagesDetails['deletedMessagesIndex'] as List)
+                          message.index = i;
+                          message.isDeletedForMe =
+                              (messagesDetails['deletedMessagesIndex'] as List)
                                       .cast<int>()
                                       ?.contains(i) ??
-                                      false;
+                                  false;
 
-                              // setting the last [unreadMessageCount] messages isRead as false
-                              if (message.senderId == user.id) {
-                                if (messagesLength - i <= unreadMessageCount)
-                                  message.isRead = false;
-                                else
-                                  message.isRead = true;
-                              }
+                          if (message.isDeletedForMe)
+                            message.text = kDeletedMessageString;
 
-                              messages.add(message);
-                            }
+                          // setting the last [unreadMessageCount] messages isRead as false
+                          if (message.senderId == user.id) {
+                            if (messagesLength - i <= unreadMessageCount)
+                              message.isRead = false;
+                            else
+                              message.isRead = true;
+                          }
+
+                          messages.add(message);
+                        }
                             return Expanded(
                               child: ListView.separated(
                                 keyboardDismissBehavior:
