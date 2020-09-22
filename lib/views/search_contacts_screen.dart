@@ -25,14 +25,12 @@ class _SearchContactsScreenState extends State<SearchContactsScreen> {
   Future<void> _getContacts() async {
     Contact contact;
     QuerySnapshot contactsSnapshot = await FirebaseStorageService.getAllUsers();
-    this._contacts = [];
+    setState(() => this._contacts = []);
     for (QueryDocumentSnapshot snapshot in contactsSnapshot.docs) {
       contact = Contact.fromDocumentSnapshot(snapshot);
       // chatroom id should be null as if it exists, user is already in contacts
       if (contact.id != user.id && !user.contacts.keys.contains(contact.id)) {
-        setState(() {
-          this._contacts.add(contact);
-        });
+        setState(() => this._contacts.add(contact));
       }
     }
   }
@@ -47,48 +45,49 @@ class _SearchContactsScreenState extends State<SearchContactsScreen> {
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Search Contacts"),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            await this._getContacts();
-            this._setFilteredContacts();
-          },
-          child: Column(
-            children: [
-              SearchContactsSearchBar(
-                onChanged: (String value) {
-                  this._searchText = value?.toLowerCase()?.trim() ?? "";
-                  this._setFilteredContacts();
-                },
-              ),
-              //FIXME: fix when no contacts are there that can be added .. shows loading screen continuously
-              this._contacts == null
-                  ? CustomLoader()
-                  : NotificationListener<OverscrollIndicatorNotification>(
-                      onNotification: (overScroll) {
-                        overScroll.disallowGlow();
-                        return;
-                      },
-                      child: Expanded(
-                        child: this._filteredContacts.length == 0
-                            ? ListView(
-                                children: [
-                                  Lottie.asset('assets/lottie/search.json')
-                                ],
-                              )
-                            : ListView.builder(
-                                itemBuilder: (context, index) {
-                                  return SearchContactCard(
-                                      contact: this._filteredContacts[index]);
-                                },
-                                itemCount: this._filteredContacts.length,
-                              ),
+      child: CustomLoadingScreen(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Search Contacts"),
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await this._getContacts();
+              this._setFilteredContacts();
+            },
+            child: Column(
+              children: [
+                SearchContactsSearchBar(
+                  onChanged: (String value) {
+                    this._searchText = value?.toLowerCase()?.trim() ?? "";
+                    this._setFilteredContacts();
+                  },
+                ),
+                this._contacts == null
+                    ? CustomLoader()
+                    : NotificationListener<OverscrollIndicatorNotification>(
+                        onNotification: (overScroll) {
+                          overScroll.disallowGlow();
+                          return;
+                        },
+                        child: Expanded(
+                          child: this._filteredContacts.length == 0
+                              ? ListView(
+                                  children: [
+                                    Lottie.asset('assets/lottie/search.json')
+                                  ],
+                                )
+                              : ListView.builder(
+                                  itemBuilder: (context, index) {
+                                    return SearchContactCard(
+                                        contact: this._filteredContacts[index]);
+                                  },
+                                  itemCount: this._filteredContacts.length,
+                                ),
+                        ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
