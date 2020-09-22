@@ -1,4 +1,3 @@
-import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
@@ -17,10 +16,7 @@ class RouteGenerator {
     switch (settings.name) {
       case SearchContactsScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade,
-            child: SearchContactsScreen(
-              allContacts: args as Stream<List<Contact>>,
-            ));
+            type: PageTransitionType.fade, child: SearchContactsScreen());
       case SettingsScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: SettingsScreen());

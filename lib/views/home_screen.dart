@@ -9,6 +9,7 @@ import 'package:chatverse_chat_app/views/search_contacts_screen.dart';
 import 'package:chatverse_chat_app/widgets/custom_drawer.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/favorite_contacts.dart';
+import 'package:chatverse_chat_app/widgets/no_contacts_added.dart';
 import 'package:chatverse_chat_app/widgets/recent_chats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,6 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatelessWidget {
   static const id = 'home_screen';
 
-  Stream<List<Contact>> allContactsStream;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,42 +27,44 @@ class HomeScreen extends StatelessWidget {
             builder: (context, user, homeScreenAppBarProvider, loadingProvider,
                 snapshot) {
           return CustomLoadingScreen(
-            child: Scaffold(
-              appBar: this._buildAppBar(
-                context,
-                homeScreenAppBarProvider,
-                loadingProvider,
-                user,
-              ),
-              body: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseStorageService.getAllUsersStream(),
-                builder: (context, snapshot) {
-                  Map<String, String> myContacts = user.contacts;
+            // TODO: add list view instead of column
+            child: RefreshIndicator(
+              onRefresh: () => UserController.getCurrentUser(),
+              child: Scaffold(
+                appBar: this._buildAppBar(
+                  context,
+                  homeScreenAppBarProvider,
+                  loadingProvider,
+                  user,
+                ),
+                body: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseStorageService.getAllUsersStream(),
+                  builder: (context, snapshot) {
+                    //FIXME: new contacts not updating when added
+                    Map<String, String> myContacts = user.contacts;
 
-                  if (snapshot.hasData) {
-                    List<Contact> allContacts = [];
-                    List<Contact> contacts = [];
-                    List<Contact> favoriteContacts = [];
-                    for (DocumentSnapshot userSnapshot in snapshot.data.docs) {
-                      final Contact contact =
-                          Contact.fromDocumentSnapshot(userSnapshot);
-                      allContacts.add(contact);
-                      if (myContacts.keys.contains(userSnapshot.id)) {
-                        contact.chatRoomId = myContacts[userSnapshot.id];
-                        contacts.add(contact);
-                        if (user.favoriteContactIds.contains(userSnapshot.id))
-                          favoriteContacts.add(contact);
+                    if (snapshot.hasData) {
+                      List<Contact> contacts = [];
+                      List<Contact> favoriteContacts = [];
+                      for (DocumentSnapshot userSnapshot
+                          in snapshot.data.docs) {
+                        final Contact contact =
+                            Contact.fromDocumentSnapshot(userSnapshot);
+                        if (myContacts.keys.contains(userSnapshot.id)) {
+                          contact.chatRoomId = myContacts[userSnapshot.id];
+                          contacts.add(contact);
+                          if (user.favoriteContactIds.contains(userSnapshot.id))
+                            favoriteContacts.add(contact);
+                        }
                       }
-                    }
 
-                    Stream<List<Contact>> contactsStream =
-                        Stream.value(contacts);
-                    Stream<List<Contact>> favoriteContactsStream =
-                        Stream.value(favoriteContacts);
-                    allContactsStream = Stream.value(allContacts);
+                      Stream<List<Contact>> contactsStream =
+                          Stream.value(contacts);
+                      Stream<List<Contact>> favoriteContactsStream =
+                          Stream.value(favoriteContacts);
 
-                    return Column(
-                      children: [
+                      return Column(
+                        children: [
 //                          CategorySelector(
 //                            categories: [
 //                              'Messages',
@@ -75,12 +76,19 @@ class HomeScreen extends StatelessWidget {
 //                              print(index);
 //                            },
 //                          ),
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                // no contacts added
+                                if (myContacts.keys.length == 0)
+                                  NoContactsAdded()
+                                else ...[
                                   FavoriteContacts(
-                                    favoriteContactsStream: favoriteContactsStream,
-                                    removeAllFavoriteContactsCallback: () async {
+                                    favoriteContactsStream:
+                                        favoriteContactsStream,
+                                    removeAllFavoriteContactsCallback:
+                                        () async {
                                       Navigator.pop(context);
                                       loadingProvider.startLoading();
                                       await UserController
@@ -96,31 +104,33 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   SizedBox(height: 10),
                                   RecentChats(contactsStream: contactsStream),
-                                ],
-                              ),
+                                ]
+                              ],
                             ),
-                          ],
-                        );
-                      } else
-                        return CustomLoader();
-                    },
-                  ),
-                  floatingActionButton: FloatingActionButton(
-                    child: Icon(Icons.search),
-                    onPressed: () {
-                      homeScreenAppBarProvider.unSelectContact();
-                      Navigator.pushNamed(context, SearchContactsScreen.id,
-                          arguments: allContactsStream);
-                    },
-                  ),
+                          ),
+                        ],
+                      );
+                    } else
+                      return CustomLoader();
+                  },
                 ),
-              );
-            }),
+                floatingActionButton: FloatingActionButton(
+                  child: Icon(Icons.search),
+                  onPressed: () {
+                    homeScreenAppBarProvider.unSelectContact();
+                    Navigator.pushNamed(context, SearchContactsScreen.id);
+                  },
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context,
+  PreferredSize _buildAppBar(
+      BuildContext context,
       HomeScreenAppBarProvider homeScreenAppBarProvider,
       LoadingScreenProvider loadingProvider,
       User user) {

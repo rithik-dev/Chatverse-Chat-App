@@ -1,43 +1,112 @@
 import 'package:chatverse_chat_app/models/contact.dart';
+import 'package:chatverse_chat_app/models/user.dart';
+import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
+import 'package:chatverse_chat_app/widgets/search_contact_card.dart';
 import 'package:chatverse_chat_app/widgets/search_contacts_searchbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
-class SearchContactsScreen extends StatelessWidget {
+class SearchContactsScreen extends StatefulWidget {
   static const id = 'search_contacts_screen';
-  final Stream<List<Contact>> allContacts;
 
-  SearchContactsScreen({@required this.allContacts});
+  @override
+  _SearchContactsScreenState createState() => _SearchContactsScreenState();
+}
 
-  String _searchText;
+class _SearchContactsScreenState extends State<SearchContactsScreen> {
+  List<Contact> _filteredContacts = [];
+  User user;
+  List<Contact> _contacts;
+  String _searchText = "";
+
+  Future<void> _getContacts() async {
+    Contact contact;
+    QuerySnapshot contactsSnapshot = await FirebaseStorageService.getAllUsers();
+    this._contacts = [];
+    for (QueryDocumentSnapshot snapshot in contactsSnapshot.docs) {
+      contact = Contact.fromDocumentSnapshot(snapshot);
+      // chatroom id should be null as if it exists, user is already in contacts
+      if (contact.id != user.id && !user.contacts.keys.contains(contact.id)) {
+        setState(() {
+          this._contacts.add(contact);
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this._getContacts();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Search Contacts"),
-      ),
-      body: Column(
-        children: [
-          SearchContactsSearchBar(
-            onChanged: (String value) {
-              this._searchText = value;
-            },
+    user = Provider.of<User>(context);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Search Contacts"),
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await this._getContacts();
+            this._setFilteredContacts();
+          },
+          child: Column(
+            children: [
+              SearchContactsSearchBar(
+                onChanged: (String value) {
+                  this._searchText = value?.toLowerCase()?.trim() ?? "";
+                  this._setFilteredContacts();
+                },
+              ),
+              //FIXME: fix when no contacts are there that can be added .. shows loading screen continuously
+              this._contacts == null
+                  ? CustomLoader()
+                  : NotificationListener<OverscrollIndicatorNotification>(
+                      onNotification: (overScroll) {
+                        overScroll.disallowGlow();
+                        return;
+                      },
+                      child: Expanded(
+                        child: this._filteredContacts.length == 0
+                            ? ListView(
+                                children: [
+                                  Lottie.asset('assets/lottie/search.json')
+                                ],
+                              )
+                            : ListView.builder(
+                                itemBuilder: (context, index) {
+                                  return SearchContactCard(
+                                      contact: this._filteredContacts[index]);
+                                },
+                                itemCount: this._filteredContacts.length,
+                              ),
+                      ),
+                    ),
+            ],
           ),
-          StreamBuilder<List<Contact>>(
-            stream: this.allContacts,
-            builder: (context, contactsSnapshot) {
-              if (contactsSnapshot.hasData) {
-                return Container(
-                  child: Text("search results here"),
-                );
-              } else
-                return CustomLoader();
-            },
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  void _setFilteredContacts() {
+    setState(() => this._filteredContacts = []);
+
+    if (this._searchText != "") {
+      for (Contact contact in this._contacts) {
+        if (contact.name.toLowerCase().contains(this._searchText) ||
+            contact.email.toLowerCase().contains(this._searchText)) {
+          setState(() {
+            this._filteredContacts.add(contact);
+          });
+        }
+      }
+    }
   }
 }

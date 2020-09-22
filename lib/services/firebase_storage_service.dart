@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatverse_chat_app/utilities/constants.dart';
+import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,10 @@ class FirebaseStorageService {
 
   static Stream<QuerySnapshot> getAllUsersStream() {
     return _firestore.collection("users").snapshots();
+  }
+
+  static Future<QuerySnapshot> getAllUsers() async {
+    return await _firestore.collection("users").get();
   }
 
   static Future<QuerySnapshot> getUsers() async {
@@ -136,30 +141,41 @@ class FirebaseStorageService {
     }
   }
 
-//  static Future<String> addContact(String userId, String contactId) async {
-//    try {
-//      final DocumentReference ref = _firestore.collection("chatrooms").doc();
-//      final DocumentReference userRef =
-//          _firestore.collection("users").doc(userId);
-//      final DocumentReference contactRef =
-//          _firestore.collection("users").doc(contactId);
-//      final String chatRoomId = ref.id;
-//      WriteBatch batch = _firestore.batch();
-//      batch.update(userRef, {
-//        'contacts': FieldValue.arrayUnion([contactId]),
-//        'chatrooms': FieldValue.arrayUnion([chatRoomId])
-//      });
-//      batch.update(contactRef, {
-//        'contacts': FieldValue.arrayUnion([userId]),
-//        'chatrooms': FieldValue.arrayUnion([chatRoomId])
-//      });
-//      await batch.commit();
-//      return chatRoomId;
-//    } catch (e) {
-//      print("ERROR ADDING CONTACT $e");
-//      throw CannotAddContactException("Error adding contact");
-//    }
-//  }
+  static Future<Map<String, String>> addContact(
+      String userId, String contactId) async {
+    try {
+      final DocumentReference chatRoomRef =
+          _firestore.collection("chatrooms").doc();
+      final DocumentReference userRef =
+          _firestore.collection("users").doc(userId);
+      final DocumentReference contactRef =
+          _firestore.collection("users").doc(contactId);
+      final String chatRoomId = chatRoomRef.id;
+      WriteBatch batch = _firestore.batch();
+      batch.update(userRef, {
+        'contacts.$contactId': chatRoomId,
+      });
+      batch.update(contactRef, {
+        'contacts.$userId': chatRoomId,
+      });
+      batch.set(chatRoomRef, {
+        'messages': [],
+        userId: {
+          'unreadMessageCount': 0,
+          'deletedMessagesIndex': [],
+        },
+        contactId: {
+          'unreadMessageCount': 0,
+          'deletedMessagesIndex': [],
+        },
+      });
+      await batch.commit();
+      return {contactId: chatRoomId};
+    } catch (e) {
+      print("ERROR ADDING CONTACT $e");
+      throw CannotAddContactException("Error adding contact");
+    }
+  }
 
   static Future<String> uploadFile(String userId, File image) async {
     try {

@@ -36,6 +36,15 @@ class UserController {
     return _loggedInUser;
   }
 
+  static Future<User> getCurrentUser() async {
+    final DocumentSnapshot snapshot =
+        await FirebaseStorageService.getUserDocumentSnapshot(_loggedInUser.id);
+    _loggedInUser = User.fromDocumentSnapshot(snapshot);
+    _loggedInUser.updateUserInProvider(_loggedInUser);
+    print(_loggedInUser);
+    return _loggedInUser;
+  }
+
   static Future<void> updateName(String name) async {
     if (name == null || name.trim() == "") return;
     await FirebaseStorageService.updateUserDetails(
@@ -44,15 +53,9 @@ class UserController {
     );
   }
 
-//  static Future<Contact> addContact(String contactId) async {
-//    String chatRoomId =
-//        await FirebaseStorageService.addContact(_loggedInUser.id, contactId);
-//    DocumentSnapshot snapshot =
-//        await FirebaseStorageService.getUserDocumentSnapshot(contactId);
-//    final Contact contact = Contact.fromDocumentSnapshot(snapshot);
-//    contact.chatRoomId = chatRoomId;
-//    return contact;
-//  }
+  static Future<Map<String, String>> addContact(String contactId) async {
+    return await FirebaseStorageService.addContact(_loggedInUser.id, contactId);
+  }
 
   static Future<void> addContactToFavorites(String contactId) async {
     await FirebaseStorageService.addContactToFavorites(

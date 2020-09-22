@@ -130,16 +130,16 @@ class RecentChatCard extends StatelessWidget {
                                       : messages[0].text,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
-                                  style: Theme
-                                      .of(context)
+                                  style: Theme.of(context)
                                       .textTheme
                                       .bodyText2
                                       .copyWith(
-                                    fontStyle:
-                                    this.messages[0].isDeletedForMe
-                                        ? FontStyle.italic
-                                        : FontStyle.normal,
-                                  ),
+                                        fontStyle: this.messages.length == 0
+                                            ? FontStyle.normal
+                                            : this.messages[0].isDeletedForMe
+                                                ? FontStyle.italic
+                                                : FontStyle.normal,
+                                      ),
                                 ),
                               ),
                             ],

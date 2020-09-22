@@ -8,7 +8,11 @@ class User extends ChangeNotifier {
   String id;
   String notificationToken;
 
-//  List<String> friendRequestSentIds;
+  @override
+  String toString() {
+    return 'User{name: $name, email: $email, photoUrl: $photoUrl, id: $id, notificationToken: $notificationToken, contacts: $contacts, favoriteContactIds: $favoriteContactIds}';
+  } //  List<String> friendRequestSentIds;
+
 //  List<String> friendRequestPendingIds;
   Map<String, String> contacts;
   List<String> favoriteContactIds;

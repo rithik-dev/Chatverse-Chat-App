@@ -12,6 +12,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//TODO: add block option
 // TODO: add like message feature
 // TODO: add feature to drag and drop a person to the fav contacts list
 // TODO: show green dot is user is online
