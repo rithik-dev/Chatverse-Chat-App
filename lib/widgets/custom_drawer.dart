@@ -10,7 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:provider/provider.dart';
 
-final List<Color> gradientColors = [Color(0xFFFB9245), Color(0xFFF54E6B)];
+//final List<Color> gradientColors = [Color(0xFFFB9245), Color(0xFFF54E6B)];
+final List<Color> gradientColors = [
+  Colors.blue[500],
+  Colors.blue[600],
+  Colors.blue[700],
+  Colors.blue[800],
+  Colors.blue[900],
+];
 
 class CustomDrawer extends StatelessWidget {
   final Widget child;
@@ -100,7 +107,7 @@ class _LeftChild extends StatelessWidget {
                     showModalBottomSheet(
                       shape: BottomSheetClipper(),
                       backgroundColor:
-                      ThemeHandler.favoriteContactsBackgroundColor(context),
+                          ThemeHandler.favoriteContactsBackgroundColor(context),
                       context: context,
                       builder: (context) => SignOutBottomSheet(),
                     );

@@ -1,8 +1,10 @@
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
 import 'package:chatverse_chat_app/views/intro_screen.dart';
 import 'package:chatverse_chat_app/views/profile_screen.dart';
+import 'package:chatverse_chat_app/views/search_contacts_screen.dart';
 import 'package:chatverse_chat_app/views/settings_screen.dart';
 import 'package:chatverse_chat_app/views/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,12 @@ class RouteGenerator {
     final args = settings.arguments;
     print("PUSHING SCREEN : ${settings.name}");
     switch (settings.name) {
+      case SearchContactsScreen.id:
+        return PageTransition(
+            type: PageTransitionType.fade,
+            child: SearchContactsScreen(
+              allContacts: args as Stream<List<Contact>>,
+            ));
       case SettingsScreen.id:
         return PageTransition(
             type: PageTransitionType.fade, child: SettingsScreen());

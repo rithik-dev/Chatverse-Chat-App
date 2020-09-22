@@ -5,6 +5,7 @@ import 'package:chatverse_chat_app/providers/drawer_provider.dart';
 import 'package:chatverse_chat_app/providers/homescreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
+import 'package:chatverse_chat_app/views/search_contacts_screen.dart';
 import 'package:chatverse_chat_app/widgets/custom_drawer.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/favorite_contacts.dart';
@@ -13,8 +14,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
   static const id = 'home_screen';
+
+  Stream<List<Contact>> allContactsStream;
 
   @override
   Widget build(BuildContext context) {
@@ -25,66 +29,11 @@ class HomeScreen extends StatelessWidget {
                 snapshot) {
           return CustomLoadingScreen(
             child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(75),
-                child: AppBar(
-                  leading: AnimatedCrossFade(
-                    firstChild: IconButton(
-                      icon: Icon(Icons.menu),
-                      onPressed: () {
-                        Provider.of<DrawerProvider>(context, listen: false)
-                            .toggle();
-                      },
-                    ),
-                    secondChild: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        homeScreenAppBarProvider.unSelectContact();
-                      },
-                    ),
-                    duration: Duration(milliseconds: 250),
-                    crossFadeState: homeScreenAppBarProvider.contactIsSelected
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                  ),
-                  actions: [
-                    if (homeScreenAppBarProvider.contactIsSelected) ...[
-                      homeScreenAppBarProvider.contactIsFavorite
-                          ? IconButton(
-                              icon: Icon(Icons.favorite),
-                              color: Colors.red,
-                              onPressed: () async {
-                                loadingProvider.startLoading();
-                                await UserController.removeContactFromFavorites(
-                                    [homeScreenAppBarProvider.contactId]);
-                                user.favoriteContactIds
-                                    .remove(homeScreenAppBarProvider.contactId);
-                                homeScreenAppBarProvider.unSelectContact();
-                                user.updateUserInProvider(user);
-                                loadingProvider.stopLoading();
-                              },
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.favorite_border),
-                              color: Colors.red,
-                              onPressed: () async {
-                                loadingProvider.startLoading();
-                                await UserController.addContactToFavorites(
-                                    homeScreenAppBarProvider.contactId);
-                                user.favoriteContactIds
-                                    .add(homeScreenAppBarProvider.contactId);
-                                homeScreenAppBarProvider.unSelectContact();
-                                user.updateUserInProvider(user);
-                                loadingProvider.stopLoading();
-                              },
-                            ),
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {},
-                      ),
-                    ]
-                  ],
-                ),
+              appBar: this._buildAppBar(
+                context,
+                homeScreenAppBarProvider,
+                loadingProvider,
+                user,
               ),
               body: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseStorageService.getAllUsersStream(),
@@ -92,12 +41,14 @@ class HomeScreen extends StatelessWidget {
                   Map<String, String> myContacts = user.contacts;
 
                   if (snapshot.hasData) {
+                    List<Contact> allContacts = [];
                     List<Contact> contacts = [];
                     List<Contact> favoriteContacts = [];
                     for (DocumentSnapshot userSnapshot in snapshot.data.docs) {
+                      final Contact contact =
+                          Contact.fromDocumentSnapshot(userSnapshot);
+                      allContacts.add(contact);
                       if (myContacts.keys.contains(userSnapshot.id)) {
-                        final Contact contact =
-                            Contact.fromDocumentSnapshot(userSnapshot);
                         contact.chatRoomId = myContacts[userSnapshot.id];
                         contacts.add(contact);
                         if (user.favoriteContactIds.contains(userSnapshot.id))
@@ -109,6 +60,7 @@ class HomeScreen extends StatelessWidget {
                         Stream.value(contacts);
                     Stream<List<Contact>> favoriteContactsStream =
                         Stream.value(favoriteContacts);
+                    allContactsStream = Stream.value(allContacts);
 
                     return Column(
                       children: [
@@ -123,36 +75,113 @@ class HomeScreen extends StatelessWidget {
 //                              print(index);
 //                            },
 //                          ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              FavoriteContacts(
-                                favoriteContactsStream: favoriteContactsStream,
-                                removeAllFavoriteContactsCallback: () async {
-                                  loadingProvider.startLoading();
-                                  await UserController
-                                      .removeContactFromFavorites(
-                                    user.favoriteContactIds,
-                                  );
-                                  loadingProvider.stopLoading();
-                                  user.favoriteContactIds.clear();
-                                  user.updateUserInProvider(user);
-                                },
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  FavoriteContacts(
+                                    favoriteContactsStream: favoriteContactsStream,
+                                    removeAllFavoriteContactsCallback: () async {
+                                      Navigator.pop(context);
+                                      loadingProvider.startLoading();
+                                      await UserController
+                                          .removeContactFromFavorites(
+                                        user.favoriteContactIds,
+                                      );
+                                      loadingProvider.stopLoading();
+                                      homeScreenAppBarProvider
+                                          .unSelectContact();
+                                      user.favoriteContactIds.clear();
+                                      user.updateUserInProvider(user);
+                                    },
+                                  ),
+                                  SizedBox(height: 10),
+                                  RecentChats(contactsStream: contactsStream),
+                                ],
                               ),
-                              SizedBox(height: 10),
-                              RecentChats(contactsStream: contactsStream),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  } else
-                    return CustomLoader();
-                },
-              ),
+                            ),
+                          ],
+                        );
+                      } else
+                        return CustomLoader();
+                    },
+                  ),
+                  floatingActionButton: FloatingActionButton(
+                    child: Icon(Icons.search),
+                    onPressed: () {
+                      homeScreenAppBarProvider.unSelectContact();
+                      Navigator.pushNamed(context, SearchContactsScreen.id,
+                          arguments: allContactsStream);
+                    },
+                  ),
+                ),
+              );
+            }),
+      ),
+    );
+  }
+
+  PreferredSize _buildAppBar(BuildContext context,
+      HomeScreenAppBarProvider homeScreenAppBarProvider,
+      LoadingScreenProvider loadingProvider,
+      User user) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(75),
+      child: AppBar(
+        leading: AnimatedCrossFade(
+          firstChild: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Provider.of<DrawerProvider>(context, listen: false).toggle();
+            },
+          ),
+          secondChild: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              homeScreenAppBarProvider.unSelectContact();
+            },
+          ),
+          duration: Duration(milliseconds: 250),
+          crossFadeState: homeScreenAppBarProvider.contactIsSelected
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+        ),
+        actions: [
+          if (homeScreenAppBarProvider.contactIsSelected) ...[
+            homeScreenAppBarProvider.contactIsFavorite
+                ? IconButton(
+              icon: Icon(Icons.favorite),
+              color: Colors.red,
+              onPressed: () async {
+                loadingProvider.startLoading();
+                await UserController.removeContactFromFavorites(
+                    [homeScreenAppBarProvider.contactId]);
+                user.favoriteContactIds
+                    .remove(homeScreenAppBarProvider.contactId);
+                homeScreenAppBarProvider.unSelectContact();
+                user.updateUserInProvider(user);
+                loadingProvider.stopLoading();
+              },
+            )
+                : IconButton(
+              icon: Icon(Icons.favorite_border),
+              color: Colors.red,
+              onPressed: () async {
+                loadingProvider.startLoading();
+                await UserController.addContactToFavorites(
+                    homeScreenAppBarProvider.contactId);
+                user.favoriteContactIds
+                    .add(homeScreenAppBarProvider.contactId);
+                homeScreenAppBarProvider.unSelectContact();
+                user.updateUserInProvider(user);
+                loadingProvider.stopLoading();
+              },
             ),
-          );
-        }),
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () {},
+            ),
+          ]
+        ],
       ),
     );
   }

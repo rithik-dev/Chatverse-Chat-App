@@ -84,6 +84,8 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
             radius: 25,
             backgroundColor: Theme.of(context).accentColor,
             child: AnimatedCrossFade(
+              firstCurve: Curves.easeInOut,
+              secondCurve: Curves.easeInOut,
               duration: Duration(milliseconds: 200),
               firstChild: IconButton(
                 icon: Icon(this._isListening ? Icons.mic : Icons.mic_none),
@@ -103,9 +105,9 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
               ),
               crossFadeState: !this._isListening
                   ? (this._messageText == null ||
-                          this._messageText.trim().length == 0)
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond
+                  this._messageText.trim().length == 0)
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
             ),
           ),

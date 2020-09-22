@@ -48,18 +48,15 @@ class FavoriteContacts extends StatelessWidget {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            backgroundColor: Theme
-                                .of(context)
-                                .scaffoldBackgroundColor,
+                            backgroundColor:
+                                Theme.of(context).scaffoldBackgroundColor,
                             title: Text("Favorite Contacts"),
                             content: RaisedButton.icon(
                               color: Colors.transparent,
+                              padding: EdgeInsets.all(10),
                               icon: Icon(Icons.remove_circle),
                               label: Text("Remove all favorites"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                return this.removeAllFavoriteContactsCallback();
-                              },
+                              onPressed: this.removeAllFavoriteContactsCallback,
                             ),
                           );
                         },

@@ -7,7 +7,7 @@ import 'package:ntp/ntp.dart' show NTP;
 class MessageController {
   MessageController._();
 
-  static Future<void> sendMessage({
+  static void sendMessage({
     String contactId,
     String text,
     String senderId,
