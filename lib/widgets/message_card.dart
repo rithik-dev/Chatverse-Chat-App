@@ -67,7 +67,7 @@ class MessageCard extends StatelessWidget {
                   this.message.text,
                   style: TextStyle(
                     fontSize: 15,
-                    fontStyle: this.message.isDeletedForMe
+                    fontStyle: this.message.isDeleted
                         ? FontStyle.italic
                         : FontStyle.normal,
                   ),

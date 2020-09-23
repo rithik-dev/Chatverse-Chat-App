@@ -51,10 +51,6 @@ class RecentChatCard extends StatelessWidget {
               favoriteContactIds: user.favoriteContactIds,
             );
         },
-        onVerticalDragStart: (details) {
-          if (homeScreenAppBarProvider.contactIsSelected)
-            homeScreenAppBarProvider.unSelectContact();
-        },
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseStorageService.getMessagesStream(contact.chatRoomId),
           builder: (context, messagesAsyncSnapshot) {
@@ -68,19 +64,24 @@ class RecentChatCard extends StatelessWidget {
               for (int i = messagesList.length - 1; i >= 0; i--) {
                 final Message message = Message.fromJSONString(messagesList[i]);
                 message.index = i;
-                message.isDeletedForMe =
+                message.isDeleted =
                     (snapshotData[user.id]['deletedMessagesIndex'] as List)
                             .cast<int>()
                             ?.contains(i) ??
                         false;
 
-                if (message.isDeletedForMe)
-                  message.text = kDeletedMessageString;
+                if (message.isDeleted) message.text = kDeletedMessageString;
                 messages.add(message);
               }
 
+              // my unread messages
               unreadMessagesCount = snapshotData[user.id]['unreadMessageCount'];
               hasUnreadMessages = unreadMessagesCount != 0;
+
+              // contacts unread messages
+              // using this to show the message seen tick if value is more than 0
+              final bool contactHasReadLastMessage =
+                  snapshotData[contact.id]['unreadMessageCount'] == 0;
 
               //FIXME: extremely long name overflow error
               return Container(
@@ -123,23 +124,45 @@ class RecentChatCard extends StatelessWidget {
                               ),
                               SizedBox(height: 10.0),
                               Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                child: Text(
-                                  messages.length == 0
-                                      ? "Tap to start chatting..."
-                                      : messages[0].text,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.45,
+                                child: Row(
+                                  children: [
+                                    this.messages.length != 0 &&
+                                        this.messages[0].senderId == user.id
+                                        ? Icon(
+                                      contactHasReadLastMessage
+                                          ? Icons.check_circle
+                                          : Icons.check_circle_outline,
+                                      size: 15,
+                                      color:
+                                      Theme
+                                          .of(context)
+                                          .accentColor,
+                                    )
+                                        : SizedBox.shrink(),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      messages.length == 0
+                                          ? "Tap to start chatting..."
+                                          : messages[0].text,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: Theme
+                                          .of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          .copyWith(
                                         fontStyle: this.messages.length == 0
-                                            ? FontStyle.normal
-                                            : this.messages[0].isDeletedForMe
-                                                ? FontStyle.italic
-                                                : FontStyle.normal,
+                                            ? FontStyle.italic
+                                            : this.messages[0].isDeleted
+                                            ? FontStyle.italic
+                                            : FontStyle.normal,
                                       ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

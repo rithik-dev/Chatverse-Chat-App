@@ -132,15 +132,23 @@ class _EditProfilePictureBottomSheetState
               ],
             ),
           ),
-          body: ListView(
-            physics: BouncingScrollPhysics(),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               if (_imageFile != null) ...[
                 Container(
                   padding: EdgeInsets.all(10),
-                  child: Image.file(_imageFile),
-                  height: 225,
-                  width: 225,
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 130),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: FileImage(_imageFile),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  height: 150,
+//                  width: 200,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -179,14 +187,22 @@ class _EditProfilePictureBottomSheetState
                   ),
                 )
               ] else ...[
-                SizedBox(height: 100),
-                Center(
-                  child: Text(
-                    "Please select an image",
+                SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      "Please select an image",
+                      style: Theme.of(context).textTheme.headline4,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      maxLines: 2,
+                    ),
                   ),
                 ),
+                Spacer(),
+                Icon(Icons.forum, size: 100),
                 SizedBox(height: 100),
-                Icon(Icons.forum, size: 50),
               ]
             ],
           ),

@@ -57,7 +57,7 @@ class FirebaseAuthService {
           "name": name,
           "email": email,
           "photoUrl": kDefaultPhotoUrl,
-          "contacts": [],
+          "contacts": {},
           "favoriteContactIds": [],
 //          "chatrooms": [],
 //          "friendRequestsPending": [],

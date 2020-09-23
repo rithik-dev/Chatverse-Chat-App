@@ -16,45 +16,44 @@ class RecentChats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<User>(context);
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(),
-        child: Container(
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (overScroll) {
-              overScroll.disallowGlow();
-              return;
-            },
-            child: StreamBuilder<List<Contact>>(
-              stream: contactsStream,
-              builder: (context, contactStreamSnapshot) {
-                if (contactStreamSnapshot.hasData) {
-                  return ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        height: 4,
-                        color: Colors.grey,
-                      );
-                    },
-                    itemBuilder: (context, index) {
-                      return RecentChatCard(
-                        contact: contactStreamSnapshot.data[index],
-                      );
-                    },
-                    itemCount: contactStreamSnapshot.data.length,
-                  );
-                } else
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      return RecentChatCardShimmer();
-                    },
-                    itemCount: user.contacts.keys.length,
-                  );
+    return StreamBuilder<List<Contact>>(
+      stream: contactsStream,
+      builder: (context, contactStreamSnapshot) {
+        if (contactStreamSnapshot.hasData) {
+          return Expanded(
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 4,
+                  color: Colors.grey,
+                );
               },
+              itemBuilder: (context, index) {
+                return RecentChatCard(
+                  contact: contactStreamSnapshot.data[index],
+                );
+              },
+              itemCount: contactStreamSnapshot.data.length,
             ),
-          ),
-        ),
-      ),
+          );
+        } else
+          return Expanded(
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 4,
+                  color: Colors.grey,
+                );
+              },
+              itemBuilder: (context, index) {
+                return RecentChatCardShimmer();
+              },
+              itemCount: user.contacts.keys.length,
+            ),
+          );
+      },
     );
   }
 }

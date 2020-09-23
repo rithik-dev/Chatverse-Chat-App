@@ -19,6 +19,9 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatelessWidget {
   static const id = 'home_screen';
 
+  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,8 +30,8 @@ class HomeScreen extends StatelessWidget {
             builder: (context, user, homeScreenAppBarProvider, loadingProvider,
                 snapshot) {
           return CustomLoadingScreen(
-            // TODO: add list view instead of column
             child: RefreshIndicator(
+              key: this._refreshIndicatorKey,
               onRefresh: () => UserController.getCurrentUser(),
               child: Scaffold(
                 appBar: this._buildAppBar(
@@ -62,6 +65,8 @@ class HomeScreen extends StatelessWidget {
                           Stream.value(contacts);
                       Stream<List<Contact>> favoriteContactsStream =
                           Stream.value(favoriteContacts);
+
+//                      return RecentChats(contactsStream: contactsStream);
 
                       return Column(
                         children: [
@@ -190,7 +195,13 @@ class HomeScreen extends StatelessWidget {
               icon: Icon(Icons.more_vert),
               onPressed: () {},
             ),
-          ]
+          ] else
+            ...[
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () => this._refreshIndicatorKey.currentState.show(),
+              ),
+            ]
         ],
       ),
     );

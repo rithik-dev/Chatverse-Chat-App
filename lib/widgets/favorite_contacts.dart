@@ -87,19 +87,17 @@ class FavoriteContacts extends StatelessWidget {
                                 radius: 35,
                                 onPressed: () {
                                   if (homeScreenAppBarProvider
-                                      .contactIsSelected)
-                                    if (homeScreenAppBarProvider
-                                        .contactId ==
-                                        favoriteContactsSnapshot.data[index].id)
-                                      homeScreenAppBarProvider
-                                          .unSelectContact();
-                                    else
-                                      homeScreenAppBarProvider.selectContact(
-                                        contactId: favoriteContactsSnapshot
-                                            .data[index].id,
-                                        favoriteContactIds:
-                                        user.favoriteContactIds,
-                                      );
+                                      .contactIsSelected) if (homeScreenAppBarProvider
+                                          .contactId ==
+                                      favoriteContactsSnapshot.data[index].id)
+                                    homeScreenAppBarProvider.unSelectContact();
+                                  else
+                                    homeScreenAppBarProvider.selectContact(
+                                      contactId: favoriteContactsSnapshot
+                                          .data[index].id,
+                                      favoriteContactIds:
+                                          user.favoriteContactIds,
+                                    );
                                   else
                                     Navigator.pushNamed(context, ChatScreen.id,
                                         arguments: favoriteContactsSnapshot

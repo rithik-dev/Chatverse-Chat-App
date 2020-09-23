@@ -17,8 +17,8 @@ class RecentChatCardShimmer extends StatelessWidget {
           ),
         ),
       ),
-      baseColor: Colors.grey[300],
-      highlightColor: Colors.white,
+      baseColor: Colors.grey,
+      highlightColor: Colors.grey[400],
     );
   }
 }

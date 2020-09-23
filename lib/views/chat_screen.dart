@@ -147,13 +147,13 @@ class _ChatScreenState extends State<ChatScreen> {
           for (int i = messagesLength - 1; i >= 0; i--) {
             message = Message.fromJSONString(messagesList[i]);
             message.index = i;
-            message.isDeletedForMe =
+            message.isDeleted =
                 (messagesDetails['deletedMessagesIndex'] as List)
                         .cast<int>()
                         ?.contains(i) ??
                     false;
 
-            if (message.isDeletedForMe) message.text = kDeletedMessageString;
+            if (message.isDeleted) message.text = kDeletedMessageString;
 
             // setting the last [unreadMessageCount] messages isRead as false
             if (message.senderId == user.id) {
@@ -243,27 +243,27 @@ class _ChatScreenState extends State<ChatScreen> {
       actions: [
         // show buttons only if logged in user is sender
         if (chatScreenAppBarProvider.messageIsSelected) ...[
-          if (!chatScreenAppBarProvider.message.isDeletedForMe) ...[
+          if (!chatScreenAppBarProvider.message.isDeleted) ...[
             (chatScreenAppBarProvider.message.senderId == user.id)
                 ? IconButton(
-                    icon: Icon(Icons.delete),
-                    color: Colors.redAccent,
-                    onPressed: () async {
-                      showDialog(
-                        context: context,
-                        // user cannot dismiss alert dialog by pressing outside of the dialog
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return DeleteMessageAlertDialog(
-                            deleteForMeCallback: () async {
-                              Navigator.pop(context);
-                              await _deleteMessage(deleteForEveryone: false);
-                              chatScreenAppBarProvider.unSelectMessage();
-                            },
-                            deleteForEveryoneCallback: () async {
-                              Navigator.pop(context);
-                              await _deleteMessage(deleteForEveryone: true);
-                              chatScreenAppBarProvider.unSelectMessage();
+              icon: Icon(Icons.delete),
+              color: Colors.redAccent,
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  // user cannot dismiss alert dialog by pressing outside of the dialog
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return DeleteMessageAlertDialog(
+                      deleteForMeCallback: () async {
+                        Navigator.pop(context);
+                        await _deleteMessage(deleteForEveryone: false);
+                        chatScreenAppBarProvider.unSelectMessage();
+                      },
+                      deleteForEveryoneCallback: () async {
+                        Navigator.pop(context);
+                        await _deleteMessage(deleteForEveryone: true);
+                        chatScreenAppBarProvider.unSelectMessage();
                             },
                           );
                         },

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 class Message {
   bool isRead;
-  bool isDeletedForMe;
+  bool isDeleted;
   String text;
 
   int index;
@@ -17,14 +17,14 @@ class Message {
     @required this.index,
     @required this.senderId,
     this.isRead,
-    this.isDeletedForMe,
+    this.isDeleted,
     this.displayTime,
     this.displayDate,
   });
 
   @override
   String toString() {
-    return 'Message{isRead: $isRead, isDeletedForMe: $isDeletedForMe, text: $text, index: $index, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
+    return 'Message{isRead: $isRead, isDeletedForMe: $isDeleted, text: $text, index: $index, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
   }
 
   factory Message.fromJSONString(String encodedMessage) {
@@ -43,7 +43,7 @@ class Message {
   String toJSONString() {
     final Map<String, dynamic> message = {
       'isRead': this.isRead,
-      'isDeletedForMe': this.isDeletedForMe,
+      'isDeletedForMe': this.isDeleted,
       'text': this.text,
       'displayTime': this.displayTime,
       'displayDate': this.displayDate,
