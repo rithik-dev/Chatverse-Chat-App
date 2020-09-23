@@ -71,19 +71,29 @@ class _SearchContactsScreenState extends State<SearchContactsScreen> {
                           return;
                         },
                         child: Expanded(
-                          child: this._filteredContacts.length == 0
+                          child: (this._searchText == null ||
+                                  this._searchText.trim() == "")
                               ? ListView(
                                   children: [
-                                    Lottie.asset('assets/lottie/search.json')
+                                    Lottie.asset(
+                                        'assets/lottie/no-search-text.json')
                                   ],
                                 )
-                              : ListView.builder(
-                                  itemBuilder: (context, index) {
-                                    return SearchContactCard(
-                                        contact: this._filteredContacts[index]);
-                                  },
-                                  itemCount: this._filteredContacts.length,
-                                ),
+                              : this._filteredContacts.length == 0
+                                  ? ListView(
+                                      children: [
+                                        Lottie.asset(
+                                            'assets/lottie/no-search-results.json')
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      itemBuilder: (context, index) {
+                                        return SearchContactCard(
+                                            contact:
+                                                this._filteredContacts[index]);
+                                      },
+                                      itemCount: this._filteredContacts.length,
+                                    ),
                         ),
                       ),
               ],
