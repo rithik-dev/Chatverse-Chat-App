@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
                 await ThemeHandler.toggleTheme(context);
               },
               child: Text("toggle theme"),
-            )
+            ),
           ],
         ),
       ),

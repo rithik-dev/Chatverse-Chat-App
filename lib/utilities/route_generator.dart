@@ -1,3 +1,5 @@
+import 'package:chatverse_chat_app/models/contact.dart';
+import 'package:chatverse_chat_app/views/add_attachment_screen.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
@@ -14,21 +16,32 @@ class RouteGenerator {
     final args = settings.arguments;
     print("PUSHING SCREEN : ${settings.name}");
     switch (settings.name) {
+      case AddAttachment.id:
+        return PageTransition(
+            type: PageTransitionType.downToUp,
+            child: AddAttachment(
+              contact: (args as Map)['contact'] as Contact,
+              profilePicHeroTag: (args as Map)['profilePicHeroTag'] as String,
+            ));
       case SearchContactsScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: SearchContactsScreen());
+            type: PageTransitionType.downToUp, child: SearchContactsScreen());
       case SettingsScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: SettingsScreen());
+            type: PageTransitionType.scale, child: SettingsScreen());
       case ProfileScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: ProfileScreen());
+            type: PageTransitionType.scale, child: ProfileScreen());
       case ChatScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: ChatScreen(contact: args));
+            type: PageTransitionType.leftToRightWithFade,
+            child: ChatScreen(
+              contact: (args as Map)['contact'] as Contact,
+              profilePicHeroTag: (args as Map)['profilePicHeroTag'] as String,
+            ));
       case HomeScreen.id:
         return PageTransition(
-            type: PageTransitionType.fade, child: HomeScreen());
+            type: PageTransitionType.leftToRightWithFade, child: HomeScreen());
       case AuthenticationPage.id:
         return PageTransition(
             type: PageTransitionType.fade, child: AuthenticationPage());

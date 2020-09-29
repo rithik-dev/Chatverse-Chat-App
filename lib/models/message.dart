@@ -2,10 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 
+enum MessageType {
+  photo,
+  video,
+  text,
+//  audio,
+}
+
 class Message {
   bool isRead;
   bool isDeleted;
   String text;
+  MessageType messageType;
 
   int index;
   String displayTime;
@@ -29,7 +37,7 @@ class Message {
 
   factory Message.fromJSONString(String encodedMessage) {
     final Map<String, dynamic> message =
-    jsonDecode(encodedMessage) as Map<String, dynamic>;
+        jsonDecode(encodedMessage) as Map<String, dynamic>;
 
     return Message(
       text: message['text'],

@@ -1,12 +1,20 @@
+import 'package:chatverse_chat_app/models/contact.dart';
+import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
+import 'package:chatverse_chat_app/views/add_attachment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SendButtonTextField extends StatefulWidget {
-  final Function(String) onSend;
+  final Function(String) sendMessageCallback;
+  final Contact contact;
+  final String profilePicHeroTag;
 
   SendButtonTextField({
-    @required this.onSend,
+    @required this.sendMessageCallback,
+    @required this.contact,
+    @required this.profilePicHeroTag,
   });
 
   @override
@@ -66,14 +74,28 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
                   hintText: "Send a message ...",
                   border: InputBorder.none,
                   prefixIcon: IconButton(
-                    icon: Icon(Icons.camera),
+                    icon: Icon(Icons.ac_unit),
                     iconSize: 25.0,
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO: open emoji keyboard
+                    },
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.attach_file),
                     iconSize: 25.0,
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<ChatScreenAppBarProvider>(context,
+                              listen: false)
+                          .unSelectMessage();
+                      Navigator.pushNamed(
+                        context,
+                        AddAttachment.id,
+                        arguments: {
+                          'contact': this.widget.contact,
+                          'profilePicHeroTag': this.widget.profilePicHeroTag,
+                        },
+                      );
+                    },
                   ),
                 ),
               ),
@@ -100,12 +122,14 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
                     this._textEditingController.text = "";
                     this._textEditingController.clear();
                   });
-                  return this.widget.onSend(_tempMessage);
+                  return this.widget.sendMessageCallback(_tempMessage);
                 },
               ),
               crossFadeState: !this._isListening
                   ? (this._messageText == null ||
-                  this._messageText.trim().length == 0)
+                  this._messageText
+                      .trim()
+                      .length == 0)
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
@@ -144,14 +168,14 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
       if (available) {
         setState(() => this._isListening = true);
         this._speech.listen(
-              cancelOnError: true,
-              onResult: (val) {
-                setState(() {
-                  this._messageText = val.recognizedWords;
-                  this._textEditingController.text = val.recognizedWords;
-                });
-              },
-            );
+          cancelOnError: true,
+          onResult: (val) {
+            setState(() {
+              this._messageText = val.recognizedWords;
+              this._textEditingController.text = val.recognizedWords;
+            });
+          },
+        );
       }
     } else {
       setState(() => this._isListening = false);

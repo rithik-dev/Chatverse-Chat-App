@@ -40,7 +40,10 @@ class RecentChatCard extends StatelessWidget {
               favoriteContactIds: user.favoriteContactIds,
             );
           else
-            Navigator.pushNamed(context, ChatScreen.id, arguments: contact);
+            Navigator.pushNamed(context, ChatScreen.id, arguments: {
+              'contact': contact,
+              'profilePicHeroTag': contact.id + "-recent",
+            });
         },
         onLongPress: () async {
           if (homeScreenAppBarProvider.contactIsSelected)
@@ -109,7 +112,7 @@ class RecentChatCard extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Hero(
-                            tag: contact.id,
+                            tag: contact.id + "-recent",
                             child: ProfilePicture(contact.photoUrl, radius: 35),
                           ),
                           SizedBox(width: 10.0),

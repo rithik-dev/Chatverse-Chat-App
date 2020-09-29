@@ -82,44 +82,16 @@ class FavoriteContacts extends StatelessWidget {
                           width: 110,
                           child: Column(
                             children: <Widget>[
-                              ProfilePicture(
-                                favoriteContactsSnapshot.data[index].photoUrl,
-                                radius: 35,
-                                onPressed: () {
-                                  if (homeScreenAppBarProvider
-                                      .contactIsSelected) if (homeScreenAppBarProvider
-                                          .contactId ==
-                                      favoriteContactsSnapshot.data[index].id)
-                                    homeScreenAppBarProvider.unSelectContact();
-                                  else
-                                    homeScreenAppBarProvider.selectContact(
-                                      contactId: favoriteContactsSnapshot
-                                          .data[index].id,
-                                      favoriteContactIds:
-                                          user.favoriteContactIds,
-                                    );
-                                  else
-                                    Navigator.pushNamed(context, ChatScreen.id,
-                                        arguments: favoriteContactsSnapshot
-                                            .data[index]);
-                                },
-                                onLongPress: () async {
-                                  if (homeScreenAppBarProvider
-                                      .contactIsSelected)
-                                    homeScreenAppBarProvider.unSelectContact();
-                                  else
-                                    homeScreenAppBarProvider.selectContact(
-                                      contactId: favoriteContactsSnapshot
-                                          .data[index].id,
-                                      favoriteContactIds:
-                                      user.favoriteContactIds,
-                                    );
-                                },
-                                onVerticalDragStart: (details) {
-                                  if (homeScreenAppBarProvider
-                                      .contactIsSelected)
-                                    homeScreenAppBarProvider.unSelectContact();
-                                },
+                              Hero(
+                                tag: favoriteContactsSnapshot.data[index].id +
+                                    "-favorite",
+                                child: this._buildProfilePicture(
+                                  favoriteContactsSnapshot,
+                                  index,
+                                  homeScreenAppBarProvider,
+                                  user,
+                                  context,
+                                ),
                               ),
                               SizedBox(height: 10.0),
                               Text(
@@ -142,5 +114,48 @@ class FavoriteContacts extends StatelessWidget {
         ),
       );
     });
+  }
+
+  ProfilePicture _buildProfilePicture(
+      AsyncSnapshot<List<Contact>> favoriteContactsSnapshot,
+      int index,
+      HomeScreenAppBarProvider homeScreenAppBarProvider,
+      User user,
+      BuildContext context) {
+    return ProfilePicture(
+      favoriteContactsSnapshot.data[index].photoUrl,
+      radius: 35,
+      onPressed: () {
+        if (homeScreenAppBarProvider
+            .contactIsSelected) if (homeScreenAppBarProvider
+                .contactId ==
+            favoriteContactsSnapshot.data[index].id)
+          homeScreenAppBarProvider.unSelectContact();
+        else
+          homeScreenAppBarProvider.selectContact(
+            contactId: favoriteContactsSnapshot.data[index].id,
+            favoriteContactIds: user.favoriteContactIds,
+          );
+        else
+          Navigator.pushNamed(context, ChatScreen.id, arguments: {
+            'contact': favoriteContactsSnapshot.data[index],
+            'profilePicHeroTag':
+                favoriteContactsSnapshot.data[index].id + "-favorite"
+          });
+      },
+      onLongPress: () async {
+        if (homeScreenAppBarProvider.contactIsSelected)
+          homeScreenAppBarProvider.unSelectContact();
+        else
+          homeScreenAppBarProvider.selectContact(
+            contactId: favoriteContactsSnapshot.data[index].id,
+            favoriteContactIds: user.favoriteContactIds,
+          );
+      },
+      onVerticalDragStart: (details) {
+        if (homeScreenAppBarProvider.contactIsSelected)
+          homeScreenAppBarProvider.unSelectContact();
+      },
+    );
   }
 }

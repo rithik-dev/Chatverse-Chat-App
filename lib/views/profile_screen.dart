@@ -84,7 +84,8 @@ class _ProfilePicture extends StatelessWidget {
               padding: const EdgeInsets.all(0),
               icon: Icon(
                 Icons.edit,
-                size: 20,
+                size: 18,
+                color: Colors.white,
               ),
               onPressed: () {
                 showModalBottomSheet(

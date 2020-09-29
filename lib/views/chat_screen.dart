@@ -20,8 +20,12 @@ import 'package:provider/provider.dart';
 class ChatScreen extends StatefulWidget {
   static const id = 'chat_screen';
   final Contact contact;
+  final String profilePicHeroTag;
 
-  ChatScreen({@required this.contact});
+  ChatScreen({
+    @required this.contact,
+    @required this.profilePicHeroTag,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -66,7 +70,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     duration: Duration(milliseconds: 250),
                     // appbar when message is not selected
                     firstChild: AppBar(
-                      leading: ProfilePicture(this.widget.contact.photoUrl),
+                      leading: Hero(
+                        tag: this.widget.profilePicHeroTag,
+                        child: ProfilePicture(this.widget.contact.photoUrl),
+                      ),
                       centerTitle: true,
                       title: Text(this.widget.contact.name),
                       actions: [
@@ -93,7 +100,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   this._buildStreamBuilder(user, chatScreenAppBarProvider),
                   SendButtonTextField(
-                    onSend: (String messageText) {
+                    contact: this.widget.contact,
+                    profilePicHeroTag: this.widget.profilePicHeroTag,
+                    sendMessageCallback: (String messageText) {
                       if (messageText != null && messageText != "") {
                         //FIXME: fix bug when sending a lot of messages and not sending
                         final String msg = messageText;
@@ -246,24 +255,24 @@ class _ChatScreenState extends State<ChatScreen> {
           if (!chatScreenAppBarProvider.message.isDeleted) ...[
             (chatScreenAppBarProvider.message.senderId == user.id)
                 ? IconButton(
-              icon: Icon(Icons.delete),
-              color: Colors.redAccent,
-              onPressed: () async {
-                showDialog(
-                  context: context,
-                  // user cannot dismiss alert dialog by pressing outside of the dialog
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return DeleteMessageAlertDialog(
-                      deleteForMeCallback: () async {
-                        Navigator.pop(context);
-                        await _deleteMessage(deleteForEveryone: false);
-                        chatScreenAppBarProvider.unSelectMessage();
-                      },
-                      deleteForEveryoneCallback: () async {
-                        Navigator.pop(context);
-                        await _deleteMessage(deleteForEveryone: true);
-                        chatScreenAppBarProvider.unSelectMessage();
+                    icon: Icon(Icons.delete),
+                    color: Colors.redAccent,
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        // user cannot dismiss alert dialog by pressing outside of the dialog
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return DeleteMessageAlertDialog(
+                            deleteForMeCallback: () async {
+                              Navigator.pop(context);
+                              await _deleteMessage(deleteForEveryone: false);
+                              chatScreenAppBarProvider.unSelectMessage();
+                            },
+                            deleteForEveryoneCallback: () async {
+                              Navigator.pop(context);
+                              await _deleteMessage(deleteForEveryone: true);
+                              chatScreenAppBarProvider.unSelectMessage();
                             },
                           );
                         },
