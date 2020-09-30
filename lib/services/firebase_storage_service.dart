@@ -102,6 +102,7 @@ class FirebaseStorageService {
     );
   }
 
+  //FIXME : delete message bug fix for media messages
   static Future<void> deleteMessage({
     @required String chatRoomId,
     String userId,

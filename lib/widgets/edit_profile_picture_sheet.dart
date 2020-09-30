@@ -116,18 +116,11 @@ class _EditProfilePictureBottomSheetState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               if (_imageFile != null) ...[
-                Container(
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 130),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: FileImage(_imageFile),
-                      fit: BoxFit.fill,
-                    ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Image.file(_imageFile),
                   ),
-                  height: 150,
-//                  width: 200,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -6,6 +6,7 @@ import 'package:chatverse_chat_app/utilities/theme_handler.dart';
 import 'package:chatverse_chat_app/widgets/custom_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 // ignore: must_be_immutable
 class MessageCard extends StatelessWidget {
@@ -44,7 +45,16 @@ class MessageCard extends StatelessWidget {
         ),
       );
     } else if (message.type == MessageType.photo) {
-      return CachedNetworkImage(imageUrl: message.text);
+      return CachedNetworkImage(
+        imageUrl: message.text,
+        placeholder: (context, _) => Shimmer.fromColors(
+            child: Container(
+              color: Colors.white,
+              height: 250,
+            ),
+            baseColor: Colors.white,
+            highlightColor: Colors.grey[500]),
+      );
     } else if (message.type == MessageType.video) {
       return CustomVideoPlayer.fromUrl(message.text);
     } else
