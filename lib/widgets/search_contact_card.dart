@@ -46,6 +46,8 @@ class SearchContactCard extends StatelessWidget {
               gravity: ToastGravity.TOP,
               toastLength: Toast.LENGTH_LONG,
             );
+          } finally {
+            loadingProvider.stopLoading();
           }
         },
         child: Container(

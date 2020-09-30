@@ -127,42 +127,39 @@ class RecentChatCard extends StatelessWidget {
                               ),
                               SizedBox(height: 10.0),
                               Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.45,
+                                width: MediaQuery.of(context).size.width * 0.45,
                                 child: Row(
                                   children: [
                                     this.messages.length != 0 &&
-                                        this.messages[0].senderId == user.id
+                                            this.messages[0].senderId == user.id
                                         ? Icon(
-                                      contactHasReadLastMessage
-                                          ? Icons.check_circle
-                                          : Icons.check_circle_outline,
-                                      size: 15,
-                                      color:
-                                      Theme
-                                          .of(context)
-                                          .accentColor,
-                                    )
+                                            contactHasReadLastMessage
+                                                ? Icons.check_circle
+                                                : Icons.check_circle_outline,
+                                            size: 15,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          )
                                         : SizedBox.shrink(),
                                     SizedBox(width: 5),
-                                    Text(
-                                      messages.length == 0
-                                          ? "Tap to start chatting..."
-                                          : messages[0].text,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          .copyWith(
-                                        fontStyle: this.messages.length == 0
-                                            ? FontStyle.italic
-                                            : this.messages[0].isDeleted
-                                            ? FontStyle.italic
-                                            : FontStyle.normal,
+                                    Expanded(
+                                      child: Text(
+                                        this._getMessageContent(
+                                          message: messages[0],
+                                          messagesLength: messages.length,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2
+                                            .copyWith(
+                                              fontStyle:
+                                                  this._getMessageFontStyle(
+                                                messagesLength: messages.length,
+                                                message: messages[0],
+                                              ),
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -215,6 +212,25 @@ class RecentChatCard extends StatelessWidget {
           },
         ),
       );
-    });
+        });
+  }
+
+  String _getMessageContent({Message message, int messagesLength}) {
+    if (messagesLength == 0) return "Tap to start chatting...";
+    if (message.type == MessageType.photo)
+      return "Photo";
+    else if (message.type == MessageType.video)
+      return "Video";
+    else
+      return message.text;
+  }
+
+  FontStyle _getMessageFontStyle({Message message, int messagesLength}) {
+    if (messagesLength == 0 ||
+        message.isDeleted ||
+        message.type == MessageType.photo ||
+        message.type == MessageType.video) return FontStyle.italic;
+
+    return FontStyle.normal;
   }
 }

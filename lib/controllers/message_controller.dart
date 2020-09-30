@@ -1,25 +1,39 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ntp/ntp.dart' show NTP;
 
 class MessageController {
   MessageController._();
 
-  static void sendMessage({
+  static Future<void> sendTextMessage({
     String contactId,
     String text,
     String senderId,
     String chatRoomId,
+    DateTime dateTime,
+    MessageType messageType,
   }) async {
-    final Map<String, String> display = await getDisplayDateAndTime();
+    int _timeStampMicroSeconds;
+    if (dateTime == null) {
+      final DateTime _dateTime = await NTP.now();
+      _timeStampMicroSeconds =
+          Timestamp.fromDate(_dateTime).microsecondsSinceEpoch;
+    } else {
+      _timeStampMicroSeconds =
+          Timestamp.fromDate(dateTime).microsecondsSinceEpoch;
+    }
+
+    final String _messageTypeString = Message.getMessageTypeString(messageType);
 
     final Map<String, dynamic> message = {
       "text": text,
       "senderId": senderId,
-      "displayTime": display['displayTime'],
-      "displayDate": display['displayDate'],
+      "timeStampMicroSeconds": _timeStampMicroSeconds,
+      "type": _messageTypeString
     };
 
     final String encodedMessage = jsonEncode(message);
@@ -31,21 +45,31 @@ class MessageController {
     );
   }
 
-  static Future<Map<String, String>> getDisplayDateAndTime() async {
+  static Future<void> sendMediaMessage({
+    String contactId,
+    File file,
+    String senderId,
+    String chatRoomId,
+    MessageType messageType,
+  }) async {
     final DateTime dateTime = await NTP.now();
-    DateFormat formatter;
-    String displayTime;
-    String displayDate;
 
-    formatter = DateFormat('h:mm a');
-    displayTime = formatter.format(dateTime);
+    final String fileUrl = await FirebaseStorageService.uploadMediaMessage(
+      userId: senderId,
+      image: file,
+      timestamp: dateTime.toString(),
+      messageType: messageType,
+    );
 
-    formatter = DateFormat('d MMMM yyyy');
-    displayDate = formatter.format(dateTime);
+    print("upload url $fileUrl");
 
-    return {
-      'displayTime': displayTime,
-      'displayDate': displayDate,
-    };
+    await sendTextMessage(
+      contactId: contactId,
+      text: fileUrl,
+      senderId: senderId,
+      chatRoomId: chatRoomId,
+      dateTime: dateTime,
+      messageType: messageType,
+    );
   }
 }

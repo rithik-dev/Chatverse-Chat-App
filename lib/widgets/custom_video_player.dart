@@ -9,11 +9,11 @@ class CustomVideoPlayer extends StatefulWidget {
 
   CustomVideoPlayer({@required this.dataSource});
 
-  factory CustomVideoPlayer.fromUrl({@required String url}) {
+  factory CustomVideoPlayer.fromUrl(String url) {
     return CustomVideoPlayer(dataSource: url);
   }
 
-  factory CustomVideoPlayer.fromFile({@required File file}) {
+  factory CustomVideoPlayer.fromFile(File file) {
     return CustomVideoPlayer(dataSource: file);
   }
 
@@ -39,9 +39,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     this._chewieController = ChewieController(
       videoPlayerController: this._videoPlayerController,
-      // check this._videoPlayerController.value.size.aspectRatio
-      aspectRatio: this._videoPlayerController.value.aspectRatio,
-      autoPlay: true,
+      autoPlay: this.widget.dataSource is File,
+      allowedScreenSleep: false,
       materialProgressColors: ChewieProgressColors(
         playedColor: Colors.tealAccent,
         handleColor: Colors.lightBlueAccent,

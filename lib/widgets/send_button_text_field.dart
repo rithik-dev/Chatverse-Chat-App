@@ -10,11 +10,13 @@ class SendButtonTextField extends StatefulWidget {
   final Function(String) sendMessageCallback;
   final Contact contact;
   final String profilePicHeroTag;
+  final VoidCallback emojiCallback;
 
   SendButtonTextField({
     @required this.sendMessageCallback,
     @required this.contact,
     @required this.profilePicHeroTag,
+    @required this.emojiCallback,
   });
 
   @override
@@ -23,7 +25,6 @@ class SendButtonTextField extends StatefulWidget {
 
 class _SendButtonTextFieldState extends State<SendButtonTextField> {
   String _messageText;
-  String _tempMessage;
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -74,11 +75,9 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
                   hintText: "Send a message ...",
                   border: InputBorder.none,
                   prefixIcon: IconButton(
-                    icon: Icon(Icons.ac_unit),
+                    icon: Icon(Icons.face),
                     iconSize: 25.0,
-                    onPressed: () {
-                      // TODO: open emoji keyboard
-                    },
+                    onPressed: this.widget.emojiCallback,
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.attach_file),
@@ -116,7 +115,7 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
               secondChild: IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () {
-                  _tempMessage = this._messageText;
+                  final String _tempMessage = this._messageText;
                   setState(() {
                     this._messageText = "";
                     this._textEditingController.text = "";
@@ -127,11 +126,9 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
               ),
               crossFadeState: !this._isListening
                   ? (this._messageText == null ||
-                  this._messageText
-                      .trim()
-                      .length == 0)
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond
+                          this._messageText.trim().length == 0)
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
             ),
           ),

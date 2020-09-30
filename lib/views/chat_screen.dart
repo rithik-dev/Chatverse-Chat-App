@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return WillPopScope(
           onWillPop: () {
             chatScreenAppBarProvider.unSelectMessage();
-            return Future.value(true);
+            return Future<bool>.value(true);
           },
           child: CustomLoadingScreen(
             child: Scaffold(
@@ -102,13 +102,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   SendButtonTextField(
                     contact: this.widget.contact,
                     profilePicHeroTag: this.widget.profilePicHeroTag,
+                    emojiCallback: () {
+                      //TODO: show emoji keyboard
+                    },
                     sendMessageCallback: (String messageText) {
                       if (messageText != null && messageText != "") {
                         //FIXME: fix bug when sending a lot of messages and not sending
-                        final String msg = messageText;
-                        MessageController.sendMessage(
+                        MessageController.sendTextMessage(
                           contactId: this.widget.contact.id,
-                          text: msg,
+                          text: messageText,
+                          messageType: MessageType.text,
                           chatRoomId: this.widget.contact.chatRoomId,
                           senderId: user.id,
                         );

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -177,16 +178,32 @@ class FirebaseStorageService {
     }
   }
 
-  static Future<String> uploadFile(String userId, File image) async {
+  static Future<String> uploadFile(
+      {@required String path,
+      @required File file,
+      @required MessageType messageType}) async {
+    StorageUploadTask uploadTask;
+    if (messageType == MessageType.photo)
+      uploadTask = _storage.ref().child(path).putFile(file);
+    else
+      uploadTask = _storage.ref().child(path).putFile(
+            file,
+            StorageMetadata(contentType: 'video/mp4'),
+          );
+
+    await uploadTask.onComplete;
+    String fileURL = await _storage.ref().child(path).getDownloadURL();
+    return fileURL;
+  }
+
+  static Future<String> uploadProfilePicture(String userId, File image) async {
     try {
-      StorageUploadTask uploadTask =
-          _storage.ref().child('Profile Pictures/$userId.png').putFile(image);
-      await uploadTask.onComplete;
-      String fileURL = await _storage
-          .ref()
-          .child('Profile Pictures/$userId.png')
-          .getDownloadURL();
-      return fileURL;
+      final String fileUrl = await uploadFile(
+        path: 'Profile Pictures/$userId.png',
+        file: image,
+        messageType: MessageType.photo,
+      );
+      return fileUrl;
     } catch (e) {
       print(e.toString());
       return null;
@@ -198,16 +215,45 @@ class FirebaseStorageService {
     try {
       if (oldImageURL != kDefaultPhotoUrl) {
         StorageReference photoRef =
-        await _storage.getReferenceFromUrl(oldImageURL);
+            await _storage.getReferenceFromUrl(oldImageURL);
         await photoRef.delete();
       }
 
-      String newFileURL = await uploadFile(userId, newImage);
+      final String newFileURL = await uploadFile(
+        path: 'Profile Pictures/$userId.png',
+        file: newImage,
+        messageType: MessageType.photo,
+      );
       await _firestore.collection("users").doc(userId).update({
         'photoUrl': newFileURL,
       });
 
       return newFileURL;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  static Future<String> uploadMediaMessage({
+    String userId,
+    File image,
+    String timestamp,
+    MessageType messageType,
+  }) async {
+    try {
+      String path = "Media/$userId/";
+      if (messageType == MessageType.photo)
+        path += "$timestamp.png";
+      else
+        path += "$timestamp.mp4";
+      final String fileUrl = await uploadFile(
+        path: path,
+        file: image,
+        messageType: messageType,
+      );
+
+      return fileUrl;
     } catch (e) {
       print(e.toString());
       return null;
