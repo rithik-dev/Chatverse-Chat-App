@@ -258,12 +258,9 @@ class _AddAttachmentState extends State<AddAttachment>
                 ? this._selectedGalleryImage
                 : this._selectedCameraImage,
           )
-        : Container(
-            padding: const EdgeInsets.all(20),
-            child: this._tabController.index == 0
-                ? CustomVideoPlayer.fromFile(this._selectedGalleryVideo)
-                : CustomVideoPlayer.fromFile(this._selectedCameraVideo),
-          );
+        : this._tabController.index == 0
+            ? CustomVideoPlayer.fromFile(this._selectedGalleryVideo)
+            : CustomVideoPlayer.fromFile(this._selectedCameraVideo);
   }
 
   ImageSource get source {

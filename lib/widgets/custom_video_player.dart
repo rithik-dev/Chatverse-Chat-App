@@ -5,15 +5,25 @@ import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
   final dynamic dataSource;
+  final Alignment alignMedia;
 
-  CustomVideoPlayer({@required this.dataSource});
+  CustomVideoPlayer({
+    @required this.dataSource,
+    @required this.alignMedia,
+  });
 
   factory CustomVideoPlayer.fromUrl(String url) {
-    return CustomVideoPlayer(dataSource: url);
+    return CustomVideoPlayer(
+      dataSource: url,
+      alignMedia: Alignment.center,
+    );
   }
 
   factory CustomVideoPlayer.fromFile(File file) {
-    return CustomVideoPlayer(dataSource: file);
+    return CustomVideoPlayer(
+      dataSource: file,
+      alignMedia: Alignment.topCenter,
+    );
   }
 
   @override
@@ -49,15 +59,18 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: <Widget>[
-          VideoPlayer(_controller),
-          _ControlsOverlay(controller: _controller),
-          VideoProgressIndicator(_controller, allowScrubbing: true),
-        ],
+    return Align(
+      alignment: this.widget.alignMedia,
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            VideoPlayer(_controller),
+            _ControlsOverlay(controller: _controller),
+            VideoProgressIndicator(_controller, allowScrubbing: true),
+          ],
+        ),
       ),
     );
   }

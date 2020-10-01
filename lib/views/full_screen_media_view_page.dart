@@ -30,14 +30,11 @@ class FullScreenMediaViewPage extends StatelessWidget {
         ),
         body: Hero(
           tag: this.url,
-          child: Container(
+          child: Align(
             alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: this.messageType == MessageType.photo
-                  ? CachedNetworkImage(imageUrl: this.url)
-                  : CustomVideoPlayer.fromUrl(this.url),
-            ),
+            child: this.messageType == MessageType.photo
+                ? CachedNetworkImage(imageUrl: this.url)
+                : CustomVideoPlayer.fromUrl(this.url),
           ),
         ),
       ),

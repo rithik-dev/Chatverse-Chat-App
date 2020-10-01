@@ -48,16 +48,18 @@ class MessageCard extends StatelessWidget {
     } else {
       return GestureDetector(
         onTap: () {
-          chatScreenAppBarProvider.unSelectMessage();
-          Navigator.pushNamed(
-            context,
-            FullScreenMediaViewPage.id,
-            arguments: {
-              'mediaUrl': message.content,
-              'messageType': message.type,
-              'senderName': senderIsMe ? user.name : contact.name,
-            },
-          );
+          if (chatScreenAppBarProvider.messageIsSelected)
+            chatScreenAppBarProvider.unSelectMessage();
+          else
+            Navigator.pushNamed(
+              context,
+              FullScreenMediaViewPage.id,
+              arguments: {
+                'mediaUrl': message.content,
+                'messageType': message.type,
+                'senderName': senderIsMe ? user.name : contact.name,
+              },
+            );
         },
         child: Hero(
           tag: message.content,
@@ -116,27 +118,26 @@ class MessageCard extends StatelessWidget {
 //                  : ThemeHandler.contactMessageCardColor(context),
               gradient: LinearGradient(
                 begin:
-                this.senderIsMe ? Alignment.bottomLeft : Alignment.topLeft,
+                    this.senderIsMe ? Alignment.bottomLeft : Alignment.topLeft,
                 colors: [
                   if (this.senderIsMe) ...[
                     Color.fromRGBO(164, 14, 176, 0.5),
                     Color.fromRGBO(254, 101, 101, 0.7),
-                  ] else
-                    ...[
-                      Color.fromRGBO(51, 8, 103, 0.6),
-                      Color.fromRGBO(48, 207, 208, 0.4),
-                    ],
+                  ] else ...[
+                    Color.fromRGBO(51, 8, 103, 0.6),
+                    Color.fromRGBO(48, 207, 208, 0.4),
+                  ],
                 ],
               ),
               borderRadius: this.senderIsMe
                   ? BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                bottomLeft: Radius.circular(15.0),
-              )
+                      topLeft: Radius.circular(15.0),
+                      bottomLeft: Radius.circular(15.0),
+                    )
                   : BorderRadius.only(
-                topRight: Radius.circular(15.0),
-                bottomRight: Radius.circular(15.0),
-              ),
+                      topRight: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
             ),
             child: Column(
               crossAxisAlignment: this.senderIsMe

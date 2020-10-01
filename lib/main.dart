@@ -12,6 +12,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// TODO: add last seen / online in chat screen
 //TODO: add cloud function to clear deleted messages everyday??
 //TODO: add block option
 // TODO: add like message feature
