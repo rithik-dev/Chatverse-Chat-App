@@ -1,7 +1,9 @@
 import 'package:chatverse_chat_app/models/contact.dart';
+import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/views/add_attachment_screen.dart';
 import 'package:chatverse_chat_app/views/authentication_screen.dart';
 import 'package:chatverse_chat_app/views/chat_screen.dart';
+import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
 import 'package:chatverse_chat_app/views/home_screen.dart';
 import 'package:chatverse_chat_app/views/intro_screen.dart';
 import 'package:chatverse_chat_app/views/profile_screen.dart';
@@ -23,6 +25,15 @@ class RouteGenerator {
               contact: (args as Map)['contact'] as Contact,
               profilePicHeroTag: (args as Map)['profilePicHeroTag'] as String,
             ));
+      case FullScreenMediaViewPage.id:
+        return PageTransition(
+          type: PageTransitionType.scale,
+          child: FullScreenMediaViewPage(
+            url: (args as Map)['mediaUrl'] as String,
+            messageType: (args as Map)['messageType'] as MessageType,
+            senderName: (args as Map)['senderName'] as String,
+          ),
+        );
       case SearchContactsScreen.id:
         return PageTransition(
             type: PageTransitionType.downToUp, child: SearchContactsScreen());
@@ -34,11 +45,12 @@ class RouteGenerator {
             type: PageTransitionType.scale, child: ProfileScreen());
       case ChatScreen.id:
         return PageTransition(
-            type: PageTransitionType.leftToRightWithFade,
-            child: ChatScreen(
-              contact: (args as Map)['contact'] as Contact,
-              profilePicHeroTag: (args as Map)['profilePicHeroTag'] as String,
-            ));
+          type: PageTransitionType.leftToRightWithFade,
+          child: ChatScreen(
+            contact: (args as Map)['contact'] as Contact,
+            profilePicHeroTag: (args as Map)['profilePicHeroTag'] as String,
+          ),
+        );
       case HomeScreen.id:
         return PageTransition(
             type: PageTransitionType.leftToRightWithFade, child: HomeScreen());

@@ -11,8 +11,8 @@ class FirebaseStorageService {
   FirebaseStorageService._();
 
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  static final FirebaseStorage _storage =
-      FirebaseStorage(storageBucket: 'gs://chatverse-4c90c.appspot.com/');
+  static final FirebaseStorage _storage = FirebaseStorage(
+      storageBucket: 'gs://chatverse-chat-app-f53b0.appspot.com');
 
   static Stream<DocumentSnapshot> getMessagesStream(String chatRoomId) {
     print("getting chat room stream : $chatRoomId");
@@ -102,7 +102,6 @@ class FirebaseStorageService {
     );
   }
 
-  //FIXME : delete message bug fix for media messages
   static Future<void> deleteMessage({
     @required String chatRoomId,
     String userId,
@@ -211,13 +210,16 @@ class FirebaseStorageService {
     }
   }
 
+  static Future<void> deleteMedia(String url) async {
+    StorageReference _photoRef = await _storage.getReferenceFromUrl(url);
+    return await _photoRef.delete();
+  }
+
   static Future<String> updateProfilePicture(
       {String userId, String oldImageURL, File newImage}) async {
     try {
       if (oldImageURL != kDefaultPhotoUrl) {
-        StorageReference photoRef =
-            await _storage.getReferenceFromUrl(oldImageURL);
-        await photoRef.delete();
+        await deleteMedia(oldImageURL);
       }
 
       final String newFileURL = await uploadFile(
@@ -265,10 +267,6 @@ class FirebaseStorageService {
       {String userId, String oldImageURL}) async {
     try {
       if (oldImageURL != kDefaultPhotoUrl) {
-        StorageReference photoRef =
-        await _storage.getReferenceFromUrl(oldImageURL);
-        await photoRef.delete();
-
         await _firestore.collection("users").doc(userId).update({
           'photoUrl': kDefaultPhotoUrl,
         });

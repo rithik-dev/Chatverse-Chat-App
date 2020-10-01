@@ -11,13 +11,13 @@ class ChatScreenAppBarProvider extends ChangeNotifier {
     this.message = message;
     this.messageIsSelected = true;
     print(
-        "selected message : ${this.message.text} index ${this.message.index}");
+        "selected message : ${this.message.content} index ${this.message.index}");
     notifyListeners();
   }
 
   void copySelectedMessage() {
     if (this.message == null) return;
-    Functions.copyToClipboard(this.message.text);
+    Functions.copyToClipboard(this.message.content);
     Fluttertoast.showToast(
       msg: "Message Copied",
       gravity: ToastGravity.CENTER,

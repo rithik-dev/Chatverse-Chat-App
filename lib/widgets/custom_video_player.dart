@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -18,50 +17,83 @@ class CustomVideoPlayer extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() {
-    return _CustomVideoPlayerState();
-  }
+  _CustomVideoPlayerState createState() => _CustomVideoPlayerState();
 }
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
-  VideoPlayerController _videoPlayerController;
-  ChewieController _chewieController;
+  VideoPlayerController _controller;
 
   @override
   void initState() {
     super.initState();
+
     if (this.widget.dataSource is String)
-      this._videoPlayerController =
+      this._controller =
           VideoPlayerController.network(this.widget.dataSource as String);
     else if (this.widget.dataSource is File)
-      this._videoPlayerController =
+      this._controller =
           VideoPlayerController.file(this.widget.dataSource as File);
 
-    this._chewieController = ChewieController(
-      videoPlayerController: this._videoPlayerController,
-      autoPlay: this.widget.dataSource is File,
-      allowedScreenSleep: false,
-      materialProgressColors: ChewieProgressColors(
-        playedColor: Colors.tealAccent,
-        handleColor: Colors.lightBlueAccent,
-        bufferedColor: Colors.black87,
-      ),
-      placeholder: Container(color: Colors.black),
-      autoInitialize: true,
-    );
-
-    setState(() {});
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(true);
+    _controller.initialize();
   }
 
   @override
   void dispose() {
-    this._videoPlayerController.dispose();
-    this._chewieController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Chewie(controller: this._chewieController);
+    return AspectRatio(
+      aspectRatio: _controller.value.aspectRatio,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          VideoPlayer(_controller),
+          _ControlsOverlay(controller: _controller),
+          VideoProgressIndicator(_controller, allowScrubbing: true),
+        ],
+      ),
+    );
+  }
+}
+
+class _ControlsOverlay extends StatelessWidget {
+  const _ControlsOverlay({this.controller});
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 50),
+          reverseDuration: Duration(milliseconds: 200),
+          child: controller.value.isPlaying
+              ? SizedBox.shrink()
+              : Container(
+                  color: Colors.black26,
+                  child: Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 100.0,
+                    ),
+                  ),
+                ),
+        ),
+        GestureDetector(
+          onTap: () {
+            controller.value.isPlaying ? controller.pause() : controller.play();
+          },
+        ),
+      ],
+    );
   }
 }

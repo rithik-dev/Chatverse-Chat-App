@@ -83,6 +83,7 @@ class _SendButtonTextFieldState extends State<SendButtonTextField> {
                     icon: Icon(Icons.attach_file),
                     iconSize: 25.0,
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       Provider.of<ChatScreenAppBarProvider>(context,
                               listen: false)
                           .unSelectMessage();

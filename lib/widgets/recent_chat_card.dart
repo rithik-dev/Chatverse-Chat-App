@@ -73,7 +73,7 @@ class RecentChatCard extends StatelessWidget {
                             ?.contains(i) ??
                         false;
 
-                if (message.isDeleted) message.text = kDeletedMessageString;
+                if (message.isDeleted) message.content = kDeletedMessageString;
                 messages.add(message);
               }
 
@@ -145,8 +145,7 @@ class RecentChatCard extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         this._getMessageContent(
-                                          message: messages[0],
-                                          messagesLength: messages.length,
+                                          messages: messages,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -156,8 +155,7 @@ class RecentChatCard extends StatelessWidget {
                                             .copyWith(
                                               fontStyle:
                                                   this._getMessageFontStyle(
-                                                messagesLength: messages.length,
-                                                message: messages[0],
+                                                    messages: messages,
                                               ),
                                             ),
                                       ),
@@ -175,10 +173,7 @@ class RecentChatCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             messages.length == 0 ? "" : messages[0].displayTime,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyText2,
+                            style: Theme.of(context).textTheme.bodyText2,
                           ),
                           SizedBox(height: 10.0),
                           unreadMessagesCount > 0
@@ -215,21 +210,22 @@ class RecentChatCard extends StatelessWidget {
         });
   }
 
-  String _getMessageContent({Message message, int messagesLength}) {
-    if (messagesLength == 0) return "Tap to start chatting...";
-    if (message.type == MessageType.photo)
+  String _getMessageContent({List<Message> messages}) {
+    if (messages.length == 0) return "Tap to start chatting...";
+    if (messages[0].isDeleted) return kDeletedMessageString;
+    if (messages[0].type == MessageType.photo)
       return "Photo";
-    else if (message.type == MessageType.video)
+    else if (messages[0].type == MessageType.video)
       return "Video";
     else
-      return message.text;
+      return messages[0].content;
   }
 
-  FontStyle _getMessageFontStyle({Message message, int messagesLength}) {
-    if (messagesLength == 0 ||
-        message.isDeleted ||
-        message.type == MessageType.photo ||
-        message.type == MessageType.video) return FontStyle.italic;
+  FontStyle _getMessageFontStyle({List<Message> messages}) {
+    if (messages.length == 0 ||
+        messages[0].isDeleted ||
+        messages[0].type == MessageType.photo ||
+        messages[0].type == MessageType.video) return FontStyle.italic;
 
     return FontStyle.normal;
   }

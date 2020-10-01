@@ -195,19 +195,22 @@ class ThemeHandler {
   );
 
   static final ThemeData darkTheme = ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: Color(0xFF1b1b2f),
-    appBarTheme: AppBarTheme(
-        centerTitle: true,
-        color: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.tealAccent, size: 30),
-        actionsIconTheme: IconThemeData(color: Colors.tealAccent, size: 30)),
-    accentColor: Colors.tealAccent,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    canvasColor: Color(0xFF1b1b2f),
-    iconTheme: IconThemeData(color: Colors.tealAccent),
-  );
+      scaffoldBackgroundColor: Color(0xFF1b1b2f),
+      appBarTheme: AppBarTheme(
+          centerTitle: true,
+          color: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.tealAccent, size: 30),
+          actionsIconTheme: IconThemeData(color: Colors.tealAccent, size: 30)),
+      accentColor: Colors.tealAccent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      canvasColor: Color(0xFF1b1b2f),
+      iconTheme: IconThemeData(color: Colors.tealAccent),
+      snackBarTheme: SnackBarThemeData(
+          backgroundColor: Colors.grey[900],
+          actionTextColor: Colors.white,
+          contentTextStyle: TextStyle(color: Colors.white)));
 
   static Future<void> setDarkTheme(BuildContext context) async {
     await DynamicTheme.of(context).setBrightness(Brightness.dark);

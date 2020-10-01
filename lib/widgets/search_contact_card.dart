@@ -31,7 +31,10 @@ class SearchContactCard extends StatelessWidget {
             Navigator.pushReplacementNamed(
               context,
               ChatScreen.id,
-              arguments: contact,
+              arguments: {
+                'contact': contact,
+                'profilePicHeroTag': contact.id + '-newContact'
+              },
             );
             loadingProvider.stopLoading();
           } on CannotAddContactException catch (e) {
@@ -59,10 +62,13 @@ class SearchContactCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              ProfilePicture(
-                this.contact.photoUrl,
-                radius: 35,
-                borderWidth: 2,
+              Hero(
+                tag: this.contact.id + '-newContact',
+                child: ProfilePicture(
+                  this.contact.photoUrl,
+                  radius: 35,
+                  borderWidth: 2,
+                ),
               ),
               SizedBox(width: 15),
               Expanded(

@@ -115,7 +115,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       duration: Duration(seconds: 3),
       action: SnackBarAction(
         label: "RESEND LINK !",
-        textColor: Colors.white,
         onPressed: () async {
           loadingProvider.startLoading();
           final bool success =

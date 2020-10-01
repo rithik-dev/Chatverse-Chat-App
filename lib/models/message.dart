@@ -14,7 +14,7 @@ enum MessageType {
 class Message {
   bool isRead;
   bool isDeleted;
-  String text;
+  String content;
   MessageType type;
 
   int index;
@@ -23,7 +23,7 @@ class Message {
   String senderId;
 
   Message({
-    @required this.text,
+    @required this.content,
     @required this.index,
     @required this.senderId,
     @required this.type,
@@ -35,7 +35,7 @@ class Message {
 
   @override
   String toString() {
-    return 'Message{isRead: $isRead, isDeletedForMe: $isDeleted, text: $text, index: $index, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
+    return 'Message{isRead: $isRead, isDeletedForMe: $isDeleted, text: $content, index: $index, displayTime: $displayTime, displayDate: $displayDate, senderId: $senderId}';
   }
 
   factory Message.fromJSONString(String encodedMessage) {
@@ -46,7 +46,7 @@ class Message {
         getDisplayDateAndTime(message['timeStampMicroSeconds'] as int);
 
     return Message(
-      text: message['text'],
+      content: message['text'],
       senderId: message['senderId'],
       type: _getMessageType(message['type']),
       displayTime: displayDateAndTime['displayTime'],
@@ -59,7 +59,7 @@ class Message {
     final Map<String, dynamic> message = {
       'isRead': this.isRead,
       'isDeletedForMe': this.isDeleted,
-      'text': this.text,
+      'text': this.content,
       'type': this.type,
       'displayTime': this.displayTime,
       'displayDate': this.displayDate,

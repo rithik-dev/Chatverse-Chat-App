@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
-import 'package:chatverse_chat_app/utilities/theme_handler.dart';
-import 'package:chatverse_chat_app/widgets/custom_video_player.dart';
+import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,22 +12,22 @@ import 'package:shimmer/shimmer.dart';
 // ignore: must_be_immutable
 class MessageCard extends StatelessWidget {
   final Message message;
-  final String chatRoomId;
+  final Contact contact;
   User user;
   ChatScreenAppBarProvider chatScreenAppBarProvider;
 
   MessageCard({
     @required this.message,
-    @required this.chatRoomId,
+    @required this.contact,
   });
 
   bool senderIsMe;
 
   double _getCardWidth(BuildContext context) {
-    final int messageLength = message.text.length;
     final double maxWidth = MediaQuery.of(context).size.width * 0.85;
+    if (message.type != MessageType.text && !message.isDeleted) return maxWidth;
     final double minWidth = 165;
-    if (message.type != MessageType.text) return maxWidth;
+    final int messageLength = message.content.length;
     final double width = messageLength * 12.0;
     if (width <= minWidth) return minWidth;
     if (width >= maxWidth) return maxWidth;
@@ -34,31 +35,65 @@ class MessageCard extends StatelessWidget {
     return width;
   }
 
-  Widget _getMessageContent() {
-    if (message.type == MessageType.text) {
+  Widget _getMessageContent(BuildContext context) {
+    if (message.type == MessageType.text || message.isDeleted) {
       return Text(
-        this.message.text,
+        this.message.content,
         style: TextStyle(
           fontSize: 15,
           fontStyle:
               this.message.isDeleted ? FontStyle.italic : FontStyle.normal,
         ),
       );
-    } else if (message.type == MessageType.photo) {
-      return CachedNetworkImage(
-        imageUrl: message.text,
-        placeholder: (context, _) => Shimmer.fromColors(
-            child: Container(
-              color: Colors.white,
-              height: 250,
-            ),
-            baseColor: Colors.white,
-            highlightColor: Colors.grey[500]),
+    } else {
+      return GestureDetector(
+        onTap: () {
+          chatScreenAppBarProvider.unSelectMessage();
+          Navigator.pushNamed(
+            context,
+            FullScreenMediaViewPage.id,
+            arguments: {
+              'mediaUrl': message.content,
+              'messageType': message.type,
+              'senderName': senderIsMe ? user.name : contact.name,
+            },
+          );
+        },
+        child: Hero(
+          tag: message.content,
+          child: message.type == MessageType.photo
+              ? Container(
+                  height: 300,
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: message.content,
+                    placeholder: (context, _) => Shimmer.fromColors(
+                      child: Container(
+                        color: Colors.white,
+                        height: 300,
+                      ),
+                      baseColor: Colors.white,
+                      highlightColor: Colors.grey[500],
+                    ),
+                  ),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 200,
+                  width: double.infinity,
+                  child: Icon(
+                    Icons.play_circle_filled,
+                    color: Colors.white,
+                    size: 75,
+                  ),
+                ),
+        ),
       );
-    } else if (message.type == MessageType.video) {
-      return CustomVideoPlayer.fromUrl(message.text);
-    } else
-      return SizedBox.shrink();
+    }
   }
 
   @override
@@ -76,9 +111,23 @@ class MessageCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 2.5),
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             decoration: BoxDecoration(
-              color: this.senderIsMe
-                  ? ThemeHandler.myMessageCardColor(context)
-                  : ThemeHandler.contactMessageCardColor(context),
+//              color: this.senderIsMe
+//                  ? ThemeHandler.myMessageCardColor(context)
+//                  : ThemeHandler.contactMessageCardColor(context),
+              gradient: LinearGradient(
+                begin:
+                this.senderIsMe ? Alignment.bottomLeft : Alignment.topLeft,
+                colors: [
+                  if (this.senderIsMe) ...[
+                    Color.fromRGBO(164, 14, 176, 0.5),
+                    Color.fromRGBO(254, 101, 101, 0.7),
+                  ] else
+                    ...[
+                      Color.fromRGBO(51, 8, 103, 0.6),
+                      Color.fromRGBO(48, 207, 208, 0.4),
+                    ],
+                ],
+              ),
               borderRadius: this.senderIsMe
                   ? BorderRadius.only(
                 topLeft: Radius.circular(15.0),
@@ -94,7 +143,7 @@ class MessageCard extends StatelessWidget {
                   ? CrossAxisAlignment.end
                   : CrossAxisAlignment.start,
               children: <Widget>[
-                this._getMessageContent(),
+                this._getMessageContent(context),
                 SizedBox(height: 8.0),
                 Row(
                   mainAxisAlignment: this.senderIsMe

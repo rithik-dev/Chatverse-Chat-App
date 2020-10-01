@@ -12,18 +12,14 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//TODO: add cloud function to clear deleted messages everyday??
 //TODO: add block option
 // TODO: add like message feature
 // TODO: add feature to drag and drop a person to the fav contacts list
 // TODO: show green dot is user is online
-// TODO: add option to send images/videos
-// TODO: add favorite contacts button functionality
 // TODO: add read more button for extremely long messages
-// TODO: long tap on message to delete message?
 // TODO: notifications when new message??
-// TODO: handle cannot add contacts exception
 //TODO: add emoji keyboard
-//TODO: add delete for me message option
 //TODO : use about dialog to show version and other stuff (AboutDialog widget)
 //TODO:add last message timestamp in firebase and sort messages using it in recent chats
 void main() async {

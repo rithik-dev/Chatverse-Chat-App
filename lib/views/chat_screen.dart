@@ -165,7 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ?.contains(i) ??
                     false;
 
-            if (message.isDeleted) message.text = kDeletedMessageString;
+            if (message.isDeleted) message.content = kDeletedMessageString;
 
             // setting the last [unreadMessageCount] messages isRead as false
             if (message.senderId == user.id) {
@@ -218,7 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         : Colors.transparent,
                     child: MessageCard(
                       message: messages[index],
-                      chatRoomId: this.widget.contact.chatRoomId,
+                      contact: this.widget.contact,
                     ),
                   ),
                 );
@@ -264,7 +264,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       showDialog(
                         context: context,
                         // user cannot dismiss alert dialog by pressing outside of the dialog
-                        barrierDismissible: false,
                         builder: (BuildContext context) {
                           return DeleteMessageAlertDialog(
                             deleteForMeCallback: () async {
@@ -283,12 +282,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   )
                 : SizedBox.shrink(),
-            IconButton(
-              icon: Icon(Icons.content_copy),
-              onPressed: () {
-                chatScreenAppBarProvider.copySelectedMessage();
-              },
-            ),
+            // no copy button if message type is media
+            !(chatScreenAppBarProvider.message.type != MessageType.text)
+                ? IconButton(
+                    icon: Icon(Icons.content_copy),
+                    onPressed: () {
+                      chatScreenAppBarProvider.copySelectedMessage();
+                    },
+                  )
+                : SizedBox.shrink(),
             IconButton(
               icon: Icon(Icons.forward),
               onPressed: () {},

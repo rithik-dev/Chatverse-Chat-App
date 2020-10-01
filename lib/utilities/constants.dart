@@ -1,3 +1,3 @@
 const kDefaultPhotoUrl =
-    "https://firebasestorage.googleapis.com/v0/b/chatverse-4c90c.appspot.com/o/Profile%20Pictures%2FuserDefaultProfilePicture.png?alt=media&token=5cd436ed-a406-4e81-bc86-60de0efe6ac9";
+    "https://firebasestorage.googleapis.com/v0/b/chatverse-chat-app-f53b0.appspot.com/o/Profile%20Pictures%2FuserDefaultProfilePicture.png?alt=media&token=e5e0b4c7-822a-44b3-887d-c3537dfd823b";
 const String kDeletedMessageString = "[message deleted]";
