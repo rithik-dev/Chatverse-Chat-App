@@ -19,40 +19,27 @@ class RecentChats extends StatelessWidget {
     return StreamBuilder<List<Contact>>(
       stream: contactsStream,
       builder: (context, contactStreamSnapshot) {
-        if (contactStreamSnapshot.hasData) {
-          return Expanded(
-            child: ListView.separated(
-              physics: BouncingScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return Divider(
-                  height: 4,
-                  color: Colors.grey,
-                );
-              },
-              itemBuilder: (context, index) {
-                return RecentChatCard(
-                  contact: contactStreamSnapshot.data[index],
-                );
-              },
-              itemCount: contactStreamSnapshot.data.length,
-            ),
-          );
-        } else
-          return Expanded(
-            child: ListView.separated(
-              physics: BouncingScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return Divider(
-                  height: 4,
-                  color: Colors.grey,
-                );
-              },
-              itemBuilder: (context, index) {
-                return RecentChatCardShimmer();
-              },
-              itemCount: user.contacts.keys.length,
-            ),
-          );
+        return Expanded(
+          child: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            separatorBuilder: (context, index) {
+              return Divider(
+                height: 4,
+                color: Colors.grey,
+              );
+            },
+            itemBuilder: (context, index) {
+              return contactStreamSnapshot.hasData
+                  ? RecentChatCard(
+                      contact: contactStreamSnapshot.data[index],
+                    )
+                  : RecentChatCardShimmer();
+            },
+            itemCount: contactStreamSnapshot.hasData
+                ? contactStreamSnapshot.data.length
+                : user.contacts.keys.length,
+          ),
+        );
       },
     );
   }

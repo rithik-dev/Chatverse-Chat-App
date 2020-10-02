@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class DateSeparator extends StatelessWidget {
-  final String date;
+class Separator extends StatelessWidget {
+  final String text;
 
-  DateSeparator(this.date);
+  Separator(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +15,21 @@ class DateSeparator extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.deepOrangeAccent,
+            color: Colors.black38,
             blurRadius: 5,
             offset: Offset(1, 1),
           )
         ],
+        gradient: LinearGradient(
+          colors: [
+            Color.fromRGBO(48, 207, 208, 0.5),
+            Color.fromRGBO(164, 14, 176, 0.7),
+          ],
+        ),
         borderRadius: BorderRadius.circular(10),
-        color: Colors.deepOrange,
       ),
       child: Text(
-        this.date,
+        this.text,
         style: Theme.of(context).textTheme.bodyText1,
       ),
     );

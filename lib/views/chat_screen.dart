@@ -7,12 +7,13 @@ import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/utilities/constants.dart';
 import 'package:chatverse_chat_app/utilities/theme_handler.dart';
+import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
-import 'package:chatverse_chat_app/widgets/date_separator.dart';
 import 'package:chatverse_chat_app/widgets/delete_message_alert_dialog.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
 import 'package:chatverse_chat_app/widgets/profile_picture.dart';
 import 'package:chatverse_chat_app/widgets/send_button_text_field.dart';
+import 'package:chatverse_chat_app/widgets/separator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -179,7 +180,6 @@ class _ChatScreenState extends State<ChatScreen> {
           }
           return Expanded(
             child: ListView.separated(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               reverse: true,
               controller: _scrollController,
               physics: BouncingScrollPhysics(),
@@ -187,21 +187,33 @@ class _ChatScreenState extends State<ChatScreen> {
               separatorBuilder: (context, index) {
                 if (messages[index].displayDate !=
                     messages[index + 1].displayDate)
-                  return DateSeparator(messages[index].displayDate);
+                  return Separator(messages[index].displayDate);
                 else
                   return SizedBox.shrink();
               },
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    if (chatScreenAppBarProvider
-                        .messageIsSelected) if (chatScreenAppBarProvider
-                            .message.index ==
-                        messages[index].index)
-                      chatScreenAppBarProvider.unSelectMessage();
-                    else
-                      chatScreenAppBarProvider.selectMessage(
-                          message: messages[index]);
+                    if (chatScreenAppBarProvider.messageIsSelected) {
+                      if (chatScreenAppBarProvider.message.index ==
+                          messages[index].index)
+                        chatScreenAppBarProvider.unSelectMessage();
+                      else
+                        chatScreenAppBarProvider.selectMessage(
+                            message: messages[index]);
+                    } else {
+                      Navigator.pushNamed(
+                        context,
+                        FullScreenMediaViewPage.id,
+                        arguments: {
+                          'mediaUrl': messages[index].content,
+                          'messageType': messages[index].type,
+                          'senderName': messages[index].senderId == user.id
+                              ? user.name
+                              : this.widget.contact.name,
+                        },
+                      );
+                    }
                   },
                   onLongPress: () async {
                     if (chatScreenAppBarProvider.messageIsSelected)

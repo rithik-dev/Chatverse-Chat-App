@@ -3,7 +3,6 @@ import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
-import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,27 +45,14 @@ class MessageCard extends StatelessWidget {
         ),
       );
     } else {
-      return GestureDetector(
-        onTap: () {
-          if (chatScreenAppBarProvider.messageIsSelected)
-            chatScreenAppBarProvider.unSelectMessage();
-          else
-            Navigator.pushNamed(
-              context,
-              FullScreenMediaViewPage.id,
-              arguments: {
-                'mediaUrl': message.content,
-                'messageType': message.type,
-                'senderName': senderIsMe ? user.name : contact.name,
-              },
-            );
-        },
-        child: Hero(
-          tag: message.content,
-          child: message.type == MessageType.photo
-              ? Container(
-                  height: 300,
-                  width: double.infinity,
+      return Hero(
+        tag: message.content,
+        child: message.type == MessageType.photo
+            ? Container(
+                height: 300,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
                     imageUrl: message.content,
@@ -78,22 +64,28 @@ class MessageCard extends StatelessWidget {
                       baseColor: Colors.white,
                       highlightColor: Colors.grey[500],
                     ),
-                  ),
-                )
-              : Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 200,
-                  width: double.infinity,
-                  child: Icon(
-                    Icons.play_circle_filled,
-                    color: Colors.white,
-                    size: 75,
+                    errorWidget: (context, _, __) => Container(
+                      color: Colors.black,
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      child: Icon(Icons.error, size: 75),
+                    ),
                   ),
                 ),
-        ),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 200,
+                width: double.infinity,
+                child: Icon(
+                  Icons.play_circle_filled,
+                  color: Colors.white,
+                  size: 75,
+                ),
+              ),
       );
     }
   }
