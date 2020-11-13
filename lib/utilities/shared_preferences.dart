@@ -3,10 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefs {
   SharedPrefs._();
 
+  static SharedPreferences _prefs;
+
+  static Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
   static Future<Map<String, dynamic>> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool _seenIntro = (prefs.getBool('seenIntro') ?? false);
-    final String _userId = (prefs.getString('userId') ?? null);
+    final bool _seenIntro = (_prefs.getBool('seenIntro') ?? false);
+    final String _userId = (_prefs.getString('userId') ?? null);
 
     return {
       'seenIntro': _seenIntro,
@@ -15,12 +20,10 @@ class SharedPrefs {
   }
 
   static Future<void> setLoggedInUserID(String userId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', userId);
+    await _prefs.setString('userId', userId);
   }
 
   static Future<void> setSeenIntro(bool seenIntro) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('seenIntro', seenIntro);
+    await _prefs.setBool('seenIntro', seenIntro);
   }
 }

@@ -17,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<void> getData() async {
+    await SharedPrefs.initialize();
     final Map<String, dynamic> localData = await SharedPrefs.getData();
     print("localData : $localData");
     if (localData['seenIntro']) {
