@@ -3,6 +3,8 @@ import 'package:chatverse_chat_app/models/contact.dart';
 import 'package:chatverse_chat_app/models/message.dart';
 import 'package:chatverse_chat_app/models/user.dart';
 import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
+import 'package:chatverse_chat_app/utilities/theme_handler.dart';
+import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -96,11 +98,41 @@ class MessageCard extends StatelessWidget {
     chatScreenAppBarProvider = Provider.of<ChatScreenAppBarProvider>(context);
     senderIsMe = user.id == message.senderId;
     return GestureDetector(
-      child: Column(
-        crossAxisAlignment:
-            senderIsMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Container(
+      onTap: () {
+        if (chatScreenAppBarProvider.messageIsSelected) {
+          if (chatScreenAppBarProvider.message.index == message.index)
+            chatScreenAppBarProvider.unSelectMessage();
+          else
+            chatScreenAppBarProvider.selectMessage(message: message);
+        } else {
+          if (message.type == MessageType.photo ||
+              message.type == MessageType.video)
+            Navigator.pushNamed(
+              context,
+              FullScreenMediaViewPage.id,
+              arguments: {
+                'mediaUrl': message.content,
+                'messageType': message.type,
+                'senderName':
+                    message.senderId == user.id ? user.name : this.contact.name,
+              },
+            );
+        }
+      },
+      onLongPress: () async {
+        if (chatScreenAppBarProvider.messageIsSelected)
+          chatScreenAppBarProvider.unSelectMessage();
+        else
+          chatScreenAppBarProvider.selectMessage(message: message);
+      },
+      child: Container(
+        color: (chatScreenAppBarProvider.messageIsSelected &&
+                chatScreenAppBarProvider.message.index == message.index)
+            ? ThemeHandler.selectedContactBackgroundColor(context)
+            : Colors.transparent,
+        child: Align(
+          alignment: senderIsMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
             width: this._getCardWidth(context),
             margin: EdgeInsets.symmetric(vertical: 2.5),
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -168,7 +200,7 @@ class MessageCard extends StatelessWidget {
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

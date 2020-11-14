@@ -6,8 +6,6 @@ import 'package:chatverse_chat_app/providers/chatscreen_appbar_provider.dart';
 import 'package:chatverse_chat_app/providers/loading_screen_provider.dart';
 import 'package:chatverse_chat_app/services/firebase_storage_service.dart';
 import 'package:chatverse_chat_app/utilities/constants.dart';
-import 'package:chatverse_chat_app/utilities/theme_handler.dart';
-import 'package:chatverse_chat_app/views/full_screen_media_view_page.dart';
 import 'package:chatverse_chat_app/widgets/custom_loading_screen.dart';
 import 'package:chatverse_chat_app/widgets/delete_message_alert_dialog.dart';
 import 'package:chatverse_chat_app/widgets/message_card.dart';
@@ -192,47 +190,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   return SizedBox.shrink();
               },
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    if (chatScreenAppBarProvider.messageIsSelected) {
-                      if (chatScreenAppBarProvider.message.index ==
-                          messages[index].index)
-                        chatScreenAppBarProvider.unSelectMessage();
-                      else
-                        chatScreenAppBarProvider.selectMessage(
-                            message: messages[index]);
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        FullScreenMediaViewPage.id,
-                        arguments: {
-                          'mediaUrl': messages[index].content,
-                          'messageType': messages[index].type,
-                          'senderName': messages[index].senderId == user.id
-                              ? user.name
-                              : this.widget.contact.name,
-                        },
-                      );
-                    }
-                  },
-                  onLongPress: () async {
-                    if (chatScreenAppBarProvider.messageIsSelected)
-                      chatScreenAppBarProvider.unSelectMessage();
-                    else
-                      chatScreenAppBarProvider.selectMessage(
-                          message: messages[index]);
-                  },
-                  child: Container(
-                    color: (chatScreenAppBarProvider.messageIsSelected &&
-                            chatScreenAppBarProvider.message.index ==
-                                messages[index].index)
-                        ? ThemeHandler.selectedContactBackgroundColor(context)
-                        : Colors.transparent,
-                    child: MessageCard(
-                      message: messages[index],
-                      contact: this.widget.contact,
-                    ),
-                  ),
+                return MessageCard(
+                  message: messages[index],
+                  contact: this.widget.contact,
                 );
               },
               itemCount: messages.length,
