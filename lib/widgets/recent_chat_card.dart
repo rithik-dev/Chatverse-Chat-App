@@ -92,11 +92,9 @@ class RecentChatCard extends StatelessWidget {
                         homeScreenAppBarProvider.contactId == contact.id)
                     ? ThemeHandler.selectedContactBackgroundColor(context)
                     : Colors.transparent,
-                padding: EdgeInsets.all(5),
                 child: Container(
                   padding:
                       EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                  margin: EdgeInsets.only(right: 25.0),
                   decoration: BoxDecoration(
                     color: hasUnreadMessages
                         ? ThemeHandler.unreadMessageBackgroundColor(context)
@@ -109,64 +107,62 @@ class RecentChatCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Hero(
-                            tag: contact.id + "-recent",
-                            child: ProfilePicture(contact.photoUrl, radius: 35),
-                          ),
-                          SizedBox(width: 10.0),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                contact.name,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                              SizedBox(height: 10.0),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                child: Row(
-                                  children: [
-                                    this.messages.length != 0 &&
-                                            this.messages[0].senderId == user.id
-                                        ? Icon(
-                                            contactHasReadLastMessage
-                                                ? Icons.check_circle
-                                                : Icons.check_circle_outline,
-                                            size: 15,
-                                            color:
-                                                Theme.of(context).accentColor,
-                                          )
-                                        : SizedBox.shrink(),
-                                    SizedBox(width: 5),
-                                    Expanded(
-                                      child: Text(
-                                        this._getMessageContent(
-                                          messages: messages,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2
-                                            .copyWith(
-                                              fontStyle:
-                                                  this._getMessageFontStyle(
-                                                    messages: messages,
-                                              ),
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Hero(
+                        tag: contact.id + "-recent",
+                        child: ProfilePicture(contact.photoUrl, radius: 35),
                       ),
+                      SizedBox(width: 10.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              contact.name,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            SizedBox(height: 10.0),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.45,
+                              child: Row(
+                                children: [
+                                  this.messages.length != 0 &&
+                                          this.messages[0].senderId == user.id
+                                      ? Icon(
+                                          contactHasReadLastMessage
+                                              ? Icons.check_circle
+                                              : Icons.check_circle_outline,
+                                          size: 15,
+                                          color: Theme.of(context).accentColor,
+                                        )
+                                      : SizedBox.shrink(),
+                                  SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      this._getMessageContent(
+                                        messages: messages,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          .copyWith(
+                                            fontStyle:
+                                                this._getMessageFontStyle(
+                                              messages: messages,
+                                            ),
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 10.0),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
